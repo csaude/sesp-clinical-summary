@@ -1,107 +1,105 @@
 <template>
-    <div class="login-page">
-      <div class="login-form">
-        <h1>Login</h1>
-        <q-input
-          v-model="username"
-          label="Username"
-          outlined
-          dense
-          autofocus
-          :error="!!usernameError"
-          :error-message="usernameError"
-        />
-        <q-input
-          v-model="password"
-          label="Password"
-          outlined
-          dense
-          type="password"
-          :error="!!passwordError"
-          :error-message="passwordError"
-        />
-        <q-btn
-          label="Login"
-          color="primary"
-          class="full-width"
-          @click="handleLogin"
-          :loading="isLoading"
-          :disable="isLoading"
-        />
-        <p v-if="loginError" class="error-message">{{ loginError }}</p>
-      </div>
+  <div class="login-page">
+    <div class="login-form">
+      <h1>Login</h1>
+      <q-input
+        v-model="username"
+        label="Username"
+        outlined
+        dense
+        autofocus
+        :error="!!usernameError"
+        :error-message="usernameError"
+      />
+      <q-input
+        v-model="password"
+        label="Password"
+        outlined
+        dense
+        type="password"
+        :error="!!passwordError"
+        :error-message="passwordError"
+      />
+      <q-btn
+        label="Login"
+        color="primary"
+        class="full-width"
+        @click="handleLogin"
+        :loading="isLoading"
+        :disable="isLoading"
+      />
+      <p v-if="loginError" class="error-message">{{ loginError }}</p>
     </div>
-  </template>
+  </div>
+</template>
 
-  <script setup lang="ts">
-  import { ref } from 'vue';
-  import { useRouter } from 'vue-router';
-  // import useUserService from 'src/services/user/userService';
+<script setup lang="ts">
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import userService from 'src/services/user/userService'; 
 
-  // State variables
-  const username = ref('');
-  const password = ref('');
-  const isLoading = ref(false);
-  const loginError = ref('');
-  const usernameError = ref('');
-  const passwordError = ref('');
+// State variables
+const username = ref('');
+const password = ref('');
+const isLoading = ref(false);
+const loginError = ref('');
+const usernameError = ref('');
+const passwordError = ref('');
 
-  const router = useRouter();
+const router = useRouter();
 
-  // Validation function
-  // const validateForm = (): boolean => {
-  //   usernameError.value = username.value.trim() ? '' : 'Username is required';
-  //   passwordError.value = password.value.trim() ? '' : 'Password is required';
-  //
-  //   return !usernameError.value && !passwordError.value;
-  // };
+// Validation function
+const validateForm = (): boolean => {
+  usernameError.value = username.value.trim() ? '' : 'Username is required';
+  passwordError.value = password.value.trim() ? '' : 'Password is required';
 
-  // Login handler
-  const handleLogin = async () => {
+  return !usernameError.value && !passwordError.value;
+};
 
-   // if (!validateForm()) return;
+// Login handler
+const handleLogin = async () => {
+  if (!validateForm()) return;
 
-    isLoading.value = true;
-    loginError.value = '';
+  isLoading.value = true;
+  loginError.value = '';
 
-    try {
-     // const response = await useUserService.login(username.value, password.value);
-     // console.log('Login successful:', response);
+  try {
+    // Call the login function from userService
+    await userService.login(username.value, password.value);
 
-      // Redirect to the home page or dashboard
-    console.log('handleLogin');
-      router.push('/main');
-    } catch (error) {
-      if (error instanceof Error) {
-        loginError.value = error.message;
-      } else {
-        loginError.value = 'Login failed'; // fallback para erros que não são instâncias de Error
-      }
-    } finally {
-      isLoading.value = false;
+    // Redirect to the main page or dashboard
+    router.push('/main');
+  } catch (error) {
+    if (error instanceof Error) {
+      loginError.value = error.message;
+    } else {
+      loginError.value = 'Login failed'; // Fallback for non-error instances
     }
-  };
-  </script>
-
-  <style scoped>
-  .login-page {
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 2rem;
+  } finally {
+    isLoading.value = false;
   }
+};
+</script>
 
-  .login-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
+<style scoped>
+.login-page {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
 
-  .full-width {
-    width: 100%;
-  }
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
 
-  .error-message {
-    color: red;
-    text-align: center;
-  }
-  </style>
+.full-width {
+  width: 100%;
+}
+
+.error-message {
+  color: red;
+  text-align: center;
+}
+</style>
