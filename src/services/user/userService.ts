@@ -4,14 +4,15 @@ import { LoginResponse } from '../../model/login/LoginResponse';
 export default {
   async login(username: string, password: string): Promise<LoginResponse> {
     try {
-      const response = await api.post<LoginResponse>(
+      const response = await api.get<LoginResponse>(
         '/session',
-        {},
         {
           auth: { username, password },
         }
       );
 
+      console.log(response);
+      
       if (response.data.authenticated) {
         this.handleLoginResponse(response.data);
         return response.data;
@@ -19,6 +20,7 @@ export default {
         throw new Error('Authentication failed. Please check your credentials.');
       }
     } catch (error: unknown) {
+      console.log(error);
       if (error instanceof Error) {
         console.error('Login error:', error.message);
         throw error;

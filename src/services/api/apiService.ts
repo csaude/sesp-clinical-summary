@@ -2,7 +2,7 @@ import axios, { AxiosInstance, AxiosRequestHeaders } from 'axios';
 
 // Configure your Axios instance
 const instance: AxiosInstance = axios.create({
-  baseURL: 'http://10.10.2.17:8089/openmrsmuzima/ws/rest/v1/',
+  baseURL: 'http://fghomrsmpt.fgh.org.mz/openmrsmuzima/ws/rest/v1',
   responseType: 'json',
   validateStatus(status) {
     return status >= 200 && status < 300;

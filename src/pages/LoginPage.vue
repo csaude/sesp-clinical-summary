@@ -70,6 +70,7 @@ const handleLogin = async () => {
     // Redirect to the main page or dashboard
     router.push('/main');
   } catch (error) {
+    console.log(error);
     if (error instanceof Error) {
       loginError.value = error.message;
     } else {
