@@ -1,106 +1,223 @@
 <template>
   <div class="login-page">
-    <div class="login-form">
-      <h1>Login</h1>
-      <q-input
-        v-model="username"
-        label="Username"
-        outlined
-        dense
-        autofocus
-        :error="!!usernameError"
-        :error-message="usernameError"
-      />
-      <q-input
-        v-model="password"
-        label="Password"
-        outlined
-        dense
-        type="password"
-        :error="!!passwordError"
-        :error-message="passwordError"
-      />
-      <q-btn
-        label="Login"
-        color="primary"
-        class="full-width"
-        @click="handleLogin"
-        :loading="isLoading"
-        :disable="isLoading"
-      />
-      <p v-if="loginError" class="error-message">{{ loginError }}</p>
+    <!-- Initial Setup Dialog -->
+    <AddHealthFacility
+      v-if="isFirstTimeSetup"
+      @save="handleFirstTimeSetup"
+      @cancel="handleCancelSetup"
+    />
+    <!-- Login Form -->
+    <div v-if="!isFirstTimeSetup" class="login-form">
+      <!-- Header Banner -->
+      <div class="q-pa-none q-gutter-sm q-mb-xl">
+        <q-banner inline-actions class="bg-light-green-10 text-white">
+          SESP Sumário Clínico
+          <template v-slot:action>
+            <q-btn round color="green" icon="settings" dense />
+          </template>
+        </q-banner>
+      </div>
+      <!-- Logo -->
+      <div class="text-center q-my-xl">
+        <q-avatar size="80px" font-size="52px" color="teal" text-color="white">
+          <img src="/app-logo.png" alt="App Logo" />
+        </q-avatar>
+      </div>
+      <!-- Form -->
+      <div class="q-pa-md">
+        <!-- Server URL -->
+        <q-input
+          v-model="serverUrl"
+          label="URL do Servidor"
+          class="q-mb-md"
+          disable
+          outlined
+          dense
+        >
+          <template v-slot:prepend>
+            <q-icon name="link" />
+          </template>
+        </q-input>
+        <!-- Facility Selection -->
+        <q-select
+          v-model="selectedFacility"
+          :options="facilities.map(facility => ({
+            label: facility.name,
+            value: facility,
+          }))"
+          label="Unidade Sanitária"
+          outlined
+          class="q-mb-md"
+          dense
+        >
+          <template v-slot:prepend>
+            <q-icon name="emergency" />
+          </template>
+        </q-select>
+        <!-- Username -->
+        <q-input
+          v-model="username"
+          label="Utilizador"
+          outlined
+          dense
+          class="q-mb-md"
+          autofocus
+        >
+          <template v-slot:prepend>
+            <q-icon name="person" />
+          </template>
+        </q-input>
+        <!-- Password -->
+        <q-input
+          v-model="password"
+          :type="isPwd ? 'password' : 'text'"
+          label="Password"
+          outlined
+          class="q-mb-md"
+          dense
+        >
+          <template v-slot:prepend>
+            <q-icon name="key" />
+          </template>
+          <template v-slot:append>
+            <q-icon
+              :name="isPwd ? 'visibility_off' : 'visibility'"
+              class="cursor-pointer"
+              @click="isPwd = !isPwd"
+            />
+          </template>
+        </q-input>
+        <!-- Login Button -->
+        <q-btn
+          label="ENTRAR"
+          color="primary"
+          class="full-width q-mb-md"
+          @click="handleLogin"
+          :loading="isLoading"
+        />
+        <!-- Add Facility Button -->
+        <q-btn
+          label="ADICIONAR UNIDADE SANITÁRIA"
+          color="yellow-9"
+          class="full-width"
+          @click="openAddHealthFacility"
+        />
+      </div>
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ref } from 'vue';
+<script setup>
+import { ref, watch, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import userService from 'src/services/user/userService'; 
+import userService from 'src/services/user/userService';
+import AddHealthFacility from '../components/login/AddHealthFacility.vue';
+import { useSwal } from 'src/composables/shared/dialog/dialog';
+import EncryptionManager from 'src/utils/EncryptionManager';
 
-// State variables
-const username = ref('');
-const password = ref('');
-const isLoading = ref(false);
-const loginError = ref('');
-const usernameError = ref('');
-const passwordError = ref('');
+// Destructure dialog functions
+const { alertError, alertWarning } = useSwal();
 
+// Router instance
 const router = useRouter();
 
-// Validation function
-const validateForm = (): boolean => {
-  usernameError.value = username.value.trim() ? '' : 'Username is required';
-  passwordError.value = password.value.trim() ? '' : 'Password is required';
+// State variables
+const isPwd = ref(true);
+const username = ref('');
+const password = ref('');
+const serverUrl = ref(''); // Server URL field
+const selectedFacility = ref(null);
+const facilities = ref([]);
+const isLoading = ref(false);
+const isAddDialogOpen = ref(false);
+const isFirstTimeSetup = ref(false);
 
-  return !usernameError.value && !passwordError.value;
+// Watch for changes to selectedFacility and update serverUrl
+watch(selectedFacility, (newFacility) => {
+  console.log(selectedFacility);
+  console.log(newFacility.value.url);
+  if (newFacility) {
+    serverUrl.value = newFacility.value.url; // Automatically populate serverUrl
+  } else {
+    serverUrl.value = ''; // Clear serverUrl if no facility is selected
+  }
+});
+
+// Check if configuration exists in local storage
+onMounted(() => {
+  showPrivacyWarning();
+  const savedFacilities = localStorage.getItem('facilities');
+  if (!savedFacilities) {
+    isFirstTimeSetup.value = true;
+  } else {
+    facilities.value = JSON.parse(savedFacilities);
+  }
+});
+
+// Show privacy warning
+const showPrivacyWarning = () => {
+  alertWarning(
+    'Ao acessar este sistema, você está prestes a visualizar informações altamente confidenciais de utentes. É sua responsabilidade protegê-las adequadamente e usá-las somente para os fins autorizados.'
+  );
 };
 
-// Login handler
+const handleFirstTimeSetup = (facility) => {
+  const savedFacilities = localStorage.getItem('facilities');
+  if (savedFacilities) {
+    facilities.value = JSON.parse(savedFacilities);
+  }
+  isFirstTimeSetup.value = false;
+};
+
+// Handle first-time setup cancel
+const handleCancelSetup = () => {
+  alertError('O aplicativo requer configuração inicial para prosseguir.');
+};
+
 const handleLogin = async () => {
-  if (!validateForm()) return;
+  if (!selectedFacility.value) {
+    alertError('Selecione uma unidade sanitária antes de entrar.');
+    return;
+  }
 
   isLoading.value = true;
-  loginError.value = '';
 
   try {
-    // Call the login function from userService
+    // Save the selected facility to session storage
+    sessionStorage.setItem('selectedFacility', JSON.stringify(selectedFacility.value));
+
+    // Encrypt and save credentials to session storage
+    EncryptionManager.setEncryptedSessionItem('username', username.value);
+    EncryptionManager.setEncryptedSessionItem('password', password.value);
+
+    // Call login with username and password
     await userService.login(username.value, password.value);
 
-    // Redirect to the main page or dashboard
+    // Redirect to main page after successful login
     router.push('/main');
   } catch (error) {
-    console.log(error);
-    if (error instanceof Error) {
-      loginError.value = error.message;
-    } else {
-      loginError.value = 'Login failed'; // Fallback for non-error instances
-    }
+    console.error('Login failed:', error);
+
+    // Clear session storage if login fails
+    clearSessionStorage();
+
+    alertError('Erro ao realizar login. Por favor, verifique as credenciais.');
   } finally {
     isLoading.value = false;
   }
 };
+
+const clearSessionStorage = () => {
+  sessionStorage.removeItem('selectedFacility');
+  EncryptionManager.removeSessionItem('username');
+  EncryptionManager.removeSessionItem('password');
+};
+
+
+
+// Open Add Health Facility dialog
+const openAddHealthFacility = () => {
+  isFirstTimeSetup.value = true;
+};
+
 </script>
 
-<style scoped>
-.login-page {
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 2rem;
-}
-
-.login-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.full-width {
-  width: 100%;
-}
-
-.error-message {
-  color: red;
-  text-align: center;
-}
-</style>

@@ -1,13 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestHeaders } from 'axios';
-
-// Configure your Axios instance
-const instance: AxiosInstance = axios.create({
-  baseURL: 'http://fghomrsmpt.fgh.org.mz/openmrsmuzima/ws/rest/v1',
-  responseType: 'json',
-  validateStatus(status) {
-    return status >= 200 && status < 300;
-  },
-});
+import EncryptionManager from 'src/utils/EncryptionManager';
 
 // Function to encode credentials for Basic Authentication
 function getBasicAuthHeader(username: string, password: string): string {
@@ -15,16 +7,36 @@ function getBasicAuthHeader(username: string, password: string): string {
   return `Basic ${btoa(credentials)}`;
 }
 
-// Request interceptor for API calls
+// Create Axios instance without baseURL (will be dynamically set)
+const instance: AxiosInstance = axios.create({
+  responseType: 'json',
+  validateStatus(status) {
+    return status >= 200 && status < 300;
+  },
+});
+
+// Request interceptor to add dynamic baseURL and authorization headers
 instance.interceptors.request.use(
   (request) => {
-    const username = localStorage.getItem('username') || ''; // Retrieve username dynamically
-    const password = localStorage.getItem('password') || ''; // Retrieve password dynamically
+    // Retrieve facility from session storage
+    const facilityData = sessionStorage.getItem('selectedFacility');
+    const facility = facilityData ? JSON.parse(facilityData) : null;
 
-    // Ensure headers are of type AxiosRequestHeaders
+    if (!facility || !facility.url) {
+      throw new Error('Facility URL not found in session storage.');
+    }
+
+    // Set dynamic baseURL
+    request.baseURL = `${facility.url}/ws/rest/v1`;
+
+    // Retrieve and decrypt username and password
+    const username = EncryptionManager.getDecryptedSessionItem('username');
+    const password = EncryptionManager.getDecryptedSessionItem('password');
+
     if (username && password) {
+      // Add Authorization header for Basic Authentication
       request.headers = {
-        ...request.headers, // Keep existing headers if any
+        ...request.headers,
         Accept: 'application/json',
         Authorization: getBasicAuthHeader(username, password),
       } as AxiosRequestHeaders;
@@ -33,6 +45,20 @@ instance.interceptors.request.use(
     return request;
   },
   (error) => Promise.reject(error)
+);
+
+// Response interceptor to handle errors or session timeout
+instance.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (error.response?.status === 401) {
+      console.error('Unauthorized access - possibly due to expired credentials.');
+      // Handle unauthorized access, e.g., redirect to login or logout
+    }
+    return Promise.reject(error);
+  }
 );
 
 export default instance;
