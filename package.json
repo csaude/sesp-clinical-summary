@@ -1,8 +1,8 @@
 {
   "name": "sesp-clinical-summary",
-  "version": "0.0.1",
+  "version": "2.0.0",
   "description": "sesp-clinical-summary",
-  "productName": "sesp-clinical-summary",
+  "productName": "SESP Sumário Clínico",
   "author": "Joao Nuno Mabjaia <94103183+joaonunomabjaia@users.noreply.github.com>",
   "private": true,
   "scripts": {
@@ -14,9 +14,11 @@
   },
   "dependencies": {
     "@capacitor/android": "^6.2.0",
+    "@capacitor/app": "^6.0.2",
     "@capacitor/cli": "^6.2.0",
     "@capacitor/core": "^6.2.0",
     "@quasar/extras": "^1.16.14",
+    "@vueuse/core": "^12.0.0",
     "axios": "^1.2.1",
     "crypto-js": "^4.2.0",
     "pinia": "^2.0.11",

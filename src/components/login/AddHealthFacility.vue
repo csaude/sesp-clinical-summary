@@ -65,13 +65,17 @@
         @click="$emit('cancel')"
       />
     </div>
+    <div class="row q-mt-xl">
+      <label class="col text-center">v{{ appVersion }}</label>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useSwal } from 'src/composables/shared/dialog/dialog';
-import { validKeyPairs } from 'src/data/keyPairs'; // Import the key pairs
+import { validKeyPairs } from 'src/data/keyPairs'; 
+import { version } from '../../../package.json'
 
 const { alertError, alertSuccess } = useSwal();
 
@@ -79,7 +83,8 @@ const { alertError, alertSuccess } = useSwal();
 const serverUrl = ref('');
 const facilityName = ref('');
 const keyValue = ref('');
-const keyEntry = ref(''); // Key entry requested from the user
+const keyEntry = ref('');
+const appVersion = version;
 
 // Retrieve saved facilities from localStorage
 const savedFacilities = ref([]);
