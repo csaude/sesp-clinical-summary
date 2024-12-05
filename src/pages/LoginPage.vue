@@ -33,7 +33,7 @@
     </div>
   </template>
 
-  <script setup lang="ts">
+  <script setup>
   import { ref } from 'vue';
   import { useRouter } from 'vue-router';
   // import useUserService from 'src/services/user/userService';
@@ -70,7 +70,7 @@
 
       // Redirect to the home page or dashboard
     console.log('handleLogin');
-      router.push('/main');
+      router.push('/home');
     } catch (error) {
       if (error instanceof Error) {
         loginError.value = error.message;
