@@ -41,6 +41,8 @@ export function useSwal() {
       title: 'Aviso',
       text: message,
       icon: 'warning',
+      allowOutsideClick: false, // Prevents closing by clicking outside
+      allowEscapeKey: false,
       confirmButtonText: 'Ok',
     });
   }
@@ -77,7 +79,7 @@ export function useSwal() {
       confirmButtonColor: '#d33', // Red color for danger confirmation button
       allowOutsideClick: false,
       allowEscapeKey: false,
-    });
+    }).then((result) => result.isConfirmed);
   }
   
 

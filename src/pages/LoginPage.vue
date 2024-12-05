@@ -10,11 +10,8 @@
     <div v-if="!isFirstTimeSetup" class="login-form">
       <!-- Header Banner -->
       <div class="q-pa-none q-gutter-sm q-mb-xl">
-        <q-banner inline-actions class="bg-light-green-10 text-white">
+        <q-banner inline-actions class="bg-light-green-10 text-white text-center text-weight-medium">
           SESP Sumário Clínico
-          <template v-slot:action>
-            <q-btn round color="green" icon="settings" dense />
-          </template>
         </q-banner>
       </div>
       <!-- Logo -->
@@ -103,7 +100,11 @@
           @click="openAddHealthFacility"
         />
       </div>
+      <div class="row q-mt-xl">
+        <label class="col text-center">v{{ appVersion }}</label>
+      </div>
     </div>
+          
   </div>
 </template>
 <script setup>
@@ -113,9 +114,12 @@ import userService from 'src/services/user/userService';
 import AddHealthFacility from '../components/login/AddHealthFacility.vue';
 import { useSwal } from 'src/composables/shared/dialog/dialog';
 import EncryptionManager from 'src/utils/EncryptionManager';
+import { version } from '../../package.json'
+
+import { App } from '@capacitor/app';
 
 // Destructure dialog functions
-const { alertError, alertWarning } = useSwal();
+const { alertError, alertWarning, alertWarningAction } = useSwal();
 
 // Router instance
 const router = useRouter();
@@ -128,13 +132,11 @@ const serverUrl = ref(''); // Server URL field
 const selectedFacility = ref(null);
 const facilities = ref([]);
 const isLoading = ref(false);
-const isAddDialogOpen = ref(false);
 const isFirstTimeSetup = ref(false);
+const appVersion = version;
 
 // Watch for changes to selectedFacility and update serverUrl
 watch(selectedFacility, (newFacility) => {
-  console.log(selectedFacility);
-  console.log(newFacility.value.url);
   if (newFacility) {
     serverUrl.value = newFacility.value.url; // Automatically populate serverUrl
   } else {
@@ -160,7 +162,7 @@ const showPrivacyWarning = () => {
   );
 };
 
-const handleFirstTimeSetup = (facility) => {
+const handleFirstTimeSetup = () => {
   const savedFacilities = localStorage.getItem('facilities');
   if (savedFacilities) {
     facilities.value = JSON.parse(savedFacilities);
@@ -168,10 +170,29 @@ const handleFirstTimeSetup = (facility) => {
   isFirstTimeSetup.value = false;
 };
 
-// Handle first-time setup cancel
-const handleCancelSetup = () => {
-  alertError('O aplicativo requer configuração inicial para prosseguir.');
+const handleCancelSetup = async () => {
+  const savedFacilities = localStorage.getItem('facilities');
+
+  if (savedFacilities) {
+    // If facilities exist, go back to login
+    isFirstTimeSetup.value = false;
+  } else {
+    // Warn the user and provide an option to exit the app
+    const confirmed = await alertWarningAction(
+      'O aplicativo requer configuração inicial para prosseguir. Sair do aplicativo?'
+    );
+
+    if (confirmed) {
+      // Exit the app
+      if (typeof navigator !== 'undefined' && App && App.exitApp) {
+        App.exitApp(); // For Cordova or Capacitor apps
+      } else if (typeof window !== 'undefined') {
+        window.close(); // Fallback for browsers
+      }
+    }
+  }
 };
+
 
 const handleLogin = async () => {
   if (!selectedFacility.value) {
@@ -206,11 +227,6 @@ const handleLogin = async () => {
   }
 };
 
-const clearSessionStorage = () => {
-  sessionStorage.removeItem('selectedFacility');
-  EncryptionManager.removeSessionItem('username');
-  EncryptionManager.removeSessionItem('password');
-};
 
 
 
