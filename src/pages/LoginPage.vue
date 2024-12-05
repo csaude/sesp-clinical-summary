@@ -198,7 +198,7 @@ const handleLogin = async () => {
     console.error('Login failed:', error);
 
     // Clear session storage if login fails
-    clearSessionStorage();
+    //clearSessionStorage();
 
     alertError('Erro ao realizar login. Por favor, verifique as credenciais.');
   } finally {

@@ -22,12 +22,12 @@ instance.interceptors.request.use(
     const facilityData = sessionStorage.getItem('selectedFacility');
     const facility = facilityData ? JSON.parse(facilityData) : null;
 
-    if (!facility || !facility.url) {
+    if (!facility || !facility.value.url) {
       throw new Error('Facility URL not found in session storage.');
     }
 
     // Set dynamic baseURL
-    request.baseURL = `${facility.url}/ws/rest/v1`;
+    request.baseURL = `${facility.value.url}/ws/rest/v1`;
 
     // Retrieve and decrypt username and password
     const username = EncryptionManager.getDecryptedSessionItem('username');

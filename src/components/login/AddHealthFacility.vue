@@ -111,7 +111,7 @@ const saveHealthFacility = () => {
 
   // Validate the URL
   if (!isValidUrl(serverUrl.value)) {
-    alertError('Por favor, insira um URL válido.');
+    alertError('Por favor, insira uma URL válida.');
     return;
   }
 
