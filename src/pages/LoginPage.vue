@@ -214,7 +214,7 @@ const handleLogin = async () => {
     await userService.login(username.value, password.value);
 
     // Redirect to main page after successful login
-    router.push('/main');
+    router.push('/home');
   } catch (error) {
     console.error('Login failed:', error);
 
