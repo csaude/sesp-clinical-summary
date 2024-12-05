@@ -72,8 +72,6 @@ import { ref, onMounted, provide } from 'vue';
 import { useIdentificacaoUtente } from 'src/composables/shared/patient/identificacao';
 import SearchComponent from 'src/components/SearchComponent.vue';
 
-const description = ref('Este é o componente home');
-
 const { nomeCompleto, nid, idade, us } = useIdentificacaoUtente();
 
 // const header = `${nomeCompleto}<br>${nid}<br>${idade}<br>${us}`;

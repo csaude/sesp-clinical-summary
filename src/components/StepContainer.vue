@@ -14,16 +14,11 @@
         icon="person"
       >
         <!-- <DemograficosComponent /> -->
-
-        <q-stepper-navigation>
-          <q-btn @click="() => { done1 = true; step = 2 }" color="primary" label="Continue"></q-btn>
-        </q-stepper-navigation>
       </q-step>
 
       <q-step
         :name="2"
-        title="Create an ad group"
-        caption="Optional"
+        title="Resultados Laboratoriais"
         icon="create_new_folder"
         :done="done2"
       >
@@ -32,7 +27,7 @@
 
       <q-step
         :name="3"
-        title="Create an ad"
+        title="Data de Levantamento de ARV"
         icon="add_comment"
         :done="done3"
       >
@@ -42,7 +37,7 @@
 
       <q-step
         :name="4"
-        title="Create an ad"
+        title="Data de Inicio TARV"
         icon="add_comment"
         :done="done3"
       >
@@ -52,7 +47,7 @@
 
       <q-step
         :name="5"
-        title="Create an ad"
+        title="Consulta Clinica"
         icon="add_comment"
         :done="done3"
       >
@@ -62,7 +57,7 @@
 
       <q-step
         :name="6"
-        title="Create an ad"
+        title="Profilaxias"
         icon="add_comment"
         :done="done3"
       >
@@ -72,7 +67,7 @@
 
       <q-step
         :name="7"
-        title="Create an ad"
+        title="Rastreio CACUM"
         icon="add_comment"
         :done="done3"
       >
@@ -82,7 +77,7 @@
 
       <q-step
         :name="8"
-        title="Create an ad"
+        title="Confidente"
         icon="add_comment"
         :done="done3"
       >
@@ -104,16 +99,8 @@ import { ref } from 'vue';
 // import RastreioCACUM from './steps/RastreioCACUM.vue';
 // import ConfidenteComponent from './steps/ConfidenteComponent.vue';
 
-const step = ref(1); // Inicializa no passo 1
-const step1Input = ref('');
-const step2Input = ref('');
-const step1Description = "Digite informações para o passo 1";
-const step2Description = "Digite mais informações no passo 2";
-const step3Description = "Finalizar processo";
+const step = ref(1)
 
-const finish = () => {
-  alert("Processo Finalizado!");
-}
 </script>
 
 <style scoped>
