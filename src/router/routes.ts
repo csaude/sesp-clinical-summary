@@ -9,15 +9,25 @@ const routes: RouteRecordRaw[] = [
     path: '/login',
     name: 'Login',
     component: () => import('pages/LoginPage.vue'),
+    meta: { requiresAuth: false }, // No authentication needed
   },
   {
     path: '/home',
     component: () => import('layouts/MainLayout.vue'),
-    children: [{ path: '', component: () => import('pages/HomePage.vue') }],
+    beforeEnter(to, from, next) {
+      const authUser = sessionStorage.getItem('sessionId'); // Check for session ID
+      if (!authUser) {
+        next('/login'); // Redirect to login if not authenticated
+      } else {
+        next(); // Allow access
+      }
+    },
+    children: [
+      { path: '', component: () => import('pages/HomePage.vue') },
+    ],
   },
 
-  // Always leave this as last one,
-  // but you can also remove it
+  // Catch all unmatched routes
   {
     path: '/:catchAll(.*)*',
     component: () => import('pages/ErrorNotFound.vue'),

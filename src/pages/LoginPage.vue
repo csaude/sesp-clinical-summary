@@ -146,7 +146,15 @@ watch(selectedFacility, (newFacility) => {
 
 // Check if configuration exists in local storage
 onMounted(() => {
-  showPrivacyWarning();
+  const justLoggedOut = sessionStorage.getItem('justLoggedOut');
+
+  if (!justLoggedOut) {
+    // Show privacy warning only if the user did not just log out
+    showPrivacyWarning();
+  } else {
+    // Remove the flag after the check
+    sessionStorage.removeItem('justLoggedOut');
+  }
   const savedFacilities = localStorage.getItem('facilities');
   if (!savedFacilities) {
     isFirstTimeSetup.value = true;

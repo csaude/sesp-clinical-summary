@@ -1,5 +1,6 @@
 import api from '../api/apiService';
 import { LoginResponse } from '../../model/login/LoginResponse'; 
+import EncryptionManager from 'src/utils/EncryptionManager';
 
 export default {
   async login(username: string, password: string): Promise<LoginResponse> {
@@ -42,10 +43,42 @@ export default {
     sessionStorage.setItem('roles', JSON.stringify(user.roles));
   },
 
-  logout() {
-    sessionStorage.clear(); // Clears all session data
-    window.location.reload();
+  async logout() {
+    try {
+      const sessionId = this.getSessionId();
+      if (!sessionId) {
+        console.warn('No session found to logout.');
+        return;
+      }
+  
+      // Retrieve and decrypt credentials
+      const username = EncryptionManager.getDecryptedSessionItem('username');
+      const password = EncryptionManager.getDecryptedSessionItem('password');
+  
+      if (!username || !password) {
+        console.warn('No valid credentials found for logout.');
+        return;
+      }
+  
+      // Make API call to invalidate the session on the server
+      await api.delete('/session', {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Basic ${btoa(`${username}:${password}`)}`,
+        },
+      });
+  
+      console.log('Successfully logged out from the server.');
+    } catch (error) {
+      console.error('Error during logout:', error);
+    } finally {
+      // Clear session storage and reload page
+      sessionStorage.clear();
+      sessionStorage.setItem('justLoggedOut', 'true');
+      window.location.reload();
+    }
   },
+  
 
   getLoggedUser() {
     const userInfo = sessionStorage.getItem('userInfo');

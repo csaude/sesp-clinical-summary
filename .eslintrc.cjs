@@ -88,5 +88,7 @@ module.exports = {
 
 
     'vue/multi-word-component-names': 'off',
+
+    '@typescript-eslint/no-explicit-any': 'off',
   }
 }

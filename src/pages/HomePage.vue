@@ -1,107 +1,154 @@
 <template>
   <div>
+    <!-- Header Section -->
+    <div v-if="!showUsageReport && !showSearchComponent">
+      <div class="q-mt-md text-center">
+        <q-avatar size="70px" font-size="56px" color="primary" text-color="white">
+          <q-icon name="person" />
+        </q-avatar>
+        <div class="q-mt-sm">
+          <label>Bem Vindo</label>
+          <p>{{ username }}</p>
+        </div>
+      </div>
 
-    <div v-if="pageLocation === 'inicio' || pageLocation === 'pesquisa'" id="div_header" class="q-mt-md text-center">
-      <q-icon name="person" size="3em" />
-      <br />
-      <p>Bem Vindo,<br>JMabjaia</p>
+      <!-- Buttons Section -->
+      <div class="q-pa-md">
+        <div class="row">
+          <q-card class="col-12 col-sm-6 button-card q-mb-md" @click="handleSumarioClinicoClick">
+            <q-card-section>
+              <q-icon name="assignment" size="3em" color="red-6" />
+              <div class="q-mt-sm text-bold">Sumário Clínico</div>
+            </q-card-section>
+          </q-card>
+
+          <q-card class="col-12 col-sm-6 button-card q-mb-md" @click="showUsageReportComponent">
+            <q-card-section>
+              <q-icon name="bar_chart" size="3em" color="green-6" />
+              <div class="q-mt-sm text-bold">Relatório de Uso</div>
+            </q-card-section>
+          </q-card>
+
+          <q-card class="col-12 col-sm-6 button-card" @click="handleLogout">
+            <q-card-section>
+              <q-icon name="exit_to_app" size="3em" color="blue-6" />
+              <div class="q-mt-sm text-bold">Terminar Sessão</div>
+            </q-card-section>
+          </q-card>
+        </div>
+
+        <div class="row q-mt-xl">
+          <label class="col text-center">v{{ appVersion }}</label>
+        </div>
+      </div>
     </div>
 
+    <!-- Usage Report Section -->
+    <UsageReport v-if="showUsageReport" @back="hideUsageReportComponent" />
     
-    <div class="q-my-sm" v-else-if="pageLocation === 'resultadoPesquisa'">
-      <small>Resultado de pesquisa por: "<strong>{{ searchQuery }}</strong>""</small>
-    </div>
-
-    <div v-else id="div_header" class="q-mt-md">
-      <p v-html="header"></p>
-    </div>
-
-    <!-- INICIO -->
-    <div v-if="pageLocation === 'inicio'" class="q-pa-md example-row-equal-width">
-      <div class="row">
-        <div class="col q-mr-md q-mb-md">
-          <q-btn class="fit" color="red-6" icon="assignment" stack @click="handleSumarioClinicoClick()">
-            <div class="text-center text-caption">
-              Sumário<br>Clínico
-            </div>
-          </q-btn>
-        </div>
-        <div class="col q-mb-md">
-          <q-btn class="fit" color="blue-6" icon="exit_to_app" stack @click="handleClick">
-            <div class="text-center text-caption">
-              Terminar<br>Sessão
-            </div>
-          </q-btn>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col q-mr-md">
-          <q-btn class="fit" color="green-6" icon="bar_chart" stack @click="handleClick">
-            <div class="text-center text-caption">
-              Relatório<br>de Uso
-            </div>
-          </q-btn>
-        </div>
-        <div class="col">
-          <!-- <q-btn class="fit" color="orange-6" icon="help_outline" stack @click="handleClick">
-            <div class="text-center text-caption">
-              Ajuda<br>e Suporte
-            </div>
-          </q-btn> -->
-        </div>
-      </div>
-    </div>
-
-    <!-- SUMARIO -->
-  <div> 
-      <SearchComponent />
-  </div>
-
-  
-
-    <!-- RELATORIO -->
-  <div v-if="pageLocation === 'relatorio'">
-
-  </div>
+    <!-- Search Component -->
+    <SearchComponent v-if="showSearchComponent" />
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, provide } from 'vue';
-import { useIdentificacaoUtente } from 'src/composables/shared/patient/identificacao';
-import SearchComponent from 'src/components/SearchComponent.vue';
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import userService from 'src/services/user/userService';
+import { version } from '../../package.json';
+import { useSwal } from 'src/composables/shared/dialog/dialog';
+import UsageReport from 'src/components/report/UsageReport.vue';
+import SearchComponent from 'components/SearchComponent.vue';
 
-const { nomeCompleto, nid, idade, us } = useIdentificacaoUtente();
+// State variables
+const router = useRouter();
+const username = ref('');
+const appVersion = version;
+const { alertWarningAction } = useSwal();
+const showUsageReport = ref(false);
+const showSearchComponent = ref(false);
 
-// const header = `${nomeCompleto}<br>${nid}<br>${idade}<br>${us}`;
-const header = `${nomeCompleto}<br>${nid}<br>${idade}<br>${us}`;
-const pageLocation = ref('inicio')
-const searchQuery = ref('');
+// Check for sessionId on mount
+onMounted(() => {
+  const sessionId = sessionStorage.getItem('sessionId');
+  if (!sessionId) {
+    router.push('/login');
+  } else {
+    loadUsername();
+  }
+});
 
-const handleClick = () => {
-  alert('Você clicou no botão!');
+// Load username from session storage
+const loadUsername = () => {
+  const userInfo = sessionStorage.getItem('userInfo');
+  if (userInfo) {
+    const parsedUserInfo = JSON.parse(userInfo);
+    username.value = parsedUserInfo.display || 'Usuário';
+  }
 };
 
+// Button action functions
 const handleSumarioClinicoClick = () => {
-  pageLocation.value = 'pesquisa'
-}
+  resetStates();
+  showSearchComponent.value = true;
+};
 
-onMounted(() => {
-  pageLocation.value = 'inicio'
-})
+const showUsageReportComponent = () => {
+  resetStates();
+  showUsageReport.value = true;
+};
 
-provide('pageLocation', pageLocation)
-provide('searchQuery', searchQuery)
+const hideUsageReportComponent = () => {
+  showUsageReport.value = false;
+};
 
+const handleLogout = async () => {
+  const confirmed = await alertWarningAction(
+    'Tem certeza de que deseja terminar a sessão e sair do aplicativo?'
+  );
+
+  if (confirmed) {
+    try {
+      await userService.logout();
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  }
+};
+
+// Reset states for dynamic components
+const resetStates = () => {
+  showUsageReport.value = false;
+  showSearchComponent.value = false;
+};
 </script>
 
 <style scoped>
-/* Ajustando layout */
-div {
-  text-align: center;
+/* General Styling */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: #f5f5f5;
 }
-.custom-label {
-  font-size: 12px; /* Ajuste conforme necessário */
+
+.button-card {
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.button-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.q-icon {
+  margin-bottom: 0.5rem;
+}
+
+.text-bold {
+  font-weight: 700;
 }
 </style>
