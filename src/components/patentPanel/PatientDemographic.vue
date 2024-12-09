@@ -5,25 +5,7 @@
       <q-page-container v-if="patient">
         <q-page class="q-pa-none">
           <!-- Header Section -->
-          <q-card flat bordered class="q-mb-md q-pa-md">
-            <div class="col-12 text-center q-mb-md">
-              <q-icon :name="genderIcon" :color="genderColor" size="lg" />
-            </div>
-            <div class="row items-center text-center">
-              <div class="row">
-                <!-- Patient Name -->
-                <div class="col-12 text-weight-bold text-lg text-center">
-                  {{ patient?.display?.split(' - ')[1] || 'Sem Nome' }}
-                </div>
-                <!-- Patient Details -->
-                <div class="col-12 text-caption text-center">
-                  <span>{{ patient?.identifiers?.[0]?.identifier || 'Sem NID' }}</span> |
-                  <span>{{ patient?.person?.age || 'Sem idade' }} anos</span> |
-                  <span>{{ patient?.identifiers?.[0]?.location?.name || 'Sem Localidade' }}</span>
-                </div>
-              </div>
-            </div>
-          </q-card>
+          <header-component/>
   
           <!-- Demographics Section -->
           <q-card flat bordered class="q-mb-md">
@@ -127,6 +109,7 @@
   <script setup>
   import { useRouter } from 'vue-router';
   import { computed, inject } from 'vue';
+  import headerComponent from './headerComponent.vue';
   
   const router = useRouter();
   const patient = inject('selectedPatient');
