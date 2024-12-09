@@ -1,105 +1,97 @@
 <template>
   <div class="q-mx-xs">
-  <q-stepper
-      v-model="step"
-      header-nav
-      ref="stepper"
-      color="primary"
+    <q-carousel
+      v-model="slide"
+      transition-prev="slide-down"
+      transition-next="slide-up"
+      swipeable
       animated
-               vertical
+      control-color="primary"
+      padding
+      height="auto"
+      class="bg-white-4 text-black"
     >
-      <q-step
-        :name="1"
-        title="Dados Demograficos"
-        icon="person"
-      >
-        <!-- <DemograficosComponent /> -->
-      </q-step>
 
-      <q-step
-        :name="2"
-        title="Resultados Laboratoriais"
-        icon="create_new_folder"
-        :done="done2"
-      >
-        <!-- <ResultLaboratorio /> -->
-      </q-step>
+      <q-carousel-slide name="1" class="column items-top justify-center q-pa-none">
+        <div class="">
+          <DemograficosComponent />
+        </div>
+      </q-carousel-slide>
 
-      <q-step
-        :name="3"
-        title="Data de Levantamento de ARV"
-        icon="add_comment"
-        :done="done3"
-      >
-        <!-- <LevantamentoArv /> -->
+      <q-carousel-slide name="2" class="column items-top justify-center q-pa-none">        
+        <div class="text-center">
+          <ResultLaboratorio />
+        </div>
+      </q-carousel-slide>
 
-      </q-step>
+      <q-carousel-slide name="3" class="column items-top justify-center q-pa-none">        
+        <div class="text-center">
+          <LevantamentoArv />
+        </div>
+      </q-carousel-slide>
 
-      <q-step
-        :name="4"
-        title="Data de Inicio TARV"
-        icon="add_comment"
-        :done="done3"
-      >
-        <InicioTARV />
+      <q-carousel-slide name="4" class="column items-top justify-center q-pa-none">        
+        <div class="text-center">
+          <InicioTARV />
+        </div>
+      </q-carousel-slide>
 
-      </q-step>
+      <q-carousel-slide name="5" class="column items-top justify-center q-pa-none">        
+        <div class="text-center">
+          <ConsultaClinica />
+        </div>
+      </q-carousel-slide>
 
-      <q-step
-        :name="5"
-        title="Consulta Clinica"
-        icon="add_comment"
-        :done="done3"
-      >
-        <!-- <ConsultaClinica /> -->
+      <q-carousel-slide name="6" class="column items-top justify-center q-pa-none">        
+        <div class="text-center">
+          <ProfilaxiasComponent />
+        </div>
+      </q-carousel-slide>
 
-      </q-step>
+      <q-carousel-slide name="7" class="column items-top justify-center q-pa-none">        
+        <div class="text-center">
+          <RastreioCACUM />
+        </div>
+      </q-carousel-slide>
 
-      <q-step
-        :name="6"
-        title="Profilaxias"
-        icon="add_comment"
-        :done="done3"
-      >
-        <!-- <ProfilaxiasComponent /> -->
+      <q-carousel-slide name="8" class="column items-top justify-center q-pa-none">        
+        <div class="text-center">
+          <ConfidenteComponent />
+        </div>
+      </q-carousel-slide>
 
-      </q-step>
-
-      <q-step
-        :name="7"
-        title="Rastreio CACUM"
-        icon="add_comment"
-        :done="done3"
-      >
-        <!-- <RastreioCACUM /> -->
-
-      </q-step>
-
-      <q-step
-        :name="8"
-        title="Confidente"
-        icon="add_comment"
-        :done="done3"
-      >
-        <!-- <ConfidenteComponent /> -->
-
-      </q-step>
-    </q-stepper>
+    </q-carousel>
+    <div class="row justify-center q-mt-sm">
+      <q-btn-toggle
+        glossy
+        v-model="slide"
+        :options="[
+          { label: 1, value: '1' },
+          { label: 2, value: '2' },
+          { label: 3, value: '3' },
+          { label: 4, value: '4' },
+          { label: 5, value: '5' },
+          { label: 6, value: '6' },
+          { label: 7, value: '7' },
+          { label: 8, value: '8' },
+        ]"
+      ></q-btn-toggle>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
-// import DemograficosComponent from './steps/DemograficosComponent.vue';
-// import ResultLaboratorio from './steps/ResultLaboratorio.vue';
-// import LevantamentoArv from './steps/LevantamentoArv.vue';
-// import InicioTARV from './steps/InicioTARV.vue';
-// import ConsultaClinica from './steps/ConsultaClinica.vue';
-// import ProfilaxiasComponent from './steps/ProfilaxiasComponent.vue';
-// import RastreioCACUM from './steps/RastreioCACUM.vue';
-// import ConfidenteComponent from './steps/ConfidenteComponent.vue';
+import DemograficosComponent from './steps/DemograficosComponent.vue';
+import ResultLaboratorio from './steps/ResultLaboratorio.vue';
+import LevantamentoArv from './steps/LevantamentoArv.vue';
+import InicioTARV from './steps/InicioTARV.vue';
+import ConsultaClinica from './steps/ConsultaClinica.vue';
+import ProfilaxiasComponent from './steps/ProfilaxiasComponent.vue';
+import RastreioCACUM from './steps/RastreioCACUM.vue';
+import ConfidenteComponent from './steps/ConfidenteComponent.vue';
 
-const step = ref(1)
+const slide = ref("1")
 
 </script>
 
