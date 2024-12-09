@@ -12,6 +12,12 @@ const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: false }, // No authentication needed
   },
   {
+    path: '/patientPanel',
+    name: 'patientPanel',
+    component: () => import('pages/PatientPanel.vue'),
+    meta: { requiresAuth: false }, // No authentication needed
+  },
+  {
     path: '/home',
     component: () => import('layouts/MainLayout.vue'),
     beforeEnter(to, from, next) {

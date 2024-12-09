@@ -65,6 +65,10 @@ const props = defineProps({
     type: Boolean,
     required: true,
   },
+  uuid: {
+    type: String,
+    required: true,
+  },
 });
 
 const emit = defineEmits(['open']);

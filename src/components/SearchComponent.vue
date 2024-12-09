@@ -40,12 +40,14 @@ import { ref } from 'vue';
 import { useSwal } from 'src/composables/shared/dialog/dialog';
 import SearchResultsList from './SearchResultsList.vue';
 import patientService from 'src/services/patient/patientService';
+import { useRouter } from 'vue-router';
 
 const searchQuery = ref('');
 const results = ref([]);
 const loading = ref(false);
 const nextUrl = ref(null);
 const loadingNext = ref(false);
+const router = useRouter();
 
 // Destructure dialog methods
 const { alertError, alertWarning, alertWarningAction } = useSwal();
@@ -107,13 +109,20 @@ const openPatient = async (uuid, name, nid) => {
   );
 
   if (confirmed) {
-    goToPatientDetails(uuid); // Pass the UUID for navigation
+    console.log(uuid);
+    const selectedPatient = results.value.find((patient) => patient.uuid === uuid);
+
+    if (selectedPatient) {
+      // Save selected patient to sessionStorage
+      sessionStorage.setItem('selectedPatient', JSON.stringify(selectedPatient));
+    }
+    goToPatientDetails(); // Pass the UUID for navigation
   }
 };
 
 
-const goToPatientDetails =(uuid)=> {
-
+const goToPatientDetails =()=> {
+  router.push('/patientPanel');
 }
 
 // Reset search

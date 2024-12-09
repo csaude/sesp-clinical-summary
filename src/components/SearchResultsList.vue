@@ -10,6 +10,7 @@
         :age="result.person.age"
         :gender="result.person.gender"
         :dead="result.person.dead"
+        :uuid="result.uuid"
         @open="open"
       />
   
