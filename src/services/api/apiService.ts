@@ -29,6 +29,11 @@ instance.interceptors.request.use(
     // Set dynamic baseURL
     request.baseURL = `${facility.value.url}/ws/rest/v1`;
 
+    if (request.url?.startsWith('http://') || request.url?.startsWith('https://')) {
+      // Do not modify the baseURL for full URLs
+      request.baseURL = '';
+    }
+
     // Retrieve and decrypt username and password
     const username = EncryptionManager.getDecryptedSessionItem('username');
     const password = EncryptionManager.getDecryptedSessionItem('password');

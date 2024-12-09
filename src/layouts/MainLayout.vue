@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout view="hHh Lpr lff">
     <q-header elevated>
       <q-toolbar>
         <q-btn
@@ -10,31 +10,33 @@
           aria-label="Menu"
           @click="toggleLeftDrawer"
         />
-
         <q-toolbar-title>
-          Quasar App
+          SESP Sumário Clínico
         </q-toolbar-title>
-
-        <div>Quasar v{{ $q.version }}</div>
       </q-toolbar>
     </q-header>
 
     <q-drawer
       v-model="leftDrawerOpen"
-      show-if-above
+      overlay
       bordered
     >
       <q-list>
-        <q-item-label
-          header
-        >
-          Essential Links
-        </q-item-label>
+        <q-card bordered square flat>
+          <q-card-section>
+            <div class="text-h6">Bem Vindo</div>
+            <div class="text-subtitle2">{{ username }}</div>
+          </q-card-section>
+          <q-separator dark />
+        </q-card>
 
         <EssentialLink
           v-for="link in linksList"
           :key="link.title"
-          v-bind="link"
+          :title="link.title"
+          :caption="link.caption"
+          :icon="link.icon"
+          @click="handleNavigation(link.link)"
         />
       </q-list>
     </q-drawer>
@@ -45,62 +47,107 @@
   </q-layout>
 </template>
 
-<script setup lang="ts">
-import { ref } from 'vue';
-import EssentialLink, { EssentialLinkProps } from 'components/EssentialLink.vue';
+<script setup>
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import EssentialLink from 'components/EssentialLink.vue';
+import userService from 'src/services/user/userService';
+import { useSwal } from 'src/composables/shared/dialog/dialog';
 
 defineOptions({
   name: 'MainLayout'
 });
 
-const linksList: EssentialLinkProps[] = [
+const router = useRouter();
+const username = ref('');
+const leftDrawerOpen = ref(false);
+const { alertWarningAction } = useSwal();
+
+// Links list for navigation
+const linksList = [
   {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev'
+    title: 'Inicio',
+    caption: 'Ecrã Principal',
+    icon: 'home',
+    link: '/home'
   },
   {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework'
+    title: 'Sumário Clinico',
+    caption: 'Aceder ao Sumário Clinico',
+    icon: 'description',
+    link: '/summary'
   },
   {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev'
+    title: 'Relatório de Uso',
+    caption: 'Aceder ao Relatório de Uso',
+    icon: 'query_stats',
+    link: '/report'
   },
   {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev'
+    title: 'Configurações',
+    caption: 'Gerir Configurações',
+    icon: 'settings',
+    link: '/settings'
   },
   {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev'
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev'
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev'
+    title: 'Sair',
+    caption: 'Terminar Sessão',
+    icon: 'logout',
+    link: 'logout'
   }
 ];
 
-const leftDrawerOpen = ref(false);
+// Load username from session storage
+onMounted(() => {
+  const userInfo = sessionStorage.getItem('userInfo');
+  if (userInfo) {
+    const parsedUserInfo = JSON.parse(userInfo);
+    username.value = parsedUserInfo.display || 'Usuário';
+  }
+});
 
-function toggleLeftDrawer () {
+// Toggle drawer visibility
+function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
 }
+
+// Handle navigation and logout
+async function handleNavigation(link) {
+  if (link === 'logout') {
+    const confirmed = await alertWarningAction(
+      'Tem certeza de que deseja terminar a sessão e sair do aplicativo?'
+    );
+    if (confirmed) {
+    try {
+      await userService.logout(); 
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  }
+  } else {
+    router.push(link);
+    leftDrawerOpen.value = false; // Close the drawer after navigation
+  }
+}
 </script>
+
+<style scoped>
+/* Drawer styling */
+.q-drawer {
+  background-color: #ffffff;
+}
+
+.q-toolbar-title {
+  font-weight: bold;
+  color: #333;
+}
+
+.text-h6 {
+  font-weight: bold;
+}
+
+.text-subtitle2 {
+  font-size: 14px;
+  color: #666;
+}
+</style>
