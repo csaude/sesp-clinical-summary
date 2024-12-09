@@ -1,16 +1,9 @@
 <template>
     <q-layout view="lHh Lpr lFf">
-      <!-- Header -->
-      <q-header elevated>
-        <q-toolbar>
-          <q-btn flat round dense icon="arrow_back" @click="goBack" />
-          <q-toolbar-title>Sumário Clínico</q-toolbar-title>
-        </q-toolbar>
-      </q-header>
   
       <!-- Page Container -->
       <q-page-container v-if="patient">
-        <q-page class="q-pa-md">
+        <q-page class="q-pa-none">
           <!-- Header Section -->
           <q-card flat bordered class="q-mb-md q-pa-md">
             <div class="col-12 text-center q-mb-md">
