@@ -60,6 +60,7 @@
               <ConfidenteComponent />
             </q-carousel-slide>
           </q-carousel>
+
         </q-page>
       </q-page-container>
     </q-layout>
