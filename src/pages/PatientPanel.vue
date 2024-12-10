@@ -4,7 +4,7 @@
       <q-header elevated>
         <q-toolbar>
           <q-btn flat round dense icon="arrow_back" @click="goBack" />
-          <q-toolbar-title>Sumário do Paciente</q-toolbar-title>
+          <q-toolbar-title>Sumário do Utente</q-toolbar-title>
         </q-toolbar>
       </q-header>
   
