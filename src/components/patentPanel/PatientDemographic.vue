@@ -114,9 +114,6 @@
   const router = useRouter();
   const patient = inject('selectedPatient');
   
-  const genderIcon = computed(() => (patient.value.person.gender === 'M' ? 'male' : 'female'));
-  const genderColor = computed(() => (patient.value.person.gender === 'M' ? 'blue' : 'pink'));
-  
   const formattedBirthdate = computed(() => {
     const birthdate = patient.value?.person?.birthdate;
     if (!birthdate) return null;
