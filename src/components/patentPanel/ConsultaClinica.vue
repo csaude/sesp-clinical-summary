@@ -148,7 +148,7 @@ onMounted(async () => {
         items: nextAppointment.map((item) => ({
           value: formatDate(item.value),
           source: {
-            form: item.encounter?.form?.display || 'Sem formulário',
+            form: item.source || 'Sem formulário',
             date: formatDate(item.obsDatetime) || 'Sem data',
             location: item.encounter?.location?.name || 'Sem localidade',
           },
