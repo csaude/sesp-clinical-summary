@@ -1,6 +1,6 @@
 // Importando o serviço de API
 import api from '../api/apiService';
-
+   
 export default {
 
   async allTBLAM(patientId) {    
@@ -73,30 +73,6 @@ export default {
       console.error(`Erro ao buscar observações para o conceito ${concept} do paciente ${patientId}:`, error);
       return [];
     }
-  },
-
-  async allVLCopias(patientId) {
-    return this.fetchPatientObservations(
-      patientId,
-      'e1d48fba-1d5f-11e0-b929-000c29ad1d07',
-      '38377e4ff-d0fe-44a5-81c3-74c9040fd5f8'
-    );
-  },
-
-  async allVLCopiasFC(patientId) {
-    return this.fetchPatientObservations(
-      patientId,
-      'e1d48fba-1d5f-11e0-b929-000c29ad1d07',
-      '3c2d563a-5d37-4735-a125-d3943a3de30a'
-    );
-  },
-
-  async allVLCopiasFSR(patientId) {
-    return this.fetchPatientObservations(
-      patientId,
-      'e1d48fba-1d5f-11e0-b929-000c29ad1d07',
-      '35b7cecc3-4ba3-4710-85ae-fc0c13e83e27'
-    );
   },
 
   async allCD4AbsFSR(patientId) {
@@ -211,37 +187,101 @@ export default {
     );
   },
 
+  //QUALITATIVE CALLS
+  async allVLCopiasV2(patientId){
+      const url = `/obs?patient=${patientId}&concept=e1da2704-1d5f-11e0-b929-000c29ad1d07&v=custom:(obsDatetime,value,comment,encounter:(uuid,location.name,form:(uuid,display)))&limit=12`
+      
+      const response = await api.get(url);
+      return response.data.results.filter((item) => {
+          if (item.encounter && item.encounter.form) {
+              const uuid = item.encounter.form.uuid?.trim(); // Remover espaços em branco
+              return ['8377e4ff-d0fe-44a5-81c3-74c9040fd5f8'].includes(uuid);
+          }
+          return false;
+      }) || [];
+  },
+
+  async allVLCopiasV2FSR(patientId){
+      const url = `/obs?patient=${patientId}&concept=e1da2704-1d5f-11e0-b929-000c29ad1d07&v=custom:(obsDatetime,value,comment,encounter:(uuid,location.name,form:(uuid,display)))&limit=12`
+      
+      const response = await api.get(url);
+      return response.data.results.filter((item) => {
+          if (item.encounter && item.encounter.form) {
+              const uuid = item.encounter.form.uuid?.trim(); // Remover espaços em branco
+              return ['5b7cecc3-4ba3-4710-85ae-fc0c13e83e27'].includes(uuid);
+          }
+          return false;
+      }) || [];
+  },
+
+  async allVLCopiasV2FC(patientId){
+      const url = `/obs?patient=${patientId}&concept=e1da2704-1d5f-11e0-b929-000c29ad1d07&v=custom:(obsDatetime,value,comment,encounter:(uuid,location.name,form:(uuid,display)))&limit=12`
+      
+      const response = await api.get(url);
+      return response.data.results.filter((item) => {
+          if (item.encounter && item.encounter.form) {
+              const uuid = item.encounter.form.uuid?.trim(); // Remover espaços em branco
+              return ['3c2d563a-5d37-4735-a125-d3943a3de30a'].includes(uuid);
+          }
+          return false;
+      }) || [];
+  },
+
+
+  
+  //QUANTITATIVE CALLS
+  async allVLCopias(patientId){
+      const url = `/obs?patient=${patientId}&concept=e1da2704-1d5f-11e0-b929-000c29ad1d07&v=custom:(obsDatetime,value,comment,encounter:(uuid,location.name,form:(uuid,display)))&limit=12`
+      
+      const response = await api.get(url);
+      return response.data.results.filter((item) => {
+          if (item.encounter && item.encounter.form) {
+              const uuid = item.encounter.form.uuid?.trim(); // Remover espaços em branco
+              return ['8377e4ff-d0fe-44a5-81c3-74c9040fd5f8'].includes(uuid);
+          }
+          return false;
+      }) || [];
+  },
+
+  async allVLCopiasFSR(patientId){
+      const url = `/obs?patient=${patientId}&concept=e1da2704-1d5f-11e0-b929-000c29ad1d07&v=custom:(obsDatetime,value,comment,encounter:(uuid,location.name,form:(uuid,display)))&limit=12`
+      
+      const response = await api.get(url);
+      return response.data.results.filter((item) => {
+          if (item.encounter && item.encounter.form) {
+              const uuid = item.encounter.form.uuid?.trim(); // Remover espaços em branco
+              return ['5b7cecc3-4ba3-4710-85ae-fc0c13e83e27'].includes(uuid);
+          }
+          return false;
+      }) || [];
+  },
+
+  async allVLCopiasFC(patientId){
+      const url = `/obs?patient=${patientId}&concept=e1da2704-1d5f-11e0-b929-000c29ad1d07&v=custom:(obsDatetime,value,comment,encounter:(uuid,location.name,form:(uuid,display)))&limit=12`
+      
+      const response = await api.get(url);
+      return response.data.results.filter((item) => {
+          if (item.encounter && item.encounter.form) {
+              const uuid = item.encounter.form.uuid?.trim(); // Remover espaços em branco
+              return ['3c2d563a-5d37-4735-a125-d3943a3de30a'].includes(uuid);
+          }
+          return false;
+      }) || [];
+  },
+
+
 
   //---------------------------
-  async allVLs(patientId: string) {
-    const qualitativeConcept = 'e1d6247e-1d5f-11e0-b929-000c29ad1d07';
-    const quantitativeConcept = 'e1d6247e-1d5f-11e0-b929-000c29ad1d07';
-    const formUuids = [
-      '8377e4ff-d0fe-44a5-81c3-74c9040fd5f8', // LABORATÓRIO GERAL
-      '5b7cecc3-4ba3-4710-85ae-fc0c13e83e27', // FICHA RESUMO
-      '3c2d563a-5d37-4735-a125-d3943a3de30a', // FICHA CLÍNICA
-    ];
-  
-    const qualitativeUrl = `/obs?patient=${patientId}&concept=${qualitativeConcept}&v=custom:(obsDatetime,value,comment,encounter:(uuid,location.name,form:(uuid,display)))`;
-    const quantitativeUrl = `/obs?patient=${patientId}&concept=${quantitativeConcept}&v=custom:(obsDatetime,value,comment,encounter:(uuid,location.name,form:(uuid,display)))`;
-  
+  async allVLs(patientId: string) {    
     try {
-      // Buscar observações qualitativas
-      let qualitativeResults = await api.get(qualitativeUrl).then((response) => {
-        return (
-          response.data?.results?.filter((item) => {
-            if (item.encounter && item.encounter.form) {
-              const uuid = item.encounter.form.uuid?.trim();
-              return formUuids.some((formUuid) => formUuid === uuid);
-            }
-            return false;
-          }) || []
-        );
-      });
+      const allVLCopiasV2 = await this.allVLCopiasV2(patientId)
+      const allVLCopiasV2FSR = await this.allVLCopiasV2FSR(patientId)
+      const allVLCopiasV2FC = await this.allVLCopiasV2FC(patientId)
 
+      const allVLsV2 = allVLCopiasV2.concat(allVLCopiasV2FSR.concat(allVLCopiasV2FC))
 
       // Harmonizar nomes
-      qualitativeResults.forEach((element,i) =>
+      allVLsV2.forEach((element,i) =>
         {
           if (typeof element == "object"){
            if (element?.encounter?.form?.uuid == "0afbb0c7-d58d-4737-8fb1-5f32761b97df"){
@@ -254,49 +294,42 @@ export default {
             element.encounter.form.display = "INDETECTAVEL"
           }
         }
-        });
-  
-      // Buscar observações quantitativas
-      const quantitativeResults = await api.get(quantitativeUrl).then((response) => {
-        return (
-          response.data?.results?.filter((item) => {
-            if (item.encounter && item.encounter.form) {
-              const uuid = item.encounter.form.uuid?.trim();
-              return formUuids.some((formUuid) => formUuid === uuid);
-            }
-            return false;
-          }) || []
-        );
       });
 
-  
-      // Mesclar resultados
-      const allVLsV2 = [...qualitativeResults];
-      const allVLs = quantitativeResults.map((quantitative) => {
-        const matchedQualitativeIndex = allVLsV2.findIndex(
-          (qualitative) =>
-            quantitative.obsDatetime === qualitative.obsDatetime &&
-            quantitative.encounter.form.uuid === qualitative.encounter.form.uuid
-        );
-  
-        if (matchedQualitativeIndex !== -1) {
-          const matchedQualitative = allVLsV2[matchedQualitativeIndex];
-          allVLsV2.splice(matchedQualitativeIndex, 1);
-  
-          return {
-            ...quantitative,
-            value: `${quantitative.value}`,
-          };
+      const allVLCopias = await this.allVLCopias(patientId)
+      const allVLCopiasFSR = await this.allVLCopiasFSR(patientId)
+      const allVLCopiasFC = await this.allVLCopiasFC(patientId)
+
+      const allVLsV3 = allVLCopias.concat(allVLCopiasFSR.concat(allVLCopiasFC))
+
+      allVLsV3.forEach(element => {
+        allVLsV2.forEach((elementb,i) => {
+          if (element.obsDatetime == elementb.obsDatetime && element.encounter.form.uuid == elementb.encounter.form.uuid){
+            element.value = {
+              value:element.value,
+              display:element.value +" | "+elementb.value.display
+            }
+            allVLsV2.splice(i, 1);
+
+          }
+        });
+      });
+
+      let allVLs = allVLsV3.concat(allVLsV2)
+
+      allVLs = allVLs.sort(function (a, b) {
+        var nameA = a.obsDatetime.toString().toUpperCase(); // ignore upper and lowercase
+        var nameB = b.obsDatetime.toString().toUpperCase(); // ignore upper and lowercase
+        if (nameA < nameB) {
+          return 1;
         }
-  
-        return quantitative;
+        if (nameA > nameB) {
+          return -1;
+        }
+        return 0;
       });
   
-      // Adicionar os não mesclados restantes
-      allVLs.push(...allVLsV2);
-  
-      // Ordenar por data (descendente)
-      return allVLs.sort((a, b) => new Date(b.obsDatetime).getTime() - new Date(a.obsDatetime).getTime());
+      return allVLs
     } catch (error) {
       console.error(`Erro ao buscar observações para o paciente ${patientId}:`, error);
       return [];
