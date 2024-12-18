@@ -24,92 +24,125 @@ export default {
     },
 
     async IPTStartFichaClinica(patientId){
-        return this.fetchPatientObservations(
-            patientId,
-            'b6c4d473-2af5-4c4d-a9bb-ad3779fa5579',
-            ['3c2d563a-5d37-4735-a125-d3943a3de30a', 'e1d9ef28-1d5f-11e0-b929-000c29ad1d07']
-        );
+        const url = `/obs?patient=${patientId}&concept=b6c4d473-2af5-4c4d-a9bb-ad3779fa5579&v=custom:(obsDatetime,value,encounter:(uuid,location.name,form:(uuid,display)))&limit=12`
+        
+        const response = await api.get(url);
+        return response.data?.results?.filter((item) => {
+            if (item.encounter && item.encounter.form) {
+                const uuid = item.encounter.form.uuid?.trim(); // Remover espaços em branco
+                return ['3c2d563a-5d37-4735-a125-d3943a3de30a', 'e1d9ef28-1d5f-11e0-b929-000c29ad1d07'].includes(uuid);
+            }
+            return false;
+        }) || [];
     },
 
     async IPTStartFichaResumo(patientId){
-        return this.fetchPatientObservations(
-            patientId,
-            'b6c4d473-2af5-4c4d-a9bb-ad3779fa5579',
-            ['05496c70-845c-40b1-9d28-070f67b3f7da', 'e1d9ef28-1d5f-11e0-b929-000c29ad1d07']
-        );
+        const url = `/obs?patient=${patientId}&concept=b6c4d473-2af5-4c4d-a9bb-ad3779fa5579&v=custom:(obsDatetime,value,encounter:(uuid,location.name,form:(uuid,display)))&limit=12`
+        
+        const response = await api.get(url);
+        return response.data?.results?.filter((item) => {
+            if (item.encounter && item.encounter.form) {
+                const uuid = item.encounter.form.uuid?.trim(); // Remover espaços em branco
+                return ['05496c70-845c-40b1-9d28-070f67b3f7da', 'e1d9ef28-1d5f-11e0-b929-000c29ad1d07'].includes(uuid);
+            }
+            return false;
+        }) || [];
     },
 
     async IPTStartFichaSeguimento(patientId){
-        return this.fetchPatientObservations(
-            patientId,
-            'b6c4d473-2af5-4c4d-a9bb-ad3779fa5579',
-            ['78d47629-5ac4-4e16-8972-2166eef30bfd', 'e1d9ef28-1d5f-11e0-b929-000c29ad1d07']
-        );
+        const url = `/obs?patient=${patientId}&concept=b6c4d473-2af5-4c4d-a9bb-ad3779fa5579&v=custom:(obsDatetime,value,encounter:(uuid,location.name,form:(uuid,display)))&limit=12`
+        
+        const response = await api.get(url);
+        return response.data?.results?.filter((item) => {
+            if (item.encounter && item.encounter.form) {
+                const uuid = item.encounter.form.uuid?.trim(); // Remover espaços em branco
+                return ['78d47629-5ac4-4e16-8972-2166eef30bfd', 'e1d9ef28-1d5f-11e0-b929-000c29ad1d07'].includes(uuid);
+            }
+            return false;
+        }) || [];
     },
 
     async IPTStartFichaClinicaProfilaxia(patientId){
-        return this.fetchPatientObservations(
-            patientId,
-            '9db4ce3b-4c1c-45dd-905f-c984a052f26e',
-            '3c2d563a-5d37-4735-a125-d3943a3de30a'
-        );
+        const url = `/obs?patient=${patientId}&concept=9db4ce3b-4c1c-45dd-905f-c984a052f26e&v=custom:(obsDatetime,value,encounter:(uuid,location.name,form:(uuid,display)))&limit=12`
+        
+        const response = await api.get(url);
+        return response.data?.results?.filter((item) => {
+            if (item.encounter && item.encounter.form) {
+                const uuid = item.encounter.form.uuid?.trim(); // Remover espaços em branco
+                return ['3c2d563a-5d37-4735-a125-d3943a3de30a'].includes(uuid);
+            }
+            return false;
+        }) || [];
     },
 
     async IPTStartFichaResumoProfilaxia(patientId){
-        return this.fetchPatientObservations(
-            patientId,
-            '9db4ce3b-4c1c-45dd-905f-c984a052f26e',
-            '05496c70-845c-40b1-9d28-070f67b3f7da'
-        );
+        const url = `/obs?patient=${patientId}&concept=9db4ce3b-4c1c-45dd-905f-c984a052f26e&v=custom:(obsDatetime,value,encounter:(uuid,location.name,form:(uuid,display)))&limit=12`
+        
+        const response = await api.get(url);
+            return response.data?.results?.filter((item) => {
+                if (item.encounter && item.encounter.form) {
+                    const uuid = item.encounter.form.uuid?.trim(); // Remover espaços em branco
+                    return ['05496c70-845c-40b1-9d28-070f67b3f7da'].includes(uuid);
+                }
+            return false;
+        }) || [];
     },
 
     async IPTStartFichaSeguimentoProfilaxia(patientId){
-        return this.fetchPatientObservations(
-            patientId,
-            '9db4ce3b-4c1c-45dd-905f-c984a052f26e',
-            '78d47629-5ac4-4e16-8972-2166eef30bfd'
-        );
+        const url = `/obs?patient=${patientId}&concept=9db4ce3b-4c1c-45dd-905f-c984a052f26e&v=custom:(obsDatetime,value,encounter:(uuid,location.name,form:(uuid,display)))&limit=12`
+        
+        const response = await api.get(url);
+        return response.data?.results?.filter((item) => {
+            if (item.encounter && item.encounter.form) {
+                const uuid = item.encounter.form.uuid?.trim(); // Remover espaços em branco
+                return ['78d47629-5ac4-4e16-8972-2166eef30bfd'].includes(uuid);
+            }
+            return false;
+        }) || [];
     },
     
 
 
     async allIPTStart(patientId) {
-        // Obter os dados de todas as observações de 'IPTStart'
-        const allIPTStart = [
-            ...await this.IPTStartFichaClinica(patientId),
-            ...await this.IPTStartFichaResumo(patientId),
-            ...await this.IPTStartFichaSeguimento(patientId),
-        ];
-    
-        // Obter os dados de profilaxia
-        const allIPTStartProfilaxia = [
-            ...await this.IPTStartFichaClinicaProfilaxia(patientId),
-            ...await this.IPTStartFichaResumoProfilaxia(patientId),
-            ...await this.IPTStartFichaSeguimentoProfilaxia(patientId),
-        ];
-    
+        // Obter os dados de todas as observações de 'IPTStart'  e concatenar
+        const iPTStartFichaClinicaJSON = await this.IPTStartFichaClinica(patientId)
+        const iPTStartFichaResumoJSON = await this.IPTStartFichaResumo(patientId)
+        const iPTStartFichaSeguimentoJSON = await this.IPTStartFichaSeguimento(patientId)
+        let allIPTStart = iPTStartFichaClinicaJSON.concat(iPTStartFichaResumoJSON.concat(iPTStartFichaSeguimentoJSON))
+        allIPTStart = allIPTStart.filter((item) => {
+            if (item.value.display) {
+                const status = item.value.display?.trim(); // Remover espaços em branco
+                return status === 'INICIAR';
+            }
+            return false;
+        })
+        // Obter os dados de profilaxia e concatenar
+        const iPTStartFichaClinicaProfilaxia = await this.IPTStartFichaClinicaProfilaxia(patientId)
+        const iPTStartFichaResumoProfilaxia = await this.IPTStartFichaResumoProfilaxia(patientId)
+        const iPTStartFichaSeguimentoProfilaxia = await this.IPTStartFichaSeguimentoProfilaxia(patientId)
+        const allIPTStartProfilaxia = iPTStartFichaClinicaProfilaxia.concat(iPTStartFichaResumoProfilaxia.concat(iPTStartFichaSeguimentoProfilaxia))
+
         // Regra 1: Associar as observações de profilaxia ao 'allIPTStart'
         allIPTStart.forEach(element => {
             allIPTStartProfilaxia.forEach(elementb => {
                 // Verificar se o UUID do formulário e o UUID do encontro coincidem
                 if (element.encounter.form.uuid === elementb.encounter.form.uuid && element.encounter.uuid === elementb.encounter.uuid) {
+
                     // Adicionar a informação de profilaxia à observação
                     element.profilaxia = elementb.value.display;
+                    console.log('element: ', JSON.stringify(element, null, 2));
                 }
             });
         });
-    
-        // Regra 2: Ordenar 'allIPTStart' com base na data de observação (obsDatetime)
+
+        // Regra 2: Ordenar 'allIPTStart' com base na data de observação (obsDatetime) e eliminar duplicatas
         allIPTStart.sort(function (a, b) {
-            var nameA = a.obsDatetime.toString().toUpperCase(); // Ignorar maiúsculas/minúsculas
-            var nameB = b.obsDatetime.toString().toUpperCase(); // Ignorar maiúsculas/minúsculas
-            if (nameA < nameB) {
-                return 1; // a vem depois de b
-            }
-            if (nameA > nameB) {
-                return -1; // a vem antes de b
-            }
-            return 0; // são iguais
+            // Converter as datas para formato comparável
+            var dateA = new Date(a.obsDatetime);
+            var dateB = new Date(b.obsDatetime);
+
+            // Ordenação decrescente (mais recente primeiro)
+            return dateB - dateA;
         });
     
         return allIPTStart;
@@ -142,24 +175,24 @@ export default {
 
     async allIPTEnd(patientId) {
         // Obter os dados de todas as observações de 'IPTEnd'
-        const allIPTEnd = [
+        let allIPTEnd = [
             ...await this.IPTEndFichaClinica(patientId),
             ...await this.IPTEndFichaResumo(patientId),
             ...await this.IPTEndFichaSeguimento(patientId),
         ];
     
-        // Obter os dados de profilaxia para 'IPTStart'
+        allIPTEnd = allIPTEnd.filter((item) => {
+            if (item.value.display) {
+                const status = item.value.display?.trim(); // Remover espaços em branco
+                return status === 'COMPLETO';
+            }
+            return false;
+        })
+        // Obter os dados de profilaxia
         const allIPTStartProfilaxia = [
             ...await this.IPTStartFichaClinicaProfilaxia(patientId),
             ...await this.IPTStartFichaResumoProfilaxia(patientId),
             ...await this.IPTStartFichaSeguimentoProfilaxia(patientId),
-        ];
-    
-        // Regra 5: Juntar todos os dados de 'IPTEnd'
-        const allIPTEndJoined = [
-            ...await this.IPTEndFichaClinica(patientId),
-            ...await this.IPTEndFichaResumo(patientId),
-            ...await this.IPTEndFichaSeguimento(patientId),
         ];
     
         // Regra 6: Associar as observações de profilaxia a 'allIPTEnd'
@@ -175,26 +208,41 @@ export default {
     
         // Regra 7: Ordenar 'allIPTEnd' com base na data de observação (obsDatetime)
         allIPTEnd.sort(function (a, b) {
-            var nameA = a.obsDatetime.toString().toUpperCase(); // Ignorar maiúsculas/minúsculas
-            var nameB = b.obsDatetime.toString().toUpperCase(); // Ignorar maiúsculas/minúsculas
-            if (nameA < nameB) {
-                return 1; // a vem depois de b
-            }
-            if (nameA > nameB) {
-                return -1; // a vem antes de b
-            }
-            return 0; // são iguais
+            // Converter as datas para formato comparável
+            var dateA = new Date(a.obsDatetime);
+            var dateB = new Date(b.obsDatetime);
+
+            // Ordenação decrescente (mais recente primeiro)
+            return dateB - dateA;
         });
     
         return allIPTEnd;
     },
 
     async CTZStartFichaClinica(patientId){
-        return this.fetchPatientObservations(
-            patientId,
-            '2616b3c9-9a99-4b9a-b673-10871f4a4c71',
-            ['3c2d563a-5d37-4735-a125-d3943a3de30a', 'e1d9facc-1d5f-11e0-b929-000c29ad1d07']
-        );
+        const url = `/obs?patient=${patientId}&concept=2616b3c9-9a99-4b9a-b673-10871f4a4c71&v=custom:(obsDatetime,concept:(uuid),value,encounter:(uuid,location.name,form:(uuid,display)))&limit=12`
+        
+        const response = await api.get(url);
+        return response.data?.results?.filter((item) => {
+            if (item.encounter && item.encounter.form) {
+                const uuid = item.encounter.form.uuid?.trim(); // Remover espaços em branco
+                return ['3c2d563a-5d37-4735-a125-d3943a3de30a', 'e1d9facc-1d5f-11e0-b929-000c29ad1d07'].includes(uuid);
+            }
+            return false;
+        }) || [];
+    },
+
+    async CTZEndFichaClinica(patientId){
+        const url = `/obs?patient=${patientId}&concept=2616b3c9-9a99-4b9a-b673-10871f4a4c71&v=custom:(obsDatetime,concept:(uuid),value,encounter:(uuid,location.name,form:(uuid,display)))&limit=12`
+        
+        const response = await api.get(url);
+        return response.data?.results?.filter((item) => {
+            if (item.encounter && item.encounter.form) {
+                const uuid = item.encounter.form.uuid?.trim(); // Remover espaços em branco
+                return ['3c2d563a-5d37-4735-a125-d3943a3de30a', 'e1d9facc-1d5f-11e0-b929-000c29ad1d07'].includes(uuid);
+            }
+            return false;
+        }) || [];
     },
 
     async IPTEndFichaFILT(patientId){

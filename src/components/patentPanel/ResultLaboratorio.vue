@@ -39,10 +39,6 @@
                     <div v-if="item.source.date" class="badge-container">
                       <q-badge color="green">{{ item.source.date }}</q-badge>
                     </div>
-
-                    <div v-if="item.source.location" class="badge-container">
-                      <q-badge color="yellow">{{ item.source.location }}</q-badge>
-                    </div>
                   </div>
                 </div>
 
@@ -57,9 +53,6 @@
                   </div>
                   <div v-if="section.source.date" class="badge-container">
                     <q-badge color="green">{{ section.source.date }}</q-badge>
-                  </div>
-                  <div v-if="section.source.location" class="badge-container">
-                    <q-badge color="grey">{{ section.source.location }}</q-badge>
                   </div>
                 </div>
 
@@ -123,6 +116,8 @@
 
     const allVLs = await resultadosLaboratoriaisService.allVLs(patient.value.uuid);
 
+    console.log('AAAAAAAAAAAAAAAAAAAAAA: ', JSON.stringify(allVLs, null, 2))
+
     // Populate resultadosData
     resultadosData.value = [
       {
@@ -130,15 +125,15 @@
         isList: true,
         items: allVLs.length > 0
           ? allVLs.map((item) => ({
-              value: item?.value || item?.comment,
+              value: item.value.value.display ? item.value.value.display : item.value.value,
               source: {
-                form: item.encounter?.form?.display || 'Sem formulário',
-                date: formatDate(item.obsDatetime) || 'Sem data',
+                form: item.value.encounter?.form?.display || 'Sem dados no SESP',
+                date: formatDate(item.value.obsDatetime) || '',
               },
             }))
           : [{ 
               value: 'Sem dados no SESP', 
-              source: { form: 'FICHA RESUMO', date: '', location: '' } 
+              source: { form: 'FLABORATORIO GERAL', date: '', location: '' } 
             }],
       },
       {
