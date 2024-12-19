@@ -86,6 +86,48 @@
           :loading="loading"
           @request="onRequest"
         >
+          <!-- Custom Table Body -->
+          <template v-slot:body="props">
+            <q-tr :props="props">
+              <!-- Patient -->
+              <q-td key="patient" :props="props">
+                {{ props.row.report || 'Sem dados' }}
+              </q-td>
+
+              <!-- Date -->
+              <q-td key="date" :props="props">
+                {{ formatDate(props.row.dateOpened) || 'Sem data' }}
+              </q-td>
+
+              <!-- Unidade Sanitária -->
+              <q-td key="unidadeSanitaria" :props="props">
+                {{ props.row.unidadeSanitaria || 'N/A' }}
+              </q-td>
+
+              <!-- User Name -->
+              <q-td key="user" :props="props">
+                {{ props.row.userName || 'Desconhecido' }}
+              </q-td>
+
+              <!-- Application Version -->
+              <q-td key="applicationVersion" :props="props">
+                {{ props.row.applicationVersion || '-' }}
+              </q-td>
+
+              <!-- Terms -->
+              <q-td key="terms" :props="props">
+                {{ props.row.terms || '-' }}
+              </q-td>
+
+              <!-- Status -->
+              <q-td key="status" :props="props">
+                <q-badge color="primary" v-if="props.row.status === 'uploaded'">Enviado</q-badge>
+                <q-badge color="negative" v-else>Pendente</q-badge>
+              </q-td>
+            </q-tr>
+          </template>
+
+          <!-- No Data Template -->
           <template v-slot:no-data="{ icon, filter }">
             <div class="full-width row flex-center text-primary q-gutter-sm text-body2">
               <span>Sem resultados para visualizar</span>
@@ -93,6 +135,7 @@
             </div>
           </template>
         </q-table>
+
       </div>
     </div>
   </template>
@@ -103,8 +146,8 @@
   import { useStorage } from "@vueuse/core";
   import api from "src/services/api/apiService";
   
-  const { alertError, alertSuccess } = useSwal();
-  const ClinicalSummaries = useStorage("epts-clinical-summaries", []);
+  const { alertError, alertSucess } = useSwal();
+  const ClinicalSummaries = useStorage("visualizedPatients", []);
   
   // Reactive variables
   const startDate = ref("");
@@ -128,6 +171,12 @@
     }
   };
   
+  const formatDate = (dateString) => {
+    if (!dateString) return '-';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('pt-PT', { year: 'numeric', month: '2-digit', day: '2-digit' });
+  };
+
   const validateDates = () => {
     startDateError.value = "";
     endDateError.value = "";
@@ -152,23 +201,26 @@
   };
   
   const searchReport = () => {
-    const start = new Date(startDate.value);
-    const end = new Date(endDate.value);
-  
-    // Filter reports from ClinicalSummaries based on date range
+    const start = new Date(startDate.value).toISOString().split("T")[0]; // Start date (YYYY-MM-DD)
+    const end = new Date(endDate.value).toISOString().split("T")[0]; // End date (YYYY-MM-DD)
+
+    console.log('ClinicalSummaries=========>', ClinicalSummaries);
+    // Filter reports from ClinicalSummaries ignoring the time component
     const filteredReports = ClinicalSummaries.value.filter((item) => {
-      const dateOpened = new Date(item.dateOpened);
+      const dateOpened = new Date(item.dateOpened).toISOString().split("T")[0]; // Only the date
       return dateOpened >= start && dateOpened <= end;
     });
-  
+
+    console.log('filteredReports=========>', filteredReports);
+
     if (filteredReports.length > 0) {
       searchResults.value = filteredReports;
-      alertSuccess("Relatório carregado com sucesso.");
     } else {
       searchResults.value = [];
       alertError("Nenhum resultado encontrado.");
     }
   };
+
   
   const uploadUsageReports = async () => {
     uploading.value = true;
@@ -188,8 +240,8 @@
       try {
         const payload = {
           report: report.report,
-          unidadeSanitaria: report.us,
-          userName: report.username,
+          unidadeSanitaria: report.unidadeSanitaria,
+          userName: report.userName,
           terms: report.terms,
           dateOpened: report.dateOpened,
           applicationVersion: report.applicationVersion,
@@ -214,7 +266,7 @@
       }
     }
   
-    alertSuccess("Todos os relatórios foram enviados com sucesso.");
+    alertSucess("Todos os relatórios foram enviados com sucesso.");
     uploading.value = false;
   };
   </script>

@@ -40,8 +40,8 @@
                     <!-- Localidade -->
                     <div class="row items-center q-mb-sm">
                       <div class="col-auto text-weight-bold">Localidade:</div>
-                      <div class="col text-caption q-ml-sm" :class="{ 'text-negative': !address.display }">
-                        {{ address.display || 'Sem dados no SESP' }}
+                      <div class="col text-caption q-ml-sm" :class="{ 'text-negative': !address.address6 }">
+                        {{ address.address6 || 'Sem dados no SESP' }}
                       </div>
                       <!-- Preferred Badge -->
                       <q-badge v-if="address.preferred" color="green" text-color="white" class="q-ml-md">
@@ -51,8 +51,8 @@
                     <!-- Bairro -->
                     <div class="row items-center q-mb-sm">
                       <div class="col-auto text-weight-bold">Bairro:</div>
-                      <div class="col text-caption q-ml-sm" :class="{ 'text-negative': !address.address1 }">
-                        {{ address.address1 || 'Sem dados no SESP' }}
+                      <div class="col text-caption q-ml-sm" :class="{ 'text-negative': !address.address5 }">
+                        {{ address.address5 || 'Sem dados no SESP' }} - {{address.display}}
                       </div>
                     </div>
                     <!-- Célula/Bloco -->
@@ -65,8 +65,8 @@
                     <!-- Avenida/Rua -->
                     <div class="row items-center q-mb-sm">
                       <div class="col-auto text-weight-bold">Avenida/Rua:</div>
-                      <div class="col text-caption q-ml-sm" :class="{ 'text-negative': !address.address5 }">
-                        {{ address.address5 || 'Sem dados no SESP' }}
+                      <div class="col text-caption q-ml-sm" :class="{ 'text-negative': !address.address1 }">
+                        {{ address.address1 || 'Sem dados no SESP' }}
                       </div>
                     </div>
                   </q-item-section>
