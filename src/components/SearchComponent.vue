@@ -41,6 +41,8 @@ import { useSwal } from 'src/composables/shared/dialog/dialog';
 import SearchResultsList from './SearchResultsList.vue';
 import patientService from 'src/services/patient/patientService';
 import { useRouter } from 'vue-router';
+import { useStorage } from "@vueuse/core";
+import { version as applicationVersion } from '../../package.json';
 
 const searchQuery = ref('');
 const results = ref([]);
@@ -48,6 +50,7 @@ const loading = ref(false);
 const nextUrl = ref(null);
 const loadingNext = ref(false);
 const router = useRouter();
+const visualizedPatients = useStorage("visualizedPatients", []);
 
 // Destructure dialog methods
 const { alertError, alertWarning, alertWarningAction } = useSwal();
@@ -109,21 +112,41 @@ const openPatient = async (uuid, name, nid) => {
   );
 
   if (confirmed) {
-    console.log(uuid);
     const selectedPatient = results.value.find((patient) => patient.uuid === uuid);
-
     if (selectedPatient) {
-      // Save selected patient to sessionStorage
-      sessionStorage.setItem('selectedPatient', JSON.stringify(selectedPatient));
+      // Save patient to sessionStorage
+      sessionStorage.setItem("selectedPatient", JSON.stringify(selectedPatient));
+
+      // Build patient info
+      const currentDate = new Date().toISOString();
+      const userName = sessionStorage.getItem("username") || "Usuário";
+
+      const facilityData = sessionStorage.getItem('selectedFacility');
+      const facility = facilityData ? JSON.parse(facilityData) : null;
+
+      const visualizedPatientInfo = {
+        uuid: uuid,
+        report: "SESP Sumario Clinico",
+        unidadeSanitaria: selectedPatient?.identifiers?.[0]?.location?.name || "Desconhecido",
+        userName: userName,
+        terms: "ASSINADO",
+        dateOpened: currentDate,
+        applicationVersion: applicationVersion,
+        status: "not_uploaded",
+        serverKey: facility?.value?.key
+      };
+
+      // Add patient to visualizedPatients if not already present
+      const existingIndex = visualizedPatients.value.findIndex((p) => p.uuid === uuid);
+      if (existingIndex === -1) {
+        visualizedPatients.value.push(visualizedPatientInfo);
+      }
+
+      console.log("Visualized Patients:", visualizedPatients.value);
     }
-    goToPatientDetails(); // Pass the UUID for navigation
+    router.push("/patientPanel");
   }
 };
-
-
-const goToPatientDetails =()=> {
-  router.push('/patientPanel');
-}
 
 // Reset search
 function resetSearch() {

@@ -18,12 +18,12 @@ async getARTStartDate(patientId: string): Promise<any[]> {
   async getPregnancyStatusAtARTStart(patientId: string): Promise<any[]> {
     const url = `/encounter?patient=${patientId}&encounterType=e422ecf9-75dd-4367-b21e-54bccabc4763&v=full&limit=1&order=desc`;
     const response = await api.get(url);
+    console.log('getPregnancyStatusAtARTStart====>',response)
     const data = response.data.results[0]?.obs.filter((item: any) => item.concept.uuid === 'e1e056a6-1d5f-11e0-b929-000c29ad1d07');
     console.log(data)
-    if (data.length > 0) {
+    if (data?.length > 0) {
       data[0].source = response.data?.results[0]?.form?.display;
     }
-    console.log(data)
     return data || [];
   },
 
@@ -32,7 +32,7 @@ async getARTStartDate(patientId: string): Promise<any[]> {
     const response = await api.get(url);
     const data = response.data.results[0]?.obs.filter((item: any) => item.concept.uuid === 'e1e53c02-1d5f-11e0-b929-000c29ad1d07');
     console.log(data)
-    if (data.length > 0) {
+    if (data?.length > 0) {
         data[0].source = response.data.results[0]?.form?.display;
     }
     console.log(data)

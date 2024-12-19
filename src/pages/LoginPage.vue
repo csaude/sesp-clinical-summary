@@ -44,6 +44,7 @@
           }))"
           label="Unidade Sanitária"
           outlined
+          :disable="isLoading"
           class="q-mb-md"
           dense
         >
@@ -56,6 +57,7 @@
           v-model="username"
           label="Utilizador"
           outlined
+          :disable="isLoading"
           dense
           class="q-mb-md"
           autofocus
@@ -69,6 +71,7 @@
           v-model="password"
           :type="isPwd ? 'password' : 'text'"
           label="Password"
+          :disable="isLoading"
           outlined
           class="q-mb-md"
           dense
@@ -97,6 +100,7 @@
           label="ADICIONAR UNIDADE SANITÁRIA"
           color="yellow-9"
           class="full-width"
+          :disable="isLoading"
           @click="openAddHealthFacility"
         />
       </div>
@@ -138,11 +142,32 @@ const appVersion = version;
 // Watch for changes to selectedFacility and update serverUrl
 watch(selectedFacility, (newFacility) => {
   if (newFacility) {
-    serverUrl.value = newFacility.value.url; // Automatically populate serverUrl
+    // Automatically populate serverUrl
+    serverUrl.value = newFacility.value.url;
+
+    // Check if rememberUsername is enabled
+    const settings = JSON.parse(localStorage.getItem('settings')) || {};
+    if (settings.rememberUsername) {
+      // Find the selected facility in localStorage
+      const savedFacilities = JSON.parse(localStorage.getItem('facilities')) || [];
+      const selectedFacilityData = savedFacilities.find(
+        (facility) => facility.key === newFacility.value.key
+      );
+
+      // If the facility has a userName, auto-populate the username field
+      if (selectedFacilityData?.userName) {
+        username.value = selectedFacilityData.userName;
+      } else {
+        username.value = ''; // Clear the username if no userName is found
+      }
+    }
   } else {
-    serverUrl.value = ''; // Clear serverUrl if no facility is selected
+    // Clear the serverUrl and username if no facility is selected
+    serverUrl.value = '';
+    username.value = '';
   }
 });
+
 
 // Check if configuration exists in local storage
 onMounted(() => {
@@ -155,13 +180,31 @@ onMounted(() => {
     // Remove the flag after the check
     sessionStorage.removeItem('justLoggedOut');
   }
+
   const savedFacilities = localStorage.getItem('facilities');
   if (!savedFacilities) {
     isFirstTimeSetup.value = true;
   } else {
     facilities.value = JSON.parse(savedFacilities);
+
+    // Automatically set the facility if there's only one
+    if (facilities.value.length === 1) {
+      selectedFacility.value = {
+        label: facilities.value[0].name,
+        value: facilities.value[0],
+      };
+
+      // Auto-populate the server URL and username (if applicable)
+      serverUrl.value = facilities.value[0].url;
+
+      const settings = JSON.parse(localStorage.getItem('settings')) || {};
+      if (settings.rememberUsername && facilities.value[0].userName) {
+        username.value = facilities.value[0].userName;
+      }
+    }
   }
 });
+
 
 // Show privacy warning
 const showPrivacyWarning = () => {
@@ -214,6 +257,10 @@ const handleLogin = async () => {
     // Save the selected facility to session storage
     sessionStorage.setItem('selectedFacility', JSON.stringify(selectedFacility.value));
 
+    // Extract the actual selected facility object
+    const selectedFacilityData = selectedFacility.value.value || selectedFacility.value;
+    console.log('selectedFacilityData======>', selectedFacilityData);
+
     // Encrypt and save credentials to session storage
     EncryptionManager.setEncryptedSessionItem('username', username.value);
     EncryptionManager.setEncryptedSessionItem('password', password.value);
@@ -221,20 +268,29 @@ const handleLogin = async () => {
     // Call login with username and password
     await userService.login(username.value, password.value);
 
+    // Update facilities in localStorage
+    const facilities = JSON.parse(localStorage.getItem('facilities')) || [];
+    const updatedFacilities = facilities.map((facility) => {
+      if (facility.key === selectedFacilityData.key) {
+        console.log('facility======>', facility);
+        return { ...facility, userName: username.value };
+      }
+      return facility;
+    });
+
+    // Save updated facilities back to local storage
+    localStorage.setItem('facilities', JSON.stringify(updatedFacilities));
+    console.log('Updated Facilities:', updatedFacilities);
+
     // Redirect to main page after successful login
     router.push('/home');
   } catch (error) {
     console.error('Login failed:', error);
-
-    // Clear session storage if login fails
-    //clearSessionStorage();
-
     alertError('Erro ao realizar login. Por favor, verifique as credenciais.');
   } finally {
     isLoading.value = false;
   }
 };
-
 
 
 

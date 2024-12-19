@@ -133,63 +133,74 @@ onMounted(async () => {
       {
         title: 'Data da consulta mais recente',
         isList: true,
-        items: mostRecentConsultation.map((item) => ({
-          value: formatDate(item.encounterDatetime),
-          source: {
-            form: item.form?.display || 'Sem formulário',
-            date: formatDate(item.encounterDatetime) || 'Sem data',
-            location: item.location.display || 'Sem localidade',
-          },
-        })),
+        items: mostRecentConsultation.length > 0
+          ? mostRecentConsultation.map((item) => ({
+              value: formatDate(item.encounterDatetime),
+              source: {
+                form: item.form?.display || 'Sem formulário',
+                date: formatDate(item.encounterDatetime) || 'Sem data',
+                location: item.location.display || 'Sem localidade',
+              },
+            }))
+          : [{ value: 'Sem dados no SESP', source: { form: 'FICHA CLINICA', date: '', location: '' } }],
       },
       {
         title: 'Data da próxima consulta',
         isList: true,
-        items: nextAppointment.map((item) => ({
-          value: formatDate(item.value),
-          source: {
-            form: item.source || 'Sem formulário',
-            date: formatDate(item.obsDatetime) || 'Sem data',
-            location: item.encounter?.location?.name || 'Sem localidade',
-          },
-        })),
+        items: nextAppointment.length > 0
+          ? nextAppointment.map((item) => ({
+              value: formatDate(item.value),
+              source: {
+                form: item.source || 'Sem formulário',
+                date: formatDate(item.obsDatetime) || 'Sem data',
+                location: item.encounter?.location?.name || 'Sem localidade',
+              },
+            }))
+          : [{ value: 'Sem dados no SESP', source: { form: 'FICHA CLINICA', date: '', location: '' } }],
       },
       {
         title: 'Peso',
         isList: true,
-        items: weight.map((item) => ({
-          value: item.value || 'Sem dados no SESP',
-          source: {
-            form: item.encounter?.form?.display || 'Sem formulário',
-            date: formatDate(item.obsDatetime) || 'Sem data',
-            location: item.encounter?.location?.name || 'Sem localidade',
-          },
-        })),
+        items: weight.length > 0
+          ? weight.map((item) => ({
+              value: item.value || 'Sem dados no SESP',
+              source: {
+                form: item.encounter?.form?.display || 'Sem formulário',
+                date: formatDate(item.obsDatetime) || 'Sem data',
+                location: item.encounter?.location?.name || 'Sem localidade',
+              },
+            }))
+          : [{ value: 'Sem dados no SESP', source: { form: 'FICHA CLINICA', date: '', location: '' } }],
       },
       {
         title: 'Altura',
         isList: true,
-        items: height.map((item) => ({
-          value: item.value || 'Sem dados no SESP',
-          source: {
-            form: item.encounter?.form?.display || 'Sem formulário',
-            date: formatDate(item.obsDatetime) || 'Sem data',
-            location: item.encounter?.location?.name || 'Sem localidade',
-          },
-        })),
+        items: height.length > 0
+          ? height.map((item) => ({
+              value: item.value || 'Sem dados no SESP',
+              source: {
+                form: item.encounter?.form?.display || 'Sem formulário',
+                date: formatDate(item.obsDatetime) || 'Sem data',
+                location: item.encounter?.location?.name || 'Sem localidade',
+              },
+            }))
+          : [{ value: 'Sem dados no SESP', source: { form: 'FICHA CLINICA', date: '', location: '' } }],
       },
       {
         title: 'BMI',
         isList: true,
-        items: bmi.map((item) => ({
-          value: item.value || 'Sem dados no SESP',
-          source: {
-            form: item.encounter?.form?.display || 'Sem formulário',
-            date: formatDate(item.obsDatetime) || 'Sem data',
-            location: item.encounter?.location?.name || 'Sem localidade',
-          },
-        })),
+        items: bmi.length > 0
+          ? bmi.map((item) => ({
+              value: item.value || 'Sem dados no SESP',
+              source: {
+                form: item.encounter?.form?.display || 'Sem formulário',
+                date: formatDate(item.obsDatetime) || 'Sem data',
+                location: item.encounter?.location?.name || 'Sem localidade',
+              },
+            }))
+          : [{ value: 'Sem dados no SESP', source: { form: 'FICHA CLINICA', date: '', location: '' } }],
       },
+
       {
         title: 'MDS',
         isList: true,

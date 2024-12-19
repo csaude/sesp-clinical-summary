@@ -11,7 +11,7 @@ export default {
     const url = `/encounter?patient=${patientId}&encounterType=e278f956-1d5f-11e0-b929-000c29ad1d07&v=full&limit=1&order=desc`;
     const response = await api.get(url);
     const data = response.data.results[0]?.obs.filter((item: any) => item.concept.uuid === 'e1dae630-1d5f-11e0-b929-000c29ad1d07');
-    if (data.length > 0) {
+    if (data?.length > 0) {
       data[0].source = response.data.results[0]?.form?.display;
     }
     return data || [];

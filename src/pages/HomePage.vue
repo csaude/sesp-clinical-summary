@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Header Section -->
-    <div v-if="!showUsageReport && !showSearchComponent">
+    <div v-if="!showUsageReport && !showSearchComponent && !showSettings">
       <div class="q-mt-md text-center">
         <q-avatar size="70px" font-size="56px" color="primary" text-color="white">
           <q-icon name="person" />
@@ -29,6 +29,13 @@
             </q-card-section>
           </q-card>
 
+          <q-card class="col-12 col-sm-6 button-card q-mb-md" @click="showSettingsComponent">
+            <q-card-section>
+              <q-icon name="settings" size="3em" color="amber-9" />
+              <div class="q-mt-sm text-bold">Configurações</div>
+            </q-card-section>
+          </q-card>
+
           <q-card class="col-12 col-sm-6 button-card" @click="handleLogout">
             <q-card-section>
               <q-icon name="exit_to_app" size="3em" color="blue-6" />
@@ -45,9 +52,12 @@
 
     <!-- Usage Report Section -->
     <UsageReport v-if="showUsageReport" @back="hideUsageReportComponent" />
-    
+
     <!-- Search Component -->
     <SearchComponent v-if="showSearchComponent" />
+
+    <!-- Settings Component -->
+    <Settings v-if="showSettings" @back="hideSettingsComponent" />
   </div>
 </template>
 
@@ -59,6 +69,7 @@ import { version } from '../../package.json';
 import { useSwal } from 'src/composables/shared/dialog/dialog';
 import UsageReport from 'src/components/report/UsageReport.vue';
 import SearchComponent from 'components/SearchComponent.vue';
+import Settings from 'src/components/home/Settings.vue';
 
 // State variables
 const router = useRouter();
@@ -67,6 +78,7 @@ const appVersion = version;
 const { alertWarningAction } = useSwal();
 const showUsageReport = ref(false);
 const showSearchComponent = ref(false);
+const showSettings = ref(false);
 
 // Check for sessionId on mount
 onMounted(() => {
@@ -102,6 +114,15 @@ const hideUsageReportComponent = () => {
   showUsageReport.value = false;
 };
 
+const showSettingsComponent = () => {
+  resetStates();
+  showSettings.value = true;
+};
+
+const hideSettingsComponent = () => {
+  showSettings.value = false;
+};
+
 const handleLogout = async () => {
   const confirmed = await alertWarningAction(
     'Tem certeza de que deseja terminar a sessão e sair do aplicativo?'
@@ -120,6 +141,7 @@ const handleLogout = async () => {
 const resetStates = () => {
   showUsageReport.value = false;
   showSearchComponent.value = false;
+  showSettings.value = false;
 };
 </script>
 
