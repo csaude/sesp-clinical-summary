@@ -34,9 +34,9 @@ npm run format
 
 ### Build the app for production
 ```bash
-quasar build -m capacitor -T android
+quasar build -m capacitor -T android|ios
 npx cap sync
-npx cap open android
+npx cap open android|ios
 ```
 
 ### Customize the configuration
