@@ -58,7 +58,7 @@
               <div class="row items-center">
                 <div class="col text-caption">{{ section.value || 'Sem dados no SESP' }}</div>
                 <div class="col-auto text-caption text-right">
-                  <div class="q-mb-xs">
+                  <div class="badge-container q-mr-sm">
                     <q-badge color="blue">{{ section.source.form }}</q-badge>
                   </div>
                   <div v-if="section.source.date" class="q-mb-xs">
