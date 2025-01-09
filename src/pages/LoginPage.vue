@@ -12,6 +12,9 @@
       <div class="q-pa-none q-gutter-sm q-mb-xl">
         <q-banner inline-actions class="bg-light-green-10 text-white text-center text-weight-medium">
           SESP Sumário Clínico
+          <template v-slot:action>
+            <q-btn color="white" outline dense @click="handleReconfigure" icon="sym_o_reset_wrench" />
+          </template>
         </q-banner>
       </div>
       <!-- Logo -->
@@ -205,6 +208,17 @@ onMounted(() => {
   }
 });
 
+const handleReconfigure = async () => {
+    const confirmed = await alertWarningAction(
+      'Deseja apagar todas as configurações do aplicativo e reconfigurar?'
+    );
+  
+    if (confirmed) {
+      // Clear localStorage and sessionStorage
+      localStorage.clear();
+      userService.logout();
+    }
+  };
 
 // Show privacy warning
 const showPrivacyWarning = () => {

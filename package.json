@@ -19,6 +19,7 @@
     "@capacitor/core": "^6.2.0",
     "@capacitor/device": "^6.0.2",
     "@capawesome/capacitor-background-task": "^6.0.0",
+    "@fontsource/material-symbols-outlined": "^5.1.4",
     "@quasar/extras": "^1.16.14",
     "@vueuse/core": "^12.0.0",
     "axios": "^1.2.1",

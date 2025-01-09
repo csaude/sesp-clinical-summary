@@ -118,6 +118,11 @@
   resolved "https://registry.npmjs.org/@eslint/js/-/js-8.57.1.tgz"
   integrity sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==
 
+"@fontsource/material-symbols-outlined@^5.1.4":
+  version "5.1.4"
+  resolved "https://registry.npmjs.org/@fontsource/material-symbols-outlined/-/material-symbols-outlined-5.1.4.tgz"
+  integrity sha512-6S+pncybbCEZqLXurDlZssrfsUB6Jf+8YeB3c2R0T+6jtNGwpNG5TT+d/znsoZs0mhzVlqmbfyVzzW7DOw2mVQ==
+
 "@humanwhocodes/config-array@^0.13.0":
   version "0.13.0"
   resolved "https://registry.npmjs.org/@humanwhocodes/config-array/-/config-array-0.13.0.tgz"
