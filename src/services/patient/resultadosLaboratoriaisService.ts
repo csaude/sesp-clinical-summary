@@ -3,7 +3,7 @@ import api from '../api/apiService';
    
 export default {
 
-  async allTBLAM(patientId) {    
+  async allTBLAM(patientId: string) {    
   
     try {
       // Obter observações de conceito principal
@@ -14,21 +14,21 @@ export default {
       const tbLamData = tbLamResponse.data;
     
       // Separar por tipo de formulário
-      const rastreioTBLAMLabGeral = tbLamData.results.filter(item => item.encounter.form.uuid === "8377e4ff-d0fe-44a5-81c3-74c9040fd5f8");
-      const rastreioTBLAMELab = tbLamData.results.filter(item => item.encounter.form.uuid === "5b7cecc3-4ba3-4710-85ae-fc0c13e83e27");
-      const rastreioTBLAMFichaClinica = tbLamData.results.filter(item => item.encounter.form.uuid === "3c2d563a-5d37-4735-a125-d3943a3de30a");
+      const rastreioTBLAMLabGeral = tbLamData.results.filter((item: any) => item.encounter.form.uuid === '8377e4ff-d0fe-44a5-81c3-74c9040fd5f8');
+      const rastreioTBLAMELab = tbLamData.results.filter((item: any) => item.encounter.form.uuid === '5b7cecc3-4ba3-4710-85ae-fc0c13e83e27');
+      const rastreioTBLAMFichaClinica = tbLamData.results.filter((item: any) => item.encounter.form.uuid === '3c2d563a-5d37-4735-a125-d3943a3de30a');
   
       // Obter dados de Nível de Positividade
       concept = '303a4480-f2b3-4192-a446-725a401ebb09'
       const positivityResponse = await api.get(url);;
       const positivityData = positivityResponse.data;
   
-      const processData = (mainArray, positivityArray) => {
-        const encounterUuids = mainArray.map(item => item.encounter.uuid);
-        const positivityResults = positivityArray.filter(item => encounterUuids.includes(item.encounter.uuid));
+      const processData = (mainArray: any, positivityArray: any) => {
+        const encounterUuids = mainArray.map((item: any) => item.encounter.uuid);
+        const positivityResults = positivityArray.filter((item: any) => encounterUuids.includes(item.encounter.uuid));
   
-        return mainArray.map(element => {
-          const npValue = positivityResults.find(item => item.encounter.uuid === element.encounter.uuid);
+        return mainArray.map((element: any) => {
+          const npValue = positivityResults.find((item: any) => item.encounter.uuid === element.encounter.uuid);
           if (npValue) {
             element.value.comment = npValue.value.display;
           }
@@ -49,12 +49,12 @@ export default {
         rastreioTBLAMFichaClinica: processedFichaClinica,
       };
     } catch (error) {
-      console.error("Erro ao buscar dados de TB LAM:", error);
+      console.error('Erro ao buscar dados de TB LAM:', error);
       return [];
     }
   }, 
 
-  async fetchPatientObservations(patientId, concept, formUuids) {
+  async fetchPatientObservations(patientId: string, concept: string, formUuids: any) {
     // Garantir que formUuids seja sempre um array
     const formUuidArray = Array.isArray(formUuids) ? formUuids : [formUuids];
 
@@ -62,7 +62,7 @@ export default {
 
     try {
       const response = await api.get(url);
-      return response.data?.results?.filter((item) => {
+      return response.data?.results?.filter((item: any) => {
         if (item.encounter && item.encounter.form) {
           const uuid = item.encounter.form.uuid?.trim(); // Remover espaços em branco
           return formUuidArray.includes(uuid);
@@ -75,7 +75,7 @@ export default {
     }
   },
 
-  async allCD4AbsFSR(patientId) {
+  async allCD4AbsFSR(patientId: string) {
     return this.fetchPatientObservations(
       patientId,
       'e1d48fba-1d5f-11e0-b929-000c29ad1d07',
@@ -83,7 +83,7 @@ export default {
     );
   },
 
-  async allCD4AbsFLG(patientId) {
+  async allCD4AbsFLG(patientId: string) {
     return this.fetchPatientObservations(
       patientId,
       'e1d48fba-1d5f-11e0-b929-000c29ad1d07',
@@ -91,7 +91,7 @@ export default {
     );
   },
 
-  async allGenexpertFC(patientId) {
+  async allGenexpertFC(patientId: string) {
     return this.fetchPatientObservations(
       patientId,
       'b08eb89b-c609-4d15-ab81-53ad7c745332',
@@ -99,7 +99,7 @@ export default {
     );
   },
 
-  async allGenexpert(patientId) {
+  async allGenexpert(patientId: string) {
     return this.fetchPatientObservations(
       patientId,
       'b08eb89b-c609-4d15-ab81-53ad7c745332',
@@ -107,7 +107,7 @@ export default {
     );
   },
 
-  async allBaciloscopia(patientId) {
+  async allBaciloscopia(patientId: string) {
     return this.fetchPatientObservations(
       patientId,
       'b08eb89b-c609-4d15-ab81-53ad7c745332',
@@ -115,7 +115,7 @@ export default {
     );
   },
 
-  async allBaciloscopiaFC(patientId) {
+  async allBaciloscopiaFC(patientId: string) {
     return this.fetchPatientObservations(
       patientId,
       'b08eb89b-c609-4d15-ab81-53ad7c745332',
@@ -123,7 +123,7 @@ export default {
     );
   },
 
-  async allCD4CoverageFLG(patientId) {
+  async allCD4CoverageFLG(patientId: string) {
     return this.fetchPatientObservations(
       patientId,
       'e1d48fba-1d5f-11e0-b929-000c29ad1d07',
@@ -131,7 +131,7 @@ export default {
     );
   },
 
-  async allCD4CoverageFSR(patientId) {
+  async allCD4CoverageFSR(patientId: string) {
     return this.fetchPatientObservations(
       patientId,
       'e1d48fba-1d5f-11e0-b929-000c29ad1d07',
@@ -139,7 +139,7 @@ export default {
     );
   },
 
-  async allHGB(patientId) {
+  async allHGB(patientId: string) {
     return this.fetchPatientObservations(
       patientId,
       'e1cdbe88-1d5f-11e0-b929-000c29ad1d07',
@@ -147,7 +147,7 @@ export default {
     );
   },
 
-  async allAST(patientId) {
+  async allAST(patientId: string) {
     return this.fetchPatientObservations(
       patientId,
       'e1d43a74-1d5f-11e0-b929-000c29ad1d07',
@@ -155,7 +155,7 @@ export default {
     );
   },
 
-  async allALT(patientId) {
+  async allALT(patientId: string) {
     return this.fetchPatientObservations(
       patientId,
       'e1d43a74-1d5f-11e0-b929-000c29ad1d07',
@@ -163,7 +163,7 @@ export default {
     );
   },
 
-  async allAMI(patientId) {
+  async allAMI(patientId: string) {
     return this.fetchPatientObservations(
       patientId,
       'e1d43a74-1d5f-11e0-b929-000c29ad1d07',
@@ -171,7 +171,7 @@ export default {
     );
   },
 
-  async allGLC(patientId) {
+  async allGLC(patientId: string) {
     return this.fetchPatientObservations(
       patientId,
       'e1d43a74-1d5f-11e0-b929-000c29ad1d07',
@@ -179,7 +179,7 @@ export default {
     );
   },
 
-  async allPCR(patientId) {
+  async allPCR(patientId: string) {
     return this.fetchPatientObservations(
       patientId,
       'e1d43a74-1d5f-11e0-b929-000c29ad1d07',
@@ -188,11 +188,11 @@ export default {
   },
 
   //QUALITATIVE CALLS
-  async allVLCopiasV2(patientId){
+  async allVLCopiasV2(patientId: string){
       const url = `/obs?patient=${patientId}&concept=e1da2704-1d5f-11e0-b929-000c29ad1d07&v=custom:(obsDatetime,value,comment,encounter:(uuid,location.name,form:(uuid,display)))&limit=12`
       
       const response = await api.get(url);
-      return response.data.results.filter((item) => {
+      return response.data.results.filter((item: any) => {
           if (item.encounter && item.encounter.form) {
               const uuid = item.encounter.form.uuid?.trim(); // Remover espaços em branco
               return ['8377e4ff-d0fe-44a5-81c3-74c9040fd5f8'].includes(uuid);
@@ -201,11 +201,11 @@ export default {
       }) || [];
   },
 
-  async allVLCopiasV2FSR(patientId){
+  async allVLCopiasV2FSR(patientId: string){
       const url = `/obs?patient=${patientId}&concept=e1da2704-1d5f-11e0-b929-000c29ad1d07&v=custom:(obsDatetime,value,comment,encounter:(uuid,location.name,form:(uuid,display)))&limit=12`
       
       const response = await api.get(url);
-      return response.data.results.filter((item) => {
+      return response.data.results.filter((item: any) => {
           if (item.encounter && item.encounter.form) {
               const uuid = item.encounter.form.uuid?.trim(); // Remover espaços em branco
               return ['5b7cecc3-4ba3-4710-85ae-fc0c13e83e27'].includes(uuid);
@@ -214,11 +214,11 @@ export default {
       }) || [];
   },
 
-  async allVLCopiasV2FC(patientId){
+  async allVLCopiasV2FC(patientId: string){
       const url = `/obs?patient=${patientId}&concept=e1da2704-1d5f-11e0-b929-000c29ad1d07&v=custom:(obsDatetime,value,comment,encounter:(uuid,location.name,form:(uuid,display)))&limit=12`
       
       const response = await api.get(url);
-      return response.data.results.filter((item) => {
+      return response.data.results.filter((item: any) => {
           if (item.encounter && item.encounter.form) {
               const uuid = item.encounter.form.uuid?.trim(); // Remover espaços em branco
               return ['3c2d563a-5d37-4735-a125-d3943a3de30a'].includes(uuid);
@@ -230,11 +230,11 @@ export default {
 
   
   //QUANTITATIVE CALLS
-  async allVLCopias(patientId){
+  async allVLCopias(patientId: string){
       const url = `/obs?patient=${patientId}&concept=e1da2704-1d5f-11e0-b929-000c29ad1d07&v=custom:(obsDatetime,value,comment,encounter:(uuid,location.name,form:(uuid,display)))&limit=12`
       
       const response = await api.get(url);
-      return response.data.results.filter((item) => {
+      return response.data.results.filter((item: any) => {
           if (item.encounter && item.encounter.form) {
               const uuid = item.encounter.form.uuid?.trim(); // Remover espaços em branco
               return ['8377e4ff-d0fe-44a5-81c3-74c9040fd5f8'].includes(uuid);
@@ -243,11 +243,11 @@ export default {
       }) || [];
   },
 
-  async allVLCopiasFSR(patientId){
+  async allVLCopiasFSR(patientId: string){
       const url = `/obs?patient=${patientId}&concept=e1da2704-1d5f-11e0-b929-000c29ad1d07&v=custom:(obsDatetime,value,comment,encounter:(uuid,location.name,form:(uuid,display)))&limit=12`
       
       const response = await api.get(url);
-      return response.data.results.filter((item) => {
+      return response.data.results.filter((item: any) => {
           if (item.encounter && item.encounter.form) {
               const uuid = item.encounter.form.uuid?.trim(); // Remover espaços em branco
               return ['5b7cecc3-4ba3-4710-85ae-fc0c13e83e27'].includes(uuid);
@@ -256,11 +256,11 @@ export default {
       }) || [];
   },
 
-  async allVLCopiasFC(patientId){
+  async allVLCopiasFC(patientId: string){
       const url = `/obs?patient=${patientId}&concept=e1da2704-1d5f-11e0-b929-000c29ad1d07&v=custom:(obsDatetime,value,comment,encounter:(uuid,location.name,form:(uuid,display)))&limit=12`
       
       const response = await api.get(url);
-      return response.data.results.filter((item) => {
+      return response.data.results.filter((item: any) => {
           if (item.encounter && item.encounter.form) {
               const uuid = item.encounter.form.uuid?.trim(); // Remover espaços em branco
               return ['3c2d563a-5d37-4735-a125-d3943a3de30a'].includes(uuid);
@@ -281,17 +281,17 @@ export default {
       const allVLsV2 = allVLCopiasV2.concat(allVLCopiasV2FSR.concat(allVLCopiasV2FC))
 
       // Harmonizar nomes
-      allVLsV2.forEach((element,i) =>
+      allVLsV2.forEach((element: any) =>
         {
-          if (typeof element == "object"){
-           if (element?.encounter?.form?.uuid == "0afbb0c7-d58d-4737-8fb1-5f32761b97df"){
-            element.value.display = "<"
+          if (typeof element == 'object'){
+           if (element?.encounter?.form?.uuid == '0afbb0c7-d58d-4737-8fb1-5f32761b97df'){
+            element.value.display = '<'
           } else
-          if (element?.encounter?.form?.uuid == "e24d576a-1d5f-11e0-b929-000c29ad1d07"){
-            element.encounter.form.display = "NIVEL DE DETECCAO BAIXO"
+          if (element?.encounter?.form?.uuid == 'e24d576a-1d5f-11e0-b929-000c29ad1d07'){
+            element.encounter.form.display = 'NIVEL DE DETECCAO BAIXO'
           } else
-          if (element?.encounter?.form?.uuid == "65292e1c-87ec-4159-b051-25a9ef84d541"){
-            element.encounter.form.display = "INDETECTAVEL"
+          if (element?.encounter?.form?.uuid == '65292e1c-87ec-4159-b051-25a9ef84d541'){
+            element.encounter.form.display = 'INDETECTAVEL'
           }
         }
       });
@@ -302,12 +302,12 @@ export default {
 
       const allVLsV3 = allVLCopias.concat(allVLCopiasFSR.concat(allVLCopiasFC))
 
-      allVLsV3.forEach(element => {
-        allVLsV2.forEach((elementb,i) => {
+      allVLsV3.forEach((element: any) => {
+        allVLsV2.forEach((elementb: any,i: any) => {
           if (element.obsDatetime == elementb.obsDatetime && element.encounter.form.uuid == elementb.encounter.form.uuid){
             element.value = {
               value:element.value,
-              display:element.value +" | "+elementb.value.display
+              display:element.value +' | '+elementb.value.display
             }
             allVLsV2.splice(i, 1);
 
@@ -317,9 +317,9 @@ export default {
 
       let allVLs = allVLsV3.concat(allVLsV2)
 
-      allVLs = allVLs.sort(function (a, b) {
-        var nameA = a.obsDatetime.toString().toUpperCase(); // ignore upper and lowercase
-        var nameB = b.obsDatetime.toString().toUpperCase(); // ignore upper and lowercase
+      allVLs = allVLs.sort(function (a: any, b: any) {
+        const nameA = a.obsDatetime.toString().toUpperCase(); // ignore upper and lowercase
+        const nameB = b.obsDatetime.toString().toUpperCase(); // ignore upper and lowercase
         if (nameA < nameB) {
           return 1;
         }

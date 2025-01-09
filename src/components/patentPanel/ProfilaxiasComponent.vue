@@ -19,21 +19,31 @@
       <div v-for="(section, index) in profilaxiaData" :key="index" class="q-mb-md">
         <q-card flat bordered>
           <!-- Section Header -->
-          <q-card-section class="q-py-sm bg-light-green-1">
+          <q-card-section 
+            class="q-py-sm bg-light-green-1 cursor-pointer"
+            @click="toggleSection(index)"
+          >
             <div class="row items-center">
               <div class="col text-weight-bold text-h6">Profilaxia({{ section.title }})</div>
               <div class="col-auto text-caption text-right text-grey">Fonte</div>
+              <!-- Expand/Collapse Icon -->
+              <q-icon 
+                :name="collapsedSections[index] ? 'keyboard_arrow_down' : 'keyboard_arrow_up'"
+                size="sm" 
+                color="grey"
+              />
             </div>
           </q-card-section>
           <q-separator />
 
           <!-- Section Content -->
-          <q-card-section>
+          <q-card-section v-show="!collapsedSections[index]">
             <template v-if="section.isList">
               <div v-for="(item, idx) in section.items" :key="idx" class="q-mb-sm">
-                <div class="row items-center">
+                <div class="row items-center q-mb-sm">
                   <!-- Coluna de Profilaxia e Data de Início de TPT -->
-                  <div class="col-7 text-caption">{{ item.source.profilaxia }}({{ item.value || 'Sem dados no SESP' }})</div>
+                  <div class="col text-caption" v-if="item.value">{{ item.source.profilaxia }} ({{ item.value }})</div>
+                  <div class="col text-caption" v-else>{{ item.source.profilaxia }}</div>
 
                   <!-- Coluna de Fonte -->
                   <div class="col-5 text-caption text-right">
@@ -42,13 +52,14 @@
                     </div>
                   </div>
                 </div>
+                <q-separator v-if="idx < section.items.length - 1" class="q-mb-md" />
               </div>
             </template>
             <template v-else>
               <div class="row items-center">
                 <!-- Coluna de Profilaxia e Data de Início de TPT -->
-                <div class="col-7 text-caption">{{ item.source.profilaxia }}({{ item.value || '_' }})</div>
-
+                <div class="col text-caption" v-if="item.value">{{ item.source.profilaxia }} ({{ item.value }})</div>
+                <div class="col text-caption" v-else>{{ item.source.profilaxia }}</div>
 
                 <!-- Coluna de Fonte -->
                 <div class="col-5 text-caption text-right">
@@ -122,6 +133,7 @@
   const profilaxiaData = ref([]);
   const resultadosData = ref([]);
   const loading = ref(true); // Loading state
+  const collapsedSections = ref([]); // Track collapsed states for each section
 
   // Helper function to format date to dd-MM-yyyy
   function formatDate(dateString) {
@@ -132,6 +144,11 @@
       month: '2-digit',
       year: 'numeric',
     });
+  }
+
+  // Toggle collapse state for a section
+  function toggleSection(index) {
+    collapsedSections.value[index] = !collapsedSections.value[index];
   }
 
   onMounted(async () => {
@@ -280,5 +297,14 @@
 }
 .q-th {
   text-align: center;
+}
+.q-card {
+  border: 1px solid #e0e0e0;
+}
+.text-h6 {
+  font-size: 1.1em;
+}
+.text-caption {
+  font-size: 0.9em;
 }
 </style>

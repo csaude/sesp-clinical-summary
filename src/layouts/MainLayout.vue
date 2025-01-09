@@ -71,9 +71,8 @@ const { alertWarningAction } = useSwal();
 // Auto logout logic
 const autoLogoutTime = ref(15 * 60 * 1000); // Default: 15 minutes in milliseconds
 const inactivityTimer = ref(null);
-let warningTimer = null;
 
-// Links list for navigation
+// Navigation links
 const linksList = [
   { title: 'Inicio', caption: 'Ecrã Principal', icon: 'home', link: '/home' },
   { title: 'Sumário Clinico', caption: 'Aceder ao Sumário Clinico', icon: 'description', link: '/summary' },
@@ -82,7 +81,7 @@ const linksList = [
   { title: 'Sair', caption: 'Terminar Sessão', icon: 'logout', link: 'logout' }
 ];
 
-// Load username and settings from session storage and local storage
+// Load settings and username on component mount
 onMounted(() => {
   // Load username
   const userInfo = sessionStorage.getItem('userInfo');
@@ -94,77 +93,90 @@ onMounted(() => {
   // Load settings
   const settings = JSON.parse(localStorage.getItem('settings')) || {};
   if (settings.autoLogout) {
-    autoLogoutTime.value = settings.autoLogout * 60 * 1000; // Convert minutes to milliseconds
+    autoLogoutTime.value = 5 * 60 * 1000; // Convert minutes to milliseconds
   }
 
+  // Start inactivity tracking
   startInactivityTimer();
-
-  // Add event listeners to reset the timer on user activity
-  window.addEventListener('mousemove', resetInactivityTimer);
-  window.addEventListener('keydown', resetInactivityTimer);
+  setupActivityListeners();
 });
 
-// Cleanup event listeners on component unmount
-onBeforeUnmount(() => {
-  clearTimers();
-  window.removeEventListener('mousemove', resetInactivityTimer);
-  window.removeEventListener('keydown', resetInactivityTimer);
+// Cleanup on component unmount
+onBeforeUnmount(() => {           
+  clearInactivityTimers();
+  removeActivityListeners();
 });
 
-// Start inactivity timer
+// Setup global activity listeners
+function setupActivityListeners() {
+  const activityEvents = ['mousemove', 'keydown', 'click', 'touchstart'];
+
+  activityEvents.forEach((event) => {
+    window.addEventListener(event, resetInactivityTimer);
+  });
+
+  router.afterEach(() => {
+    resetInactivityTimer(); // Reset timer on page navigation
+  });
+}
+
+// Remove global activity listeners
+function removeActivityListeners() {
+  const activityEvents = ['mousemove', 'keydown', 'click', 'touchstart'];
+
+  activityEvents.forEach((event) => {
+    window.removeEventListener(event, resetInactivityTimer);
+  });
+}
+
+// Start the inactivity timer
 function startInactivityTimer() {
-  if (inactivityTimer?.value !== null) clearTimeout(inactivityTimer.value);
+  clearInactivityTimers();
 
   inactivityTimer.value = setTimeout(() => {
     showLogoutWarning();
-  }, autoLogoutTime.value - 60000); // Trigger warning 1 minute before logout
+  }, autoLogoutTime.value - 60000); // Show warning 1 minute before logout
 }
-
 
 // Reset inactivity timer on user activity
 function resetInactivityTimer() {
   startInactivityTimer();
 }
 
-// Show logout warning with a countdown
-async function showLogoutWarning() {
-  let warningCountdown = 60; // Countdown in seconds
+// Clear inactivity timers
+function clearInactivityTimers() {
+  if (inactivityTimer.value) clearTimeout(inactivityTimer.value);
+}
 
-  const countdown = ref(warningCountdown);
+// Show logout warning
+async function showLogoutWarning() {
+  let countdown = 60; // Countdown in seconds
 
   const intervalId = setInterval(() => {
-    countdown.value -= 1;
-    if (countdown.value <= 0) {
+    countdown -= 1;
+    if (countdown <= 0) {
       clearInterval(intervalId);
-      handleLogout(); // Logout automatically when countdown reaches 0
+      handleLogout(); // Auto logout when countdown reaches 0
     }
   }, 1000);
 
-  const confirmed = await new Promise((resolve) => {
-    const dialogId = setTimeout(() => {
-      clearInterval(intervalId);
-      resolve(false); // Auto-resolve when timeout is over
-    }, warningCountdown * 1000);
+  const confirmed = await alertWarningAction(
+    `Inatividade detectada. Sessão será encerrada em ${countdown} segundos. Deseja continuar logado?`
+  );
 
-    alertWarningAction(
-      `Inatividade detectada. Sessão será encerrada em ${countdown.value} segundos. Deseja continuar logado?`
-    ).then((result) => {
-      clearTimeout(dialogId);
-      clearInterval(intervalId);
-      resolve(result);
-    });
-  });
+  clearInterval(intervalId);
 
   if (confirmed) {
     startInactivityTimer(); // Reset inactivity timer if user confirms
+  } else {
+    handleLogout(); // Logout the user
   }
 }
 
-
-
-// Logout the user
+// Handle user logout
 async function handleLogout() {
-  clearTimers();
+  clearInactivityTimers();
+
   try {
     await userService.logout();
     router.push('/login'); // Redirect to login page
@@ -173,23 +185,15 @@ async function handleLogout() {
   }
 }
 
-// Clear all timers
-function clearTimers() {
-  clearTimeout(inactivityTimer);
-  clearTimeout(warningTimer);
-}
-
 // Toggle drawer visibility
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
 }
 
-// Handle navigation and logout
+// Handle navigation
 async function handleNavigation(link) {
   if (link === 'logout') {
-    const confirmed = await alertWarningAction(
-      'Tem certeza de que deseja terminar a sessão e sair do aplicativo?'
-    );
+    const confirmed = await alertWarningAction('Tem certeza de que deseja terminar a sessão e sair do aplicativo?');
     if (confirmed) {
       handleLogout();
     }
@@ -199,7 +203,6 @@ async function handleNavigation(link) {
   }
 }
 </script>
-
 
 <style scoped>
 /* Drawer styling */

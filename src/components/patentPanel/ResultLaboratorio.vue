@@ -13,49 +13,58 @@
       <q-spinner-dots color="blue" size="40px" />
     </div>
 
-    <!-- Cards for Viral Load Data -->
-    <div v-else>
+    <!-- Cards for Resultados Data -->
+    <div v-if="!loading">
       <div v-for="(section, index) in resultadosData" :key="index" class="q-mb-md">
         <q-card flat bordered>
           <!-- Section Header -->
-          <q-card-section class="q-py-sm bg-light-green-1">
+          <q-card-section 
+            class="q-py-sm bg-light-green-1 cursor-pointer"
+            @click="toggleSection(index)"
+          >
             <div class="row items-center">
               <div class="col text-weight-bold text-h6">{{ section.title }}</div>
               <div class="col-auto text-caption text-right text-grey">Fonte</div>
+              <!-- Expand/Collapse Icon -->
+              <q-icon 
+                :name="collapsedSections[index] ? 'keyboard_arrow_down' : 'keyboard_arrow_up'"
+                size="sm" 
+                color="grey"
+              />
             </div>
           </q-card-section>
+
           <q-separator />
 
           <!-- Section Content -->
-          <q-card-section>
+          <q-card-section v-show="!collapsedSections[index]">
             <template v-if="section.isList">
-              <div v-for="(item, idx) in section.items" :key="idx" class="q-mb-sm">
-                <div class="row items-center">
+              <div v-for="(item, idx) in section.items" :key="idx">
+                <div class="row items-center q-mb-sm">
                   <div class="col text-caption">{{ item.value }}</div>
                   <div class="col-auto text-caption text-right">
-                    <div class="badge-container q-mr-sm">
+                    <div class="q-mb-xs">
                       <q-badge color="blue">{{ item.source.form }}</q-badge>
                     </div>
-                    <div v-if="item.source.date" class="badge-container">
+                    <div v-if="item.source.date" class="q-mb-xs">
                       <q-badge color="green">{{ item.source.date }}</q-badge>
                     </div>
                   </div>
                 </div>
-
+                <q-separator v-if="idx < section.items.length - 1" class="q-mb-md" />
               </div>
             </template>
             <template v-else>
               <div class="row items-center">
                 <div class="col text-caption">{{ section.value || 'Sem dados no SESP' }}</div>
                 <div class="col-auto text-caption text-right">
-                  <div class="badge-container">
+                  <div class="badge-container q-mr-sm">
                     <q-badge color="blue">{{ section.source.form }}</q-badge>
                   </div>
-                  <div v-if="section.source.date" class="badge-container">
+                  <div v-if="section.source.date" class="q-mb-xs">
                     <q-badge color="green">{{ section.source.date }}</q-badge>
                   </div>
                 </div>
-
               </div>
             </template>
           </q-card-section>
@@ -72,10 +81,13 @@
 
   // Inject patient data
   const patient = inject('selectedPatient');
+  const loading = ref(true); // Loading state
 
   // Reactive data for Resultados Laboratoriais
   const resultadosData = ref([]);
-  const loading = ref(true); // Loading state
+
+  // Track collapsed states for each section
+  const collapsedSections = ref([]);
 
   // Helper function to format date to dd-MM-yyyy
   function formatDate(dateString) {
@@ -86,6 +98,11 @@
       month: '2-digit',
       year: 'numeric',
     });
+  }
+
+  // Toggle collapse state for a section
+  function toggleSection(index) {
+    collapsedSections.value[index] = !collapsedSections.value[index];
   }
 
   onMounted(async () => {
@@ -116,7 +133,7 @@
 
     const allVLs = await resultadosLaboratoriaisService.allVLs(patient.value.uuid);
 
-    console.log('AAAAAAAAAAAAAAAAAAAAAA: ', JSON.stringify(allVLs, null, 2))
+    console.log('allVLs=======>: ', JSON.stringify(allVLs, null, 2))
 
     // Populate resultadosData
     resultadosData.value = [
@@ -127,7 +144,7 @@
           ? allVLs.map((item) => ({
               value: item.value.value.display ? item.value.value.display : item.value.value,
               source: {
-                form: item.value.encounter?.form?.display || 'Sem dados no SESP',
+                form: item.encounter?.form?.display || 'Sem dados no SESP',
                 date: formatDate(item.value.obsDatetime) || '',
               },
             }))
@@ -421,5 +438,14 @@
 }
 .q-th {
   text-align: center;
+}
+.q-card {
+  border: 1px solid #e0e0e0;
+}
+.text-h6 {
+  font-size: 1.1em;
+}
+.text-caption {
+  font-size: 0.9em;
 }
 </style>

@@ -15,7 +15,7 @@ const routes: RouteRecordRaw[] = [
     path: '/patientPanel',
     name: 'patientPanel',
     component: () => import('pages/PatientPanel.vue'),
-    meta: { requiresAuth: false }, // No authentication needed
+    meta: { requiresAuth: true }, // No authentication needed
   },
   {
     path: '/home',
