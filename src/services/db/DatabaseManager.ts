@@ -1,16 +1,17 @@
-import { CapacitorSQLite, SQLiteDBConnection } from '@capacitor-community/sqlite';
-import { Preferences } from '@capacitor/preferences';
-import { createConnection, Connection } from 'typeorm';
-import { Patient } from 'src/entities/patient/Patient'; // Example entity
+import 'reflect-metadata';
+import { DataSource, DataSourceOptions } from 'typeorm';
+import { Patient } from '../../entities/patient/Patient'; // Import your entities here
+import { CapacitorSQLite } from '@capacitor-community/sqlite';
 
 class DatabaseManager {
   private static instance: DatabaseManager;
-  private db: SQLiteDBConnection | null = null;
-  private connection: Connection | null = null;
+  private dataSource: DataSource | null = null;
 
   private constructor() {}
 
-  // Singleton pattern to get the instance
+  /**
+   * Singleton: Get the single instance of DatabaseManager
+   */
   public static getInstance(): DatabaseManager {
     if (!DatabaseManager.instance) {
       DatabaseManager.instance = new DatabaseManager();
@@ -18,135 +19,80 @@ class DatabaseManager {
     return DatabaseManager.instance;
   }
 
-  // Initialize the database (open connection, create tables, and initialize TypeORM)
+  /**
+   * Initialize the database connection, create tables, and handle migrations.
+   */
   public async initDatabase(): Promise<void> {
+    if (this.dataSource && this.dataSource.isInitialized) {
+      console.log('Database is already initialized.');
+      return;
+    }
+
+    const options: DataSourceOptions = {
+      type: 'capacitor', // Use Capacitor driver
+      database: 'app-db',
+      driver: CapacitorSQLite, // Use Capacitor SQLite driver
+      entities: [Patient], // Add all your entities
+      synchronize: true, // Automatically create tables (use cautiously in production)
+      migrations: [], // Add migrations here (if needed)
+      logging: true, // Enable logging for debugging
+    };
+
     try {
-      await this.ensureEncryptionKey();
-      await this.getConnection();
-      await this.createTables();
-      await this.initTypeORM();
-      console.log('Database initialized successfully with TypeORM');
+      this.dataSource = new DataSource(options);
+      await this.dataSource.initialize();
+      console.log('Database initialized successfully.');
     } catch (error) {
-      console.error('Error initializing the database:', error);
+      console.error('Error initializing database:', error);
+      throw error;
     }
   }
 
-  // Ensure the encryption key exists and generate it if not
-  private async ensureEncryptionKey(): Promise<void> {
-    let { value: encryptionKey } = await Preferences.get({ key: 'db_encryption_key' });
+  /**
+   * Run migrations if defined
+   */
+  public async runMigrations(): Promise<void> {
+    if (!this.dataSource || !this.dataSource.isInitialized) {
+      throw new Error('Database is not initialized. Call initDatabase() first.');
+    }
 
-    if (!encryptionKey) {
-      encryptionKey = this.generateEncryptionKey();
-      await Preferences.set({ key: 'db_encryption_key', value: encryptionKey });
-      console.log('New encryption key generated and saved');
-    } else {
-      console.log('Encryption key retrieved from secure storage');
+    try {
+      const migrations = await this.dataSource.runMigrations();
+      if (migrations.length > 0) {
+        console.log('Migrations applied successfully:', migrations);
+      } else {
+        console.log('No migrations to apply.');
+      }
+    } catch (error) {
+      console.error('Error running migrations:', error);
+      throw error;
     }
   }
 
-  // Generate a random 256-bit encryption key
-  private generateEncryptionKey(): string {
-    const array = new Uint8Array(32);
-    crypto.getRandomValues(array);
-    return Array.from(array, (byte) => byte.toString(16).padStart(2, '0')).join('');
+  /**
+   * Get the initialized DataSource
+   */
+  public getDataSource(): DataSource {
+    if (!this.dataSource || !this.dataSource.isInitialized) {
+      throw new Error('Database is not initialized. Call initDatabase() first.');
+    }
+    return this.dataSource;
   }
 
-  // Get or create a connection to the database
-  public async getConnection(): Promise<SQLiteDBConnection> {
-    if (!this.db) {
+  /**
+   * Close the database connection
+   */
+  public async closeDatabase(): Promise<void> {
+    if (this.dataSource && this.dataSource.isInitialized) {
       try {
-        const { value: encryptionKey } = await Preferences.get({ key: 'db_encryption_key' });
-
-        if (!encryptionKey) {
-          throw new Error('Encryption key is missing');
-        }
-
-        await CapacitorSQLite.createConnection({
-          database: 'app-db',
-          encrypted: true,
-          mode: 'secret',
-          version: 1,
-        });
-
-        this.db = new SQLiteDBConnection('app-db', false, CapacitorSQLite);
-        await this.db.open();
-        console.log('Database connection opened');
+        await this.dataSource.destroy();
+        console.log('Database connection closed.');
       } catch (error) {
-        console.error('Error initializing the database connection:', error);
+        console.error('Error closing database connection:', error);
         throw error;
       }
-    }
-
-    if (this.db) {
-      return this.db;
     } else {
-      throw new Error('Failed to establish a database connection.');
-    }
-  }
-
-  // Initialize TypeORM with the database connection
-  private async initTypeORM(): Promise<void> {
-    if (!this.connection) {
-      this.connection = await createConnection({
-        type: 'capacitor',
-        database: 'app-db',
-        synchronize: true,
-        logging: false,
-        entities: [Patient], // Add your entities here
-      });
-
-      console.log('TypeORM connection established');
-    }
-  }
-
-  // Create the necessary tables
-  private async createTables(): Promise<void> {
-    if (!this.db) return;
-
-    const createPatientsTableQuery = `
-      CREATE TABLE IF NOT EXISTS patient (
-        identifiers TEXT,
-        tags TEXT,
-        deletionStatus TEXT,
-        personId INTEGER NOT NULL,
-        personUuid TEXT,
-        gender TEXT,
-        birthdate INTEGER,
-        birthdateEstimated INTEGER NOT NULL,
-        names TEXT,
-        attributes TEXT,
-        addresses TEXT,
-        voided INTEGER NOT NULL,
-        personTags TEXT,
-        uri TEXT,
-        uuid TEXT NOT NULL
-      );
-    `;
-
-    try {
-      await this.db.execute(createPatientsTableQuery);
-      console.log('Patients table created successfully');
-    } catch (error) {
-      console.error('Error creating patients table:', error);
-    }
-  }
-
-  // Close the database connection
-  public async closeConnection(): Promise<void> {
-    if (this.db) {
-      try {
-        await this.db.close();
-        console.log('Database connection closed');
-        this.db = null;
-      } catch (error) {
-        console.error('Error closing the database connection:', error);
-      }
-    }
-
-    if (this.connection) {
-      await this.connection.close();
-      console.log('TypeORM connection closed');
-      this.connection = null;
+      console.warn('No initialized database connection to close.');
     }
   }
 }

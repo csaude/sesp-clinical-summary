@@ -45,26 +45,6 @@ export default {
     }
   },
 
-  /**
-   * Search for patients in the local database.
-   */
-  async searchPatientsOffline(search: string): Promise<Patient[]> {
-    try {
-      const db = DatabaseManager.getInstance().getConnection();
-      const patientRepo = db.getRepository(Patient);
-
-      // Search patients by name or UUID in the local database
-      const patients = await patientRepo
-        .createQueryBuilder('patient')
-        .where('patient.name LIKE :search OR patient.uuid LIKE :search', { search: `%${search}%` })
-        .getMany();
-
-      return patients;
-    } catch (error) {
-      console.error('Error while searching patients offline:', error);
-      throw error;
-    }
-  },
 
   /**
    * Get patient details from the API.

@@ -1,49 +1,52 @@
-import { getRepository } from 'typeorm';
-import { Patient } from 'src/entities/patient/Patient;
+import DatabaseManager from 'src/services/db/DatabaseManager';
+import { Patient } from 'src/entities/patient/Patient';
+import { Repository } from 'typeorm';
 
 class PatientDAO {
+  private patientRepo: Repository<Patient>;
+
+  constructor() {
+    const dataSource = DatabaseManager.getInstance().getDataSource();
+    this.patientRepo = dataSource.getRepository(Patient); // Initialize the repository in the constructor
+  }
+
   // Create a new patient record
   async create(patientData: Partial<Patient>): Promise<Patient> {
-    const patientRepo = getRepository(Patient);
-    const patient = patientRepo.create(patientData);
-    return await patientRepo.save(patient);
+    const patient = this.patientRepo.create(patientData);
+    return await this.patientRepo.save(patient);
   }
 
   // Get all patients
   async getAll(): Promise<Patient[]> {
-    const patientRepo = getRepository(Patient);
-    return await patientRepo.find();
+    return await this.patientRepo.find();
   }
 
   // Get a patient by ID
-  async getById(id: number): Promise<Patient | undefined> {
-    const patientRepo = getRepository(Patient);
-    return await patientRepo.findOne(id);
+  async getById(id: number): Promise<Patient | null> {
+    return await this.patientRepo.findOneBy({ id });
   }
 
   // Update a patient record
   async update(id: number, updateData: Partial<Patient>): Promise<Patient> {
-    const patientRepo = getRepository(Patient);
-    const patient = await patientRepo.findOne(id);
+    const patient = await this.patientRepo.findOneBy({ id });
 
     if (!patient) {
       throw new Error('Patient not found');
     }
 
     Object.assign(patient, updateData);
-    return await patientRepo.save(patient);
+    return await this.patientRepo.save(patient);
   }
 
   // Delete a patient record
   async delete(id: number): Promise<void> {
-    const patientRepo = getRepository(Patient);
-    const patient = await patientRepo.findOne(id);
+    const patient = await this.patientRepo.findOneBy({ id });
 
     if (!patient) {
       throw new Error('Patient not found');
     }
 
-    await patientRepo.remove(patient);
+    await this.patientRepo.remove(patient);
   }
 }
 
