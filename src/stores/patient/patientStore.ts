@@ -19,6 +19,16 @@ export const usePatientStore = defineStore('patient', {
       }
     },
 
+    async search(search: string) {
+      try {
+        const results = await PatientService.search(search);
+        this.patients = results;
+      } catch (error) {
+        console.error('Error searching patients on DB:', error);
+        throw error;
+      }
+    },
+
     // Get patient details and cache the result
     async getPatientDetails(patientId: string) {
       try {

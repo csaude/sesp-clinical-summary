@@ -87,6 +87,25 @@ class PatientService {
       throw error;
     }
   }
+
+  /**
+   * Search for patients based on a given criteria
+   * @param searchCriteria The search term to match against patient data
+   * @returns Promise<Patient[]> A list of patients matching the search criteria
+   */
+  async search(searchCriteria: string): Promise<Patient[]> {
+    if (!searchCriteria || searchCriteria.trim().length < 3) {
+      throw new Error('Por favor, preencha o campo de pesquisa com pelo menos 3 caracteres!');
+    }
+
+    try {
+      const results = await PatientDAO.search(searchCriteria);
+      return results;
+    } catch (error) {
+      console.error('Error searching patients in service:', error);
+      throw new Error('Failed to search patients.');
+    }
+  }
 }
 
 export default new PatientService();

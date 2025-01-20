@@ -3,50 +3,56 @@ import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 @Entity('patient') // Map this class to the "patient" table
 export class Patient {
   @PrimaryGeneratedColumn()
-  id!: number; // Primary key (auto-generated)
+  id!: number;
 
   @Column('text', { nullable: true })
-  identifiers!: string | null; // Patient identifiers
+  identifiers!: string | null;
 
   @Column('text', { nullable: true })
-  tags!: string | null; // Patient tags
+  tags!: string | null;
 
   @Column('text', { nullable: true })
-  deletionStatus!: string | null; // Deletion status
+  deletionStatus!: string | null;
 
   @Column('integer')
-  personId!: number; // Person ID (required)
+  personId!: number;
 
   @Column('text', { nullable: true })
-  personUuid!: string | null; // Person UUID
+  personUuid!: string | null;
 
   @Column('text', { nullable: true })
-  gender!: string | null; // Gender
+  gender!: string | null;
 
   @Column('integer', { nullable: true })
-  birthdate!: number | null; // Birthdate as a timestamp
+  birthdate!: number | null;
 
   @Column('integer')
-  birthdateEstimated!: number; // Birthdate estimated (required)
+  birthdateEstimated!: number;
 
   @Column('text', { nullable: true })
-  names!: string | null; // Names in JSON or plain text format
+  names!: string | null;
 
   @Column('text', { nullable: true })
-  attributes!: string | null; // Attributes in JSON format
+  attributes!: string | null;
 
   @Column('text', { nullable: true })
-  addresses!: string | null; // Addresses in JSON format
+  addresses!: string | null;
 
   @Column('integer')
-  voided!: number; // Voided flag (required)
+  voided!: number;
 
   @Column('text', { nullable: true })
-  personTags!: string | null; // Person tags
+  personTags!: string | null;
 
   @Column('text', { nullable: true })
-  uri!: string | null; // URI for additional info
+  uri!: string | null;
 
   @Column('text')
-  uuid!: string; // UUID (required)
+  uuid!: string;
+
+  constructor(init?: Partial<Patient>) {
+    if (init) {
+      Object.assign(this, init);
+    }
+  }
 }

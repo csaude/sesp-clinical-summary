@@ -1,6 +1,6 @@
 import DatabaseManager from 'src/services/db/DatabaseManager';
 import { Patient } from 'src/entities/patient/Patient';
-import { Repository } from 'typeorm';
+import { Repository, Like } from 'typeorm';
 
 class PatientDAO {
   private patientRepo: Repository<Patient>;
@@ -47,6 +47,24 @@ class PatientDAO {
     }
 
     await this.patientRepo.remove(patient);
+  }
+
+  // Search for patients
+  async search(criteria: string): Promise<Patient[]> {
+    try {
+      return await this.patientRepo.find({
+        where: [
+          { identifiers: Like(`%${criteria}%`) },
+          { tags: Like(`%${criteria}%`) },
+          { names: Like(`%${criteria}%`) },
+          { attributes: Like(`%${criteria}%`) },
+        ],
+        order: { names: 'ASC' }, // Example: Order by names alphabetically
+      });
+    } catch (error) {
+      console.error('Error searching for patients:', error);
+      throw new Error('Failed to search patients');
+    }
   }
 }
 
