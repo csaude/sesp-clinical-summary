@@ -1,71 +1,51 @@
 import api from '../api/apiService';
 import PatientDAO from '../db/dao/patient/PatientDAO';
-import DatabaseManager from '../db/DatabaseManager';
 import { Patient } from '../../entities/patient/Patient';
 
-export default {
+class PatientService {
   /**
-   * Search for patients either locally (offline) or via API (online).
-   * If search length is less than 3 characters, throws an error.
+   * Search patients by name or identifier.
    */
-  async searchPatients(search: string, index: number = 0): Promise<Patient[]> {
+  async searchPatients(search: string, index: number = 0): Promise<any[]> {
     if (!search || search.length <= 2) {
       throw new Error('Por favor preencha o campo de pesquisa com pelo menos 3 caracteres!');
     }
 
     try {
-      // First, search in the local database
-      const dbPatients = await this.searchPatientsOffline(search);
-      if (dbPatients.length > 0) {
-        return dbPatients;
-      }
-
-      // If not found offline, search via API
       let url: string;
 
       // Identifier search check
       if ((search.match(/\//g) || []).length === 2 && search.replace(/\s/g, '').length > 12) {
-        url = `/patient?identifier=${encodeURIComponent(search.replace(/\s/g, ''))}&v=custom:(uuid,display,identifiers:(uuid,identifier,location:(name)),person:(gender,age,dead,birthdate,addresses:(display,preferred,address1,address3,address5,address6),attributes:(display,attributeType:(display)))`;
+        url = `/patient?identifier=${encodeURIComponent(search.replace(/\s/g, ''))}&v=custom:(uuid,display,identifiers:(uuid,identifier,location:(name)),person:(gender,age,dead,birthdate,addresses:(display,preferred,address1,address3,address5,address6),attributes:(display))`;
       } else {
         // General search query
-        url = `/patient?q=${encodeURIComponent(search)}&v=custom:(uuid,display,identifiers:(uuid,identifier,location:(name)),person:(gender,age,dead,birthdate,addresses:(display,preferred,address1,address3,address5,address6),attributes:(display,attributeType:(display)))&limit=50&startIndex=${index}`;
+        url = `/patient?q=${encodeURIComponent(search)}&v=custom:(uuid,display,identifiers:(uuid,identifier,location:(name)),person:(gender,age,dead,birthdate,addresses:(display,preferred,address1,address3,address5,address6),attributes:(display))&limit=50&startIndex=${index}`;
       }
 
-      // Make the API call
       const response = await api.get(url);
-
       return response.data || [];
-    } catch (error: unknown) {
+    } catch (error) {
       console.error('Error while searching patients:', error);
-      if (error instanceof Error) {
-        throw error;
-      } else {
-        throw new Error('Unexpected error occurred during patient search.');
-      }
+      throw error;
     }
-  },
-
+  }
 
   /**
-   * Get patient details from the API.
+   * Get detailed patient information.
    */
   async getPatientDetails(patientId: string): Promise<any> {
     try {
       const url = `/patient/${patientId}?v=full`;
       const response = await api.get(url);
       return response.data;
-    } catch (error: unknown) {
+    } catch (error) {
       console.error('Error while fetching patient details:', error);
-      if (error instanceof Error) {
-        throw error;
-      } else {
-        throw new Error('Unexpected error occurred while fetching patient details.');
-      }
+      throw error;
     }
-  },
+  }
 
   /**
-   * Fetch next set of results from the API.
+   * Fetch the next set of paginated results.
    */
   async getNextResults(url: string): Promise<{ results: any[]; nextUrl: string | null }> {
     try {
@@ -82,7 +62,7 @@ export default {
       console.error('Error fetching next results:', error);
       throw error;
     }
-  },
+  }
 
   /**
    * Save a new patient to the local database.
@@ -94,7 +74,7 @@ export default {
       console.error('Error saving patient:', error);
       throw error;
     }
-  },
+  }
 
   /**
    * Delete a patient from the local database.
@@ -106,5 +86,7 @@ export default {
       console.error('Error deleting patient:', error);
       throw error;
     }
-  },
-};
+  }
+}
+
+export default new PatientService();

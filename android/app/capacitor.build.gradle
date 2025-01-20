@@ -12,7 +12,9 @@ dependencies {
     implementation project(':capacitor-community-sqlite')
     implementation project(':capacitor-app')
     implementation project(':capacitor-device')
+    implementation project(':capacitor-preferences')
     implementation project(':capawesome-capacitor-background-task')
+    implementation project(':capacitor-secure-storage-plugin')
 
 }
 
