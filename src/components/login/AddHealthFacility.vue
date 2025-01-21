@@ -76,8 +76,17 @@ import { ref, onMounted } from 'vue';
 import { useSwal } from 'src/composables/shared/dialog/dialog';
 import { validKeyPairs } from 'src/data/keyPairs'; 
 import { version } from '../../../package.json'
+import { usePatientStore } from '../../stores/patient/patientStore';
+import { Patient } from '../../entities/patient/Patient';
 
 const { alertError, alertSuccess } = useSwal();
+
+
+// Patient store
+const patientStore = usePatientStore();
+const patients = ref([]); // Local cache for patients
+const searchQuery = ref('');
+
 
 // Reactive variables
 const serverUrl = ref('');
@@ -90,7 +99,7 @@ const appVersion = version;
 const savedFacilities = ref([]);
 
 // Load saved facilities from localStorage on mount
-onMounted(() => {
+onMounted(async () => {
   const facilitiesFromStorage = localStorage.getItem('facilities');
   if (facilitiesFromStorage) {
     savedFacilities.value = JSON.parse(facilitiesFromStorage);
@@ -101,7 +110,46 @@ onMounted(() => {
     const randomIndex = Math.floor(Math.random() * validKeyPairs.length); // Generate a random index
     keyEntry.value = validKeyPairs[randomIndex].entry; // Select a random key entry
   }
+
+  // Create a new patient
+  const newPatient = new Patient({
+      name: 'John Silly',
+      age: 32,
+      gender: 'Male',
+      encryptedData: 'Some encrypted data',
+      identifiers: '123423456',
+      tags: 'tag1,tag2',
+      deletionStatus: 'ACTIVE',
+      personId: 1,
+      personUuid: 'uuid-1234324',
+      birthdate: 631152000, // Example birthdate (UNIX timestamp)
+      birthdateEstimated: 0,
+      names: 'John Luis',
+      attributes: 'attribute1',
+      addresses: '123 Main St',
+      voided: 0,
+      personTags: 'tag1',
+      uri: 'http://example.com',
+      uuid: 'uuid-12334324',
+    });
+
+    console.log('newPatient===========>', newPatient);
+    // Save the patient using the store
+    await patientStore.savePatient(newPatient);
+    console.log('New patient created and saved successfully.');
+
+  // Fetch initial patient data
+  try {
+    await patientStore.search('John'); // Make sure this is marked as async
+    patients.value = patientStore.patients;
+    console.log('patients======================>', patients);
+
+  } catch (error) {
+    console.error('Error loading patients:', error);
+    alertError('Erro ao carregar pacientes.');
+  }
 });
+
 
 // Emit events for save and cancel
 const emit = defineEmits(['save', 'cancel']);
@@ -166,6 +214,32 @@ const isValidUrl = (url) => {
     return true;
   } catch (error) {
     return false; // If it throws, the URL is invalid
+  }
+};
+
+// Patient CRUD operations
+const searchPatients = async () => {
+  if (!searchQuery.value || searchQuery.value.length < 3) {
+    alertError('Por favor, insira pelo menos 3 caracteres para pesquisar.');
+    return;
+  }
+
+  try {
+    await patientStore.searchPatients(searchQuery.value);
+    patients.value = patientStore.patients;
+  } catch (error) {
+    console.error('Error searching patients:', error);
+    alertError('Erro ao pesquisar pacientes.');
+  }
+};
+
+const savePatient = async (patientData) => {
+  try {
+    await patientStore.savePatient(patientData);
+    alertSuccess('Paciente salvo com sucesso!');
+  } catch (error) {
+    console.error('Error saving patient:', error);
+    alertError('Erro ao salvar paciente.');
   }
 };
 </script>

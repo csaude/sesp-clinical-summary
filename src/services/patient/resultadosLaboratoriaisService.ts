@@ -182,7 +182,7 @@ export default {
   async allPCR(patientId: string) {
     return this.fetchPatientObservations(
       patientId,
-      'e1d43a74-1d5f-11e0-b929-000c29ad1d07',
+      'e1d7f61e-1d5f-11e0-b929-000c29ad1d07',
       '8377e4ff-d0fe-44a5-81c3-74c9040fd5f8'
     );
   },
