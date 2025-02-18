@@ -15,20 +15,32 @@
 
     <!-- Cards for Clinical Consultation Data -->
     <div v-if="!loading">
-      <div v-for="(section, index) in consultaClinicaData" :key="index" class="q-mb-md">
+      <div
+        v-for="(section, index) in consultaClinicaData"
+        :key="index"
+        class="q-mb-md"
+      >
         <q-card flat bordered>
           <!-- Section Header -->
-          <q-card-section 
+          <q-card-section
             class="q-py-sm bg-light-green-1 cursor-pointer"
             @click="toggleSection(index)"
           >
             <div class="row items-center">
-              <div class="col text-weight-bold text-h6">{{ section.title }}</div>
-              <div class="col-auto text-caption text-right text-grey">Fonte</div>
+              <div class="col text-weight-bold text-h6">
+                {{ section.title }}
+              </div>
+              <div class="col-auto text-caption text-right text-grey">
+                Fonte
+              </div>
               <!-- Expand/Collapse Icon -->
-              <q-icon 
-                :name="collapsedSections[index] ? 'keyboard_arrow_down' : 'keyboard_arrow_up'"
-                size="sm" 
+              <q-icon
+                :name="
+                  collapsedSections[index]
+                    ? 'keyboard_arrow_down'
+                    : 'keyboard_arrow_up'
+                "
+                size="sm"
                 color="grey"
               />
             </div>
@@ -51,12 +63,17 @@
                     </div>
                   </div>
                 </div>
-                <q-separator v-if="idx < section.items.length - 1" class="q-mb-md" />
+                <q-separator
+                  v-if="idx < section.items.length - 1"
+                  class="q-mb-md"
+                />
               </div>
             </template>
             <template v-else>
               <div class="row items-center">
-                <div class="col text-caption">{{ section.value || 'Sem dados no SESP' }}</div>
+                <div class="col text-caption">
+                  {{ section.value || 'Sem dados no SESP' }}
+                </div>
                 <div class="col-auto text-caption text-right">
                   <div class="badge-container q-mr-sm">
                     <q-badge color="blue">{{ section.source.form }}</q-badge>
@@ -73,7 +90,6 @@
     </div>
   </div>
 </template>
-
 
 <script setup>
 import { inject, ref, onMounted } from 'vue';
@@ -116,172 +132,216 @@ onMounted(async () => {
   try {
     const patientId = patient.value.uuid;
 
-    const [mostRecentConsultation, nextAppointment, weight, height, bmi, mds, pregnancy, breastfeeding, programEnrollment] =
-      await Promise.all([
-        consultaClinicaService.getMostRecentConsultation(patientId),
-        consultaClinicaService.getNextAppointment(patientId),
-        consultaClinicaService.getWeight(patientId),
-        consultaClinicaService.getHeight(patientId),
-        consultaClinicaService.getBMI(patientId),
-        consultaClinicaService.getMDS(patientId),
-        consultaClinicaService.getPregnancyStatus(patientId),
-        consultaClinicaService.getBreastfeedingStatus(patientId),
-        consultaClinicaService.getProgramEnrollment(patientId),
-      ]);
+    const [
+      mostRecentConsultation,
+      nextAppointment,
+      weight,
+      height,
+      bmi,
+      mds,
+      pregnancy,
+      breastfeeding,
+      programEnrollment,
+    ] = await Promise.all([
+      consultaClinicaService.getMostRecentConsultation(patientId),
+      consultaClinicaService.getNextAppointment(patientId),
+      consultaClinicaService.getWeight(patientId),
+      consultaClinicaService.getHeight(patientId),
+      consultaClinicaService.getBMI(patientId),
+      consultaClinicaService.getMDS(patientId),
+      consultaClinicaService.getPregnancyStatus(patientId),
+      consultaClinicaService.getBreastfeedingStatus(patientId),
+      consultaClinicaService.getProgramEnrollment(patientId),
+    ]);
 
     consultaClinicaData.value = [
       {
         title: 'Data da consulta mais recente',
         isList: true,
-        items: mostRecentConsultation.length > 0
-          ? mostRecentConsultation.map((item) => ({
-              value: formatDate(item.encounterDatetime),
-              source: {
-                form: item.form?.display || 'Sem formulário',
-                date: formatDate(item.encounterDatetime) || 'Sem data',
-                location: item.location.display || 'Sem localidade',
-              },
-            }))
-          : [{ value: 'Sem dados no SESP', source: { form: 'FICHA CLINICA', date: '', location: '' } }],
+        items:
+          mostRecentConsultation.length > 0
+            ? mostRecentConsultation.map((item) => ({
+                value: formatDate(item.encounterDatetime),
+                source: {
+                  form: item.form?.display || 'Sem formulário',
+                  date: formatDate(item.encounterDatetime) || 'Sem data',
+                  location: item.location.display || 'Sem localidade',
+                },
+              }))
+            : [
+                {
+                  value: 'Sem dados no SESP',
+                  source: { form: 'FICHA CLINICA', date: '', location: '' },
+                },
+              ],
       },
       {
         title: 'Data da próxima consulta',
         isList: true,
-        items: nextAppointment.length > 0
-          ? nextAppointment.map((item) => ({
-              value: formatDate(item.value),
-              source: {
-                form: item.source || 'Sem formulário',
-                date: formatDate(item.obsDatetime) || 'Sem data',
-                location: item.encounter?.location?.name || 'Sem localidade',
-              },
-            }))
-          : [{ value: 'Sem dados no SESP', source: { form: 'FICHA CLINICA', date: '', location: '' } }],
+        items:
+          nextAppointment.length > 0
+            ? nextAppointment.map((item) => ({
+                value: formatDate(item.value),
+                source: {
+                  form: item.source || 'Sem formulário',
+                  date: formatDate(item.obsDatetime) || 'Sem data',
+                  location: item.encounter?.location?.name || 'Sem localidade',
+                },
+              }))
+            : [
+                {
+                  value: 'Sem dados no SESP',
+                  source: { form: 'FICHA CLINICA', date: '', location: '' },
+                },
+              ],
       },
       {
         title: 'Peso',
         isList: true,
-        items: weight.length > 0
-          ? weight.map((item) => ({
-              value: item.value || 'Sem dados no SESP',
-              source: {
-                form: item.encounter?.form?.display || 'Sem formulário',
-                date: formatDate(item.obsDatetime) || 'Sem data',
-                location: item.encounter?.location?.name || 'Sem localidade',
-              },
-            }))
-          : [{ value: 'Sem dados no SESP', source: { form: 'FICHA CLINICA', date: '', location: '' } }],
+        items:
+          weight.length > 0
+            ? weight.map((item) => ({
+                value: item.value || 'Sem dados no SESP',
+                source: {
+                  form: item.encounter?.form?.display || 'Sem formulário',
+                  date: formatDate(item.obsDatetime) || 'Sem data',
+                  location: item.encounter?.location?.name || 'Sem localidade',
+                },
+              }))
+            : [
+                {
+                  value: 'Sem dados no SESP',
+                  source: { form: 'FICHA CLINICA', date: '', location: '' },
+                },
+              ],
       },
       {
         title: 'Altura',
         isList: true,
-        items: height.length > 0
-          ? height.map((item) => ({
-              value: item.value || 'Sem dados no SESP',
-              source: {
-                form: item.encounter?.form?.display || 'Sem formulário',
-                date: formatDate(item.obsDatetime) || 'Sem data',
-                location: item.encounter?.location?.name || 'Sem localidade',
-              },
-            }))
-          : [{ value: 'Sem dados no SESP', source: { form: 'FICHA CLINICA', date: '', location: '' } }],
+        items:
+          height.length > 0
+            ? height.map((item) => ({
+                value: item.value || 'Sem dados no SESP',
+                source: {
+                  form: item.encounter?.form?.display || 'Sem formulário',
+                  date: formatDate(item.obsDatetime) || 'Sem data',
+                  location: item.encounter?.location?.name || 'Sem localidade',
+                },
+              }))
+            : [
+                {
+                  value: 'Sem dados no SESP',
+                  source: { form: 'FICHA CLINICA', date: '', location: '' },
+                },
+              ],
       },
       {
         title: 'BMI',
         isList: true,
-        items: bmi.length > 0
-          ? bmi.map((item) => ({
-              value: item.value || 'Sem dados no SESP',
-              source: {
-                form: item.encounter?.form?.display || 'Sem formulário',
-                date: formatDate(item.obsDatetime) || 'Sem data',
-                location: item.encounter?.location?.name || 'Sem localidade',
-              },
-            }))
-          : [{ value: 'Sem dados no SESP', source: { form: 'FICHA CLINICA', date: '', location: '' } }],
+        items:
+          bmi.length > 0
+            ? bmi.map((item) => ({
+                value: item.value || 'Sem dados no SESP',
+                source: {
+                  form: item.encounter?.form?.display || 'Sem formulário',
+                  date: formatDate(item.obsDatetime) || 'Sem data',
+                  location: item.encounter?.location?.name || 'Sem localidade',
+                },
+              }))
+            : [
+                {
+                  value: 'Sem dados no SESP',
+                  source: { form: 'FICHA CLINICA', date: '', location: '' },
+                },
+              ],
       },
 
       {
         title: 'MDS',
         isList: true,
-        items: mds.length > 0
-          ? mds.map((item) => ({
-              value: `${item.mds} (${item.state || 'Sem estado'})`,
-              source: {
-                form: item.source || 'Sem formulário',
-                date: formatDate(item.date) || 'Sem data',
-                location: item.hf || 'Sem localidade',
-              },
-            }))
-          : [{ 
-              value: 'Sem dados no SESP',
-              source: { form: 'FICHA CLINICA', date: '', location: '' } 
-            }],
+        items:
+          mds.length > 0
+            ? mds.map((item) => ({
+                value: `${item.mds} (${item.state || 'Sem estado'})`,
+                source: {
+                  form: item.source || 'Sem formulário',
+                  date: formatDate(item.date) || 'Sem data',
+                  location: item.hf || 'Sem localidade',
+                },
+              }))
+            : [
+                {
+                  value: 'Sem dados no SESP',
+                  source: { form: 'FICHA CLINICA', date: '', location: '' },
+                },
+              ],
       },
 
       {
         title: 'Gravidez na última consulta clínica',
         isList: true,
-        items: pregnancy.length > 0
-          ? pregnancy.map((item) => ({
-              value: item.value?.display || 'Sem dados no SESP',
-              source: {
-                form: item.encounter?.form?.display || 'Sem formulário',
-                date: formatDate(item.obsDatetime) || 'Sem data',
-                location: item.encounter?.location?.name || 'Sem localidade',
-              },
-            }))
-          : [
-              {
-                value: 'Sem dados no SESP',
-                source: { form: 'FICHA CLINICA', date: '', location: '' },
-              },
-            ],
+        items:
+          pregnancy.length > 0
+            ? pregnancy.map((item) => ({
+                value: item.value?.display || 'Sem dados no SESP',
+                source: {
+                  form: item.encounter?.form?.display || 'Sem formulário',
+                  date: formatDate(item.obsDatetime) || 'Sem data',
+                  location: item.encounter?.location?.name || 'Sem localidade',
+                },
+              }))
+            : [
+                {
+                  value: 'Sem dados no SESP',
+                  source: { form: 'FICHA CLINICA', date: '', location: '' },
+                },
+              ],
       },
       {
         title: 'Lactante na última consulta clínica',
         isList: true,
-        items: breastfeeding.length > 0
-          ? breastfeeding.map((item) => ({
-              value: item.value?.display || 'Sem dados no SESP',
-              source: {
-                form: item.encounter?.form?.display || 'Sem formulário',
-                date: formatDate(item.obsDatetime) || 'Sem data',
-                location: item.encounter?.location?.name || 'Sem localidade',
-              },
-            }))
-          : [
-              {
-                value: 'Sem dados no SESP',
-                source: { form: 'FICHA CLINICA', date: '', location: '' },
-              },
-            ],
+        items:
+          breastfeeding.length > 0
+            ? breastfeeding.map((item) => ({
+                value: item.value?.display || 'Sem dados no SESP',
+                source: {
+                  form: item.encounter?.form?.display || 'Sem formulário',
+                  date: formatDate(item.obsDatetime) || 'Sem data',
+                  location: item.encounter?.location?.name || 'Sem localidade',
+                },
+              }))
+            : [
+                {
+                  value: 'Sem dados no SESP',
+                  source: { form: 'FICHA CLINICA', date: '', location: '' },
+                },
+              ],
       },
 
       {
         title: 'Programa',
         isList: true,
-        items: programEnrollment.length > 0
-          ? programEnrollment.map((item) => ({
-              value: item.program || 'Sem dados no SESP',
-              source: {
-                form: item.states || 'Sem estado',
-                date: formatDate(item.stateDate) || 'Sem data',
-                location: 'Sem localidade',
-              },
-            }))
-          : [
-              {
-                value: 'Sem dados no SESP',
+        items:
+          programEnrollment.length > 0
+            ? programEnrollment.map((item) => ({
+                value: item.program || 'Sem dados no SESP',
                 source: {
-                  form: 'FICHA CLINICA',
-                  date: '',
-                  location: '',
+                  form: item.states || 'Sem estado',
+                  date: formatDate(item.stateDate) || 'Sem data',
+                  location: 'Sem localidade',
                 },
-              },
-            ],
+              }))
+            : [
+                {
+                  value: 'Sem dados no SESP',
+                  source: {
+                    form: 'FICHA CLINICA',
+                    date: '',
+                    location: '',
+                  },
+                },
+              ],
       },
-
     ];
   } catch (error) {
     console.error('Error fetching clinical consultation data:', error);
@@ -290,7 +350,6 @@ onMounted(async () => {
   }
 });
 </script>
-
 
 <style scoped>
 .q-card {

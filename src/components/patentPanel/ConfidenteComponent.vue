@@ -15,13 +15,21 @@
 
     <!-- Cards for Dados Confidente Data -->
     <div v-else>
-      <div v-for="(section, index) in rastreioData" :key="index" class="q-mb-md">
+      <div
+        v-for="(section, index) in rastreioData"
+        :key="index"
+        class="q-mb-md"
+      >
         <q-card flat bordered>
           <!-- Section Header -->
           <q-card-section class="q-py-sm bg-light-green-1">
             <div class="row items-center">
-              <div class="col text-weight-bold text-h6">{{ section.title }}</div>
-              <div class="col-auto text-caption text-right text-grey">Fonte</div>
+              <div class="col text-weight-bold text-h6">
+                {{ section.title }}
+              </div>
+              <div class="col-auto text-caption text-right text-grey">
+                Fonte
+              </div>
             </div>
           </q-card-section>
           <q-separator />
@@ -42,12 +50,17 @@
                   </div>
                 </div>
                 <!-- Add a separator except for the last item -->
-                <q-separator v-if="idx < section.items.length - 1" class="q-mb-md" />
+                <q-separator
+                  v-if="idx < section.items.length - 1"
+                  class="q-mb-md"
+                />
               </div>
             </template>
             <template v-else>
               <div class="row items-center">
-                <div class="col text-caption">{{ section.value || 'Sem dados no SESP' }}</div>
+                <div class="col text-caption">
+                  {{ section.value || 'Sem dados no SESP' }}
+                </div>
                 <div class="col-auto text-caption text-right">
                   <div class="q-mb-xs">
                     <q-badge color="blue">{{ section.source.form }}</q-badge>
@@ -98,40 +111,59 @@ onMounted(async () => {
   try {
     const patientId = patient.value.uuid;
 
-    const [confidenteName, confidantContact] =
-      await Promise.all([
-        confidenteService.getConfidenteName(patientId),
-        confidenteService.getConfidantContact(patientId)
-      ]);
+    const [confidenteName, confidantContact] = await Promise.all([
+      confidenteService.getConfidenteName(patientId),
+      confidenteService.getConfidantContact(patientId),
+    ]);
 
     // Populate rastreioData
     rastreioData.value = [
       {
         title: 'Nome do Confidente',
         isList: true,
-        items: confidenteName.length > 0
-          ? confidenteName.map((item) => ({
-              value: formatDate(item.value) || 'Sem dados no SESP',
-              source: {
-                form: item.encounter?.form?.display || 'FICHA RESUMO',
-                date: formatDate(item.obsDatetime) || 'Sem data',
-              },
-            }))
-          : [{ value: 'Sem dados no SESP', source: { form: 'FICHA RESUMO', date: '', location: '' } }],
+        items:
+          confidenteName.length > 0
+            ? confidenteName.map((item) => ({
+                value: item.value || 'Sem dados no SESP',
+                source: {
+                  form:
+                    item.encounter?.form?.display ===
+                    'FORMULARIO ELECTRONICO DE LABORATORIO'
+                      ? 'E-LAB'
+                      : item.encounter?.form?.display || 'FICHA RESUMO',
+                  date: formatDate(item.obsDatetime) || 'Sem data',
+                },
+              }))
+            : [
+                {
+                  value: 'Sem dados no SESP',
+                  source: { form: 'FICHA RESUMO', date: '', location: '' },
+                },
+              ],
       },
       {
         title: 'Contacto do Confidente',
         isList: true,
-        items: confidantContact.length > 0
-          ? confidantContact.map((item) => ({
-              value: formatDate(item.value) || 'Sem dados no SESP',
-              source: {
-                form: item.encounter?.form?.display || 'FICHA RESUMO',
-                date: formatDate(item.obsDatetime) || 'Sem data',
-              },
-            }))
-          : [{ value: 'Sem dados no SESP', source: { form: 'FICHA RESUMO', date: '', location: '' } }],
-      }
+        items:
+          confidantContact.length > 0
+            ? confidantContact.map((item) => ({
+                value: formatDate(item.value) || 'Sem dados no SESP',
+                source: {
+                  form:
+                    item.encounter?.form?.display ===
+                    'FORMULARIO ELECTRONICO DE LABORATORIO'
+                      ? 'E-LAB'
+                      : item.encounter?.form?.display || 'FICHA RESUMO',
+                  date: formatDate(item.obsDatetime) || 'Sem data',
+                },
+              }))
+            : [
+                {
+                  value: 'Sem dados no SESP',
+                  source: { form: 'FICHA RESUMO', date: '', location: '' },
+                },
+              ],
+      },
     ];
   } catch (error) {
     console.error('Error fetching Dados Confidente:', error);
@@ -140,7 +172,6 @@ onMounted(async () => {
   }
 });
 </script>
-
 
 <style scoped>
 .q-card {

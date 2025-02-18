@@ -1,27 +1,23 @@
 import api from '../api/apiService';
-import { LoginResponse } from '../../model/login/LoginResponse'; 
+import { LoginResponse } from '../../model/login/LoginResponse';
 import EncryptionManager from 'src/utils/EncryptionManager';
 
 export default {
   async login(username: string, password: string): Promise<LoginResponse> {
     try {
-      const response = await api.get<LoginResponse>(
-        '/session',
-        {
-          auth: { username, password },
-        }
-      );
+      const response = await api.get<LoginResponse>('/session', {
+        auth: { username, password },
+      });
 
-      console.log(response);
-      
       if (response.data.authenticated) {
         this.handleLoginResponse(response.data);
         return response.data;
       } else {
-        throw new Error('Authentication failed. Please check your credentials.');
+        throw new Error(
+          'Authentication failed. Please check your credentials.'
+        );
       }
     } catch (error: unknown) {
-      console.log(error);
       if (error instanceof Error) {
         console.error('Login error:', error.message);
         throw error;
@@ -50,16 +46,16 @@ export default {
         console.warn('No session found to logout.');
         return;
       }
-  
+
       // Retrieve and decrypt credentials
       const username = EncryptionManager.getDecryptedSessionItem('username');
       const password = EncryptionManager.getDecryptedSessionItem('password');
-  
+
       if (!username || !password) {
         console.warn('No valid credentials found for logout.');
         return;
       }
-  
+
       // Make API call to invalidate the session on the server
       await api.delete('/session', {
         headers: {
@@ -67,8 +63,6 @@ export default {
           Authorization: `Basic ${btoa(`${username}:${password}`)}`,
         },
       });
-  
-      console.log('Successfully logged out from the server.');
     } catch (error) {
       console.error('Error during logout:', error);
     } finally {
@@ -78,7 +72,6 @@ export default {
       window.location.reload();
     }
   },
-  
 
   getLoggedUser() {
     const userInfo = sessionStorage.getItem('userInfo');

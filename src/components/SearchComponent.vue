@@ -5,7 +5,8 @@
       <q-input
         v-model="searchQuery"
         label="Pesquisar por Nome ou NID"
-        square outlined
+        square
+        outlined
         dense
         class="col q-mr-md"
       >
@@ -15,7 +16,8 @@
       </q-input>
       <q-btn
         color="green"
-        outline round
+        outline
+        round
         size="md"
         icon="search"
         :loading="loading"
@@ -41,7 +43,7 @@ import { useSwal } from 'src/composables/shared/dialog/dialog';
 import SearchResultsList from './SearchResultsList.vue';
 import patientService from 'src/services/patient/patientService';
 import { useRouter } from 'vue-router';
-import { useStorage } from "@vueuse/core";
+import { useStorage } from '@vueuse/core';
 import { version as applicationVersion } from '../../package.json';
 
 const searchQuery = ref('');
@@ -50,7 +52,7 @@ const loading = ref(false);
 const nextUrl = ref(null);
 const loadingNext = ref(false);
 const router = useRouter();
-const visualizedPatients = useStorage("visualizedPatients", []);
+const visualizedPatients = useStorage('visualizedPatients', []);
 
 // Destructure dialog methods
 const { alertError, alertWarning, alertWarningAction } = useSwal();
@@ -58,7 +60,9 @@ const { alertError, alertWarning, alertWarningAction } = useSwal();
 // Search function
 async function onSearch() {
   if (!searchQuery.value || searchQuery.value.length <= 2) {
-    alertWarning('Por favor preencha o campo de pesquisa com pelo menos 3 caracteres!');
+    alertWarning(
+      'Por favor preencha o campo de pesquisa com pelo menos 3 caracteres!'
+    );
     return;
   }
 
@@ -68,15 +72,19 @@ async function onSearch() {
 
   try {
     const response = await patientService.searchPatients(searchQuery.value);
-    console.log(response)
     results.value = response.results || [];
-    nextUrl.value = response.links?.find((link) => link.rel === 'next')?.uri || null;
+    nextUrl.value =
+      response.links?.find((link) => link.rel === 'next')?.uri || null;
     if (results.value.length === 0) {
-      alertInfo('Nenhum paciente foi encontrado de acordo com o critério de busca!');
+      alertInfo(
+        'Nenhum paciente foi encontrado de acordo com o critério de busca!'
+      );
     }
   } catch (error) {
     console.error('Erro na pesquisa:', error);
-    alertError('Não foi possível carregar os pacientes. Verifique sua conexão e tente novamente.');
+    alertError(
+      'Não foi possível carregar os pacientes. Verifique sua conexão e tente novamente.'
+    );
   } finally {
     loading.value = false;
   }
@@ -112,39 +120,45 @@ const openPatient = async (uuid, name, nid) => {
   );
 
   if (confirmed) {
-    const selectedPatient = results.value.find((patient) => patient.uuid === uuid);
+    const selectedPatient = results.value.find(
+      (patient) => patient.uuid === uuid
+    );
     if (selectedPatient) {
       // Save patient to sessionStorage
-      sessionStorage.setItem("selectedPatient", JSON.stringify(selectedPatient));
+      sessionStorage.setItem(
+        'selectedPatient',
+        JSON.stringify(selectedPatient)
+      );
 
       // Build patient info
       const currentDate = new Date().toISOString();
-      const userName = sessionStorage.getItem("username") || "Usuário";
+      const userName = sessionStorage.getItem('username') || 'Usuário';
 
       const facilityData = sessionStorage.getItem('selectedFacility');
       const facility = facilityData ? JSON.parse(facilityData) : null;
 
       const visualizedPatientInfo = {
         uuid: uuid,
-        report: "SESP Sumario Clinico",
-        unidadeSanitaria: selectedPatient?.identifiers?.[0]?.location?.name || "Desconhecido",
+        report: 'SESP Sumario Clinico',
+        unidadeSanitaria:
+          selectedPatient?.identifiers?.[0]?.location?.name || 'Desconhecido',
         userName: userName,
-        terms: "ASSINADO",
+        terms: 'ASSINADO',
         dateOpened: currentDate,
         applicationVersion: applicationVersion,
-        status: "not_uploaded",
-        serverKey: facility?.value?.key
+        status: 'not_uploaded',
+        serverKey: facility?.value?.key,
       };
 
       // Add patient to visualizedPatients if not already present
-      const existingIndex = visualizedPatients.value.findIndex((p) => p.uuid === uuid);
+      const existingIndex = visualizedPatients.value.findIndex(
+        (p) => p.uuid === uuid
+      );
       if (existingIndex === -1) {
         visualizedPatients.value.push(visualizedPatientInfo);
       }
-
-      console.log("Visualized Patients:", visualizedPatients.value);
     }
-    router.push("/patientPanel");
+    router.push('/patientPanel');
   }
 };
 
@@ -155,5 +169,4 @@ function resetSearch() {
 }
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
