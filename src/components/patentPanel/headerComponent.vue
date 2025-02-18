@@ -1,21 +1,21 @@
-<template>
+  <template>
     <q-card flat bordered class="q-mb-md q-pa-md">
-      <div class="col-12 text-center q-mb-md">
+      <div class="col-12 text-center q-mb-sm">
         <q-icon :name="genderIcon" :color="genderColor" size="lg" />
       </div>
-      <div class="row items-center text-center">
         <div class="row">
           <!-- Patient Name -->
-          <div class="col-12 text-weight-bold text-lg text-center">
-            {{ patient?.display?.split(' - ')[1] || 'Sem Nome' }}
+          <div class="col-12 justify-center text-weight-bold text-center">
+            <span size="lg">{{ patient?.display?.split(' - ')[1] || 'Sem Nome' }}</span>
           </div>
           <!-- Patient Details -->
-          <div class="col-12 text-caption text-center">
-            <span>{{ patient?.identifiers?.[0]?.identifier || 'Sem NID' }}</span> |
-            <span>{{ patient?.person?.age || 'Sem idade' }} anos</span> |
-            <span>{{ patient?.identifiers?.[0]?.location?.name || 'Sem Localidade' }}</span>
+          <div class="col-12 row justify-center text-center text-caption">
+            <div class="col-auto">{{ patient?.identifiers?.[0]?.identifier || 'Sem NID' }}</div>
+            <div class="col-auto"> | </div>
+            <div class="col-auto">{{ patient?.person?.age || 'Sem idade' }} anos</div>
+            <div class="col-auto"> | </div>
+            <div class="col-auto">{{ patient?.identifiers?.[0]?.location?.name || 'Sem Localidade' }}</div>
           </div>
-        </div>
       </div>
     </q-card>
   </template>

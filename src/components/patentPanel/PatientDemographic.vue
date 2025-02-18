@@ -9,8 +9,8 @@
   
           <!-- Demographics Section -->
           <q-card flat bordered class="q-mb-md">
-            <q-card-section class="q-py-sm">
-              <div class="text-h6 text-primary">Data de Nascimento</div>
+            <q-card-section class="q-py-sm bg-light-green-1 cursor-pointer">
+              <div class="col text-weight-bold text-h6">Data de Nascimento</div>
             </q-card-section>
             <q-separator />
             <q-card-section>
@@ -29,8 +29,8 @@
   
           <!-- Address Section -->
           <q-card flat bordered class="q-mb-md">
-            <q-card-section class="q-py-sm">
-              <div class="text-h6 text-primary">Endereços</div>
+            <q-card-section class="q-py-sm bg-light-green-1 cursor-pointer">
+              <div class="col text-weight-bold text-h6">Endereços</div>
             </q-card-section>
             <q-separator />
             <q-card-section>
@@ -77,8 +77,8 @@
   
           <!-- Contacts Section -->
           <q-card flat bordered>
-            <q-card-section class="q-py-sm">
-              <div class="text-h6 text-primary">Contactos</div>
+            <q-card-section class="q-py-sm bg-light-green-1 cursor-pointer">
+              <div class="col text-weight-bold text-h6">Contactos</div>
             </q-card-section>
             <q-separator />
             <q-card-section>

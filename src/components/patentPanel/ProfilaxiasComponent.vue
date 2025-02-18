@@ -216,7 +216,7 @@
         items: [...startItems, ...missingStartItems],
       },
       {
-        title: 'Data de fim de TPI',
+        title: 'Data de fim de TPT',
         isList: true,
         items: [...endItems, ...missingEndItems],
       },
