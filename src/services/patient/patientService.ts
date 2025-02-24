@@ -1,6 +1,11 @@
 import api from '../api/apiService';
+import PatientDAO from '../db/dao/patient/PatientDAO';
+import { Patient } from '../../entities/patient/Patient';
 
-export default {
+class PatientService {
+  /**
+   * Search patients by name or identifier.
+   */
   async searchPatients(search: string, index: number = 0): Promise<any[]> {
     if (!search || search.length <= 2) {
       throw new Error('Por favor preencha o campo de pesquisa com pelo menos 3 caracteres!');
@@ -17,35 +22,31 @@ export default {
         url = `/patient?q=${encodeURIComponent(search)}&v=custom:(uuid,display,identifiers:(uuid,identifier,location:(name)),person:(gender,age,dead,birthdate,addresses:(display,preferred,address1,address3,address5,address6),attributes:(display))&limit=50&startIndex=${index}`;
       }
 
-      // Make the API call
       const response = await api.get(url);
-
       return response.data || [];
-    } catch (error: unknown) {
+    } catch (error) {
       console.error('Error while searching patients:', error);
-      if (error instanceof Error) {
-        throw error;
-      } else {
-        throw new Error('Unexpected error occurred during patient search.');
-      }
+      throw error;
     }
-  },
+  }
 
+  /**
+   * Get detailed patient information.
+   */
   async getPatientDetails(patientId: string): Promise<any> {
     try {
       const url = `/patient/${patientId}?v=full`;
       const response = await api.get(url);
       return response.data;
-    } catch (error: unknown) {
+    } catch (error) {
       console.error('Error while fetching patient details:', error);
-      if (error instanceof Error) {
-        throw error;
-      } else {
-        throw new Error('Unexpected error occurred while fetching patient details.');
-      }
+      throw error;
     }
-  },
+  }
 
+  /**
+   * Fetch the next set of paginated results.
+   */
   async getNextResults(url: string): Promise<{ results: any[]; nextUrl: string | null }> {
     try {
       const response = await api.get(url);
@@ -61,5 +62,50 @@ export default {
       console.error('Error fetching next results:', error);
       throw error;
     }
-  },
-};
+  }
+
+  /**
+   * Save a new patient to the local database.
+   */
+  async savePatient(patientData: Partial<Patient>): Promise<Patient> {
+    try {
+      return await PatientDAO.create(patientData);
+    } catch (error) {
+      console.error('Error saving patient:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Delete a patient from the local database.
+   */
+  async deletePatient(id: number): Promise<void> {
+    try {
+      await PatientDAO.delete(id);
+    } catch (error) {
+      console.error('Error deleting patient:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Search for patients based on a given criteria
+   * @param searchCriteria The search term to match against patient data
+   * @returns Promise<Patient[]> A list of patients matching the search criteria
+   */
+  async search(searchCriteria: string): Promise<Patient[]> {
+    if (!searchCriteria || searchCriteria.trim().length < 3) {
+      throw new Error('Por favor, preencha o campo de pesquisa com pelo menos 3 caracteres!');
+    }
+
+    try {
+      const results = await PatientDAO.search(searchCriteria);
+      return results;
+    } catch (error) {
+      console.error('Error searching patients in service:', error);
+      throw new Error('Failed to search patients.');
+    }
+  }
+}
+
+export default new PatientService();
