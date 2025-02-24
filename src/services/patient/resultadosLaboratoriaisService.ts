@@ -143,7 +143,7 @@ export default {
   async allBaciloscopia(patientId: string) {
     return this.fetchPatientObservations(
       patientId,
-      'b08eb89b-c609-4d15-ab81-53ad7c745332',
+      'e1d1564c-1d5f-11e0-b929-000c29ad1d07',
       '8377e4ff-d0fe-44a5-81c3-74c9040fd5f8'
     );
   },
@@ -151,7 +151,7 @@ export default {
   async allBaciloscopiaFC(patientId: string) {
     return this.fetchPatientObservations(
       patientId,
-      'b08eb89b-c609-4d15-ab81-53ad7c745332',
+      'e1d1564c-1d5f-11e0-b929-000c29ad1d07',
       '3c2d563a-5d37-4735-a125-d3943a3de30a'
     );
   },

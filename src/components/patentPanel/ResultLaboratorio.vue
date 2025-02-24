@@ -187,6 +187,7 @@ onMounted(async () => {
       patient.value.uuid
     );
 
+    console.log('allBaciloscopia=========>', allBaciloscopia);
     // Populate resultadosData
     resultadosData.value = [
       {
@@ -202,7 +203,7 @@ onMounted(async () => {
                   form:
                     item.encounter?.form?.display ===
                     'FORMULARIO ELECTRONICO DE LABORATORIO'
-                      ? 'E-LAB'
+                      ? 'e-LAB'
                       : item.encounter?.form?.display || 'Sem dados no SESP',
                   date: formatDate(item.obsDatetime) || '',
                 },
@@ -226,7 +227,7 @@ onMounted(async () => {
                     form:
                       item.encounter?.form?.display ===
                       'FORMULARIO ELECTRONICO DE LABORATORIO'
-                        ? 'E-LAB'
+                        ? 'e-LAB'
                         : item.encounter?.form?.display || 'LABORATORIO GERAL',
                     date: formatDate(item.obsDatetime) || '',
                   },
@@ -237,7 +238,7 @@ onMounted(async () => {
                     form:
                       item.encounter?.form?.display ===
                       'FORMULARIO ELECTRONICO DE LABORATORIO'
-                        ? 'E-LAB'
+                        ? 'e-LAB'
                         : item.encounter?.form?.display || 'E-LAB',
                     date: formatDate(item.obsDatetime) || '',
                   },
@@ -272,11 +273,11 @@ onMounted(async () => {
                     form:
                       item.encounter?.form?.display ===
                       'FORMULARIO ELECTRONICO DE LABORATORIO'
-                        ? 'E-LAB'
+                        ? 'e-LAB'
                         : item.encounter?.form?.display ||
                           (allCD4CoverageFLG.includes(item)
                             ? 'LABORATORIO GERAL'
-                            : 'E-LAB'),
+                            : 'e-LAB'),
                     date: formatDate(item.obsDatetime) || '',
                   },
                 }))
@@ -303,7 +304,7 @@ onMounted(async () => {
                     form:
                       item.encounter?.form?.display ===
                       'FORMULARIO ELECTRONICO DE LABORATORIO'
-                        ? 'E-LAB'
+                        ? 'e-LAB'
                         : item.encounter?.form?.display || 'LABORATORIO GERAL',
                     date: formatDate(item.obsDatetime) || '',
                   },
@@ -339,7 +340,7 @@ onMounted(async () => {
                     form:
                       item.encounter?.form?.display ===
                       'FORMULARIO ELECTRONICO DE LABORATORIO'
-                        ? 'E-LAB'
+                        ? 'e-LAB'
                         : item.encounter?.form?.display || 'LABORATORIO GERAL',
                     date: formatDate(item.obsDatetime) || '',
                   },
@@ -379,7 +380,7 @@ onMounted(async () => {
                     form:
                       item.encounter?.form?.display ===
                       'FORMULARIO ELECTRONICO DE LABORATORIO'
-                        ? 'E-LAB'
+                        ? 'e-LAB'
                         : item.encounter?.form?.display || 'LABORATORIO GERAL',
                     date: formatDate(item.obsDatetime) || '',
                   },
@@ -391,8 +392,8 @@ onMounted(async () => {
                     form:
                       item.encounter?.form?.display ===
                       'FORMULARIO ELECTRONICO DE LABORATORIO'
-                        ? 'E-LAB'
-                        : item.encounter?.form?.display || 'E-LAB',
+                        ? 'e-LAB'
+                        : item.encounter?.form?.display || 'e-LAB',
                     date: formatDate(item.obsDatetime) || '',
                   },
                 })),
@@ -417,7 +418,7 @@ onMounted(async () => {
                 {
                   value: 'Sem dados no SESP',
                   source: {
-                    form: 'FORMULARIO ELECTRONICO DE LABORATORIO',
+                    form: 'e-LAB',
                     date: '',
                     location: '',
                   },

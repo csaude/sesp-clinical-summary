@@ -129,7 +129,7 @@ onMounted(async () => {
                   form:
                     item.encounter?.form?.display ===
                     'FORMULARIO ELECTRONICO DE LABORATORIO'
-                      ? 'E-LAB'
+                      ? 'e-LAB'
                       : item.encounter?.form?.display || 'FICHA RESUMO',
                   date: formatDate(item.obsDatetime) || 'Sem data',
                 },
@@ -152,7 +152,7 @@ onMounted(async () => {
                   form:
                     item.encounter?.form?.display ===
                     'FORMULARIO ELECTRONICO DE LABORATORIO'
-                      ? 'E-LAB'
+                      ? 'e-LAB'
                       : item.encounter?.form?.display || 'FICHA RESUMO',
                   date: formatDate(item.obsDatetime) || 'Sem data',
                 },
