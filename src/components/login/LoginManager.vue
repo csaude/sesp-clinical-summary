@@ -109,6 +109,16 @@
   
       // Call login with the username and password
       await userService.login(username.value, password.value);
+
+      if (!localStorage.getItem('settings')) {
+        const defaultSettings = {
+          autoSendUsage: true,
+          rememberUsername: true,
+          autoLogout: 15
+        };
+        localStorage.setItem('settings', JSON.stringify(defaultSettings));
+      }
+      
       router.push('/main');
     } catch (error) {
       console.error(error);

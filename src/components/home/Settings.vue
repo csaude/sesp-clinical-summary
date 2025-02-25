@@ -67,12 +67,6 @@
         <!-- Action Buttons -->
         <div class="q-mt-md">
           <q-btn
-            label="PARTILHAR DADOS DE USO"
-            class="full-width q-mb-md"
-            color="positive"
-            unelevated
-          />
-          <q-btn
             label="RECONFIGURAR"
             class="full-width"
             color="yellow"

@@ -282,14 +282,16 @@ onMounted(async () => {
         isList: true,
         items:
           pregnancy.length > 0
-            ? pregnancy.map((item) => ({
-                value: item.value?.display || 'Sem dados no SESP',
-                source: {
-                  form: item.encounter?.form?.display || 'Sem formulário',
-                  date: formatDate(item.obsDatetime) || 'Sem data',
-                  location: item.encounter?.location?.name || 'Sem localidade',
+            ? [
+                {
+                  value: pregnancy[0].value?.display || 'Sem dados no SESP',
+                  source: {
+                    form: pregnancy[0].encounter?.form?.display || 'Sem formulário',
+                    date: formatDate(pregnancy[0].obsDatetime) || 'Sem data',
+                    location: pregnancy[0].encounter?.location?.name || 'Sem localidade',
+                  },
                 },
-              }))
+              ]
             : [
                 {
                   value: 'Sem dados no SESP',
@@ -302,14 +304,16 @@ onMounted(async () => {
         isList: true,
         items:
           breastfeeding.length > 0
-            ? breastfeeding.map((item) => ({
-                value: item.value?.display || 'Sem dados no SESP',
-                source: {
-                  form: item.encounter?.form?.display || 'Sem formulário',
-                  date: formatDate(item.obsDatetime) || 'Sem data',
-                  location: item.encounter?.location?.name || 'Sem localidade',
+            ? [
+                {
+                  value: breastfeeding[0].value?.display || 'Sem dados no SESP',
+                  source: {
+                    form: breastfeeding[0].encounter?.form?.display || 'Sem formulário',
+                    date: formatDate(breastfeeding[0].obsDatetime) || 'Sem data',
+                    location: breastfeeding[0].encounter?.location?.name || 'Sem localidade',
+                  },
                 },
-              }))
+              ]
             : [
                 {
                   value: 'Sem dados no SESP',
@@ -317,7 +321,6 @@ onMounted(async () => {
                 },
               ],
       },
-
       {
         title: 'Programa',
         isList: true,
