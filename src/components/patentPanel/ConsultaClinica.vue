@@ -3,91 +3,12 @@
     <!-- Header Section -->
     <header-component />
 
-    <!-- Title -->
-    <div class="q-mt-md q-mb-md text-center text-h6 text-primary">
-      Dados da Consulta Clínica
-    </div>
-
-    <!-- Loading Indicator -->
-    <div v-if="loading" class="q-my-md text-center">
-      <q-spinner-dots color="blue" size="40px" />
-    </div>
-
-    <!-- Cards for Clinical Consultation Data -->
-    <div v-if="!loading">
-      <div
-        v-for="(section, index) in consultaClinicaData"
-        :key="index"
-        class="q-mb-md"
-      >
-        <q-card flat bordered>
-          <!-- Section Header -->
-          <q-card-section
-            class="q-py-sm bg-light-green-1 cursor-pointer"
-            @click="toggleSection(index)"
-          >
-            <div class="row items-center">
-              <div class="col text-weight-bold text-h6">
-                {{ section.title }}
-              </div>
-              <div class="col-auto text-caption text-right text-grey">
-                Fonte
-              </div>
-              <!-- Expand/Collapse Icon -->
-              <q-icon
-                :name="
-                  collapsedSections[index]
-                    ? 'keyboard_arrow_down'
-                    : 'keyboard_arrow_up'
-                "
-                size="sm"
-                color="grey"
-              />
-            </div>
-          </q-card-section>
-
-          <q-separator />
-
-          <!-- Section Content -->
-          <q-card-section v-show="!collapsedSections[index]">
-            <template v-if="section.isList">
-              <div v-for="(item, idx) in section.items" :key="idx">
-                <div class="row items-center q-mb-sm">
-                  <div class="col text-caption">{{ item.value }}</div>
-                  <div class="col-auto text-caption text-right">
-                    <div class="q-mb-xs">
-                      <q-badge color="blue">{{ item.source.form }}</q-badge>
-                    </div>
-                    <div v-if="item.source.date" class="q-mb-xs">
-                      <q-badge color="green">{{ item.source.date }}</q-badge>
-                    </div>
-                  </div>
-                </div>
-                <q-separator
-                  v-if="idx < section.items.length - 1"
-                  class="q-mb-md"
-                />
-              </div>
-            </template>
-            <template v-else>
-              <div class="row items-center">
-                <div class="col text-caption">
-                  {{ section.value || 'Sem dados no SESP' }}
-                </div>
-                <div class="col-auto text-caption text-right">
-                  <div class="badge-container q-mr-sm">
-                    <q-badge color="blue">{{ section.source.form }}</q-badge>
-                  </div>
-                  <div v-if="section.source.date" class="q-mb-xs">
-                    <q-badge color="green">{{ section.source.date }}</q-badge>
-                  </div>
-                </div>
-              </div>
-            </template>
-          </q-card-section>
-        </q-card>
-      </div>
-    </div>
+    <BodyComponent
+      title="Dados da Consulta Clínica"
+      :loading="loading"
+      :summaryData="consultaClinicaData"
+      @toggle-section="toggleSection"
+    />
   </div>
 </template>
 
@@ -95,6 +16,7 @@
 import { inject, ref, onMounted } from 'vue';
 import headerComponent from './headerComponent.vue';
 import consultaClinicaService from 'src/services/patient/ConsultaClinicaService';
+import BodyComponent from './bodyComponent.vue';
 
 // Inject patient data
 const patient = inject('selectedPatient');
@@ -106,6 +28,10 @@ const consultaClinicaData = ref([]);
 // Track collapsed states for each section
 const collapsedSections = ref([]);
 
+// Toggle collapse state for a section
+function toggleSection(index) {
+  collapsedSections.value[index] = !collapsedSections.value[index];
+}
 // Helper function to format date to dd-MM-yyyy
 function formatDate(dateString) {
   if (!dateString) return null;
@@ -115,11 +41,6 @@ function formatDate(dateString) {
     month: '2-digit',
     year: 'numeric',
   });
-}
-
-// Toggle collapse state for a section
-function toggleSection(index) {
-  collapsedSections.value[index] = !collapsedSections.value[index];
 }
 
 // Fetch Clinical Consultation Data

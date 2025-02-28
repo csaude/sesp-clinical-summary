@@ -3,94 +3,12 @@
     <!-- Header Section -->
     <header-component />
 
-    <!-- Title -->
-    <div class="q-mt-md q-mb-md text-center text-h6 text-primary">
-      Resultados Laboratoriais
-    </div>
-
-    <!-- Loading Indicator -->
-    <div v-if="loading" class="q-my-md text-center">
-      <q-spinner-dots color="blue" size="40px" />
-    </div>
-
-    <!-- Cards for Resultados Data -->
-    <div v-if="!loading">
-      <div
-        v-for="(section, index) in resultadosData"
-        :key="index"
-        class="q-mb-md"
-      >
-        <q-card flat bordered>
-          <!-- Section Header -->
-          <q-card-section
-            class="q-py-sm bg-light-green-1 cursor-pointer"
-            @click="toggleSection(index)"
-          >
-            <div class="row items-center">
-              <div class="col text-weight-bold text-h6">
-                {{ section.title }}
-              </div>
-              <div class="col-auto text-caption text-right text-grey">
-                Fonte
-              </div>
-              <!-- Expand/Collapse Icon -->
-              <q-icon
-                :name="
-                  collapsedSections[index]
-                    ? 'keyboard_arrow_down'
-                    : 'keyboard_arrow_up'
-                "
-                size="sm"
-                color="grey"
-              />
-            </div>
-          </q-card-section>
-
-          <q-separator />
-
-          <!-- Section Content -->
-          <q-card-section v-show="!collapsedSections[index]">
-            <template v-if="section.isList">
-              <div v-for="(item, idx) in section.items" :key="idx">
-                <div class="row items-center q-mb-sm">
-                  <div class="col text-caption">{{ item.value }}</div>
-                  <div class="col-auto text-caption text-right">
-                    <div class="q-mb-xs">
-                      <q-badge color="blue">{{ item.source.form }}</q-badge>
-                    </div>
-                    <div v-if="item.source.date" class="q-mb-xs">
-                      <q-badge color="green">{{ item.source.date }}</q-badge>
-                    </div>
-                    <div v-if="item.comment" class="q-mb-xs">
-                      <q-badge color="grey">{{ item.comment }}</q-badge>
-                    </div>
-                  </div>
-                </div>
-                <q-separator
-                  v-if="idx < section.items.length - 1"
-                  class="q-mb-md"
-                />
-              </div>
-            </template>
-            <template v-else>
-              <div class="row items-center">
-                <div class="col text-caption">
-                  {{ section.value || 'Sem dados no SESP' }}
-                </div>
-                <div class="col-auto text-caption text-right">
-                  <div class="badge-container q-mr-sm">
-                    <q-badge color="blue">{{ section.source.form }}</q-badge>
-                  </div>
-                  <div v-if="section.source.date" class="q-mb-xs">
-                    <q-badge color="green">{{ section.source.date }}</q-badge>
-                  </div>
-                </div>
-              </div>
-            </template>
-          </q-card-section>
-        </q-card>
-      </div>
-    </div>
+    <BodyComponent
+      title="Resultados Laboratoriais"
+      :loading="loading"
+      :summaryData="resultadosData"
+      @toggle-section="toggleSection"
+    />
   </div>
 </template>
 
@@ -98,6 +16,7 @@
 import { inject, ref, onMounted } from 'vue';
 import headerComponent from './headerComponent.vue';
 import resultadosLaboratoriaisService from 'src/services/patient/resultadosLaboratoriaisService';
+import BodyComponent from './bodyComponent.vue';
 
 // Inject patient data
 const patient = inject('selectedPatient');
@@ -186,8 +105,8 @@ onMounted(async () => {
     const allVLs = await resultadosLaboratoriaisService.allVLs(
       patient.value.uuid
     );
+console.log('allCD4CoverageFLG=========>', allCD4CoverageFLG);
 
-    console.log('allBaciloscopia=========>', allBaciloscopia);
     // Populate resultadosData
     resultadosData.value = [
       {

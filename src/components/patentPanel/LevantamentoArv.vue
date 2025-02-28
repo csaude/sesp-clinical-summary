@@ -2,78 +2,12 @@
   <div class="q-pb-md">
     <!-- Header Section -->
     <header-component />
-
-    <!-- Title -->
-    <div class="q-mt-md q-mb-md text-center text-h6 text-primary">
-      Levantamento de ARV
-    </div>
-
-    <!-- Loading Indicator -->
-    <div v-if="loading" class="q-my-md text-center">
-      <q-spinner-dots color="blue" size="40px" />
-    </div>
-
-    <!-- Cards for Levantamento Data -->
-    <div v-else>
-      <div
-        v-for="(section, index) in levantamentoData"
-        :key="index"
-        class="q-mb-md"
-      >
-        <q-card flat bordered>
-          <!-- Section Header -->
-          <q-card-section class="q-py-sm bg-light-green-1">
-            <div class="row items-center">
-              <div class="col text-weight-bold text-h6">
-                {{ section.title }}
-              </div>
-              <div class="col-auto text-caption text-right text-grey">
-                Fonte
-              </div>
-            </div>
-          </q-card-section>
-          <q-separator />
-
-          <!-- Section Content -->
-          <q-card-section>
-            <template v-if="section.isList">
-              <div
-                v-for="(item, idx) in section.items"
-                :key="idx"
-                class="q-mb-sm"
-              >
-                <div class="row items-center">
-                  <div class="col text-caption">{{ item.value }}</div>
-                  <div class="col-auto text-caption text-right">
-                    <div class="badge-container q-mr-sm">
-                      <q-badge color="blue">{{ item.source.form }}</q-badge>
-                    </div>
-                    <div v-if="item.source.date" class="badge-container">
-                      <q-badge color="green">{{ item.source.date }}</q-badge>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </template>
-            <template v-else>
-              <div class="row items-center">
-                <div class="col text-caption">
-                  {{ section.value || 'Sem dados no SESP' }}
-                </div>
-                <div class="col-auto text-caption text-right">
-                  <div class="badge-container">
-                    <q-badge color="blue">{{ section.source.form }}</q-badge>
-                  </div>
-                  <div v-if="section.source.date" class="badge-container">
-                    <q-badge color="green">{{ section.source.date }}</q-badge>
-                  </div>
-                </div>
-              </div>
-            </template>
-          </q-card-section>
-        </q-card>
-      </div>
-    </div>
+    <BodyComponent
+      title="Levantamento de ARV"
+      :loading="loading"
+      :summaryData="levantamentoData"
+      @toggle-section="toggleSection"
+    />
   </div>
 </template>
 
@@ -81,6 +15,7 @@
 import { inject, ref, onMounted } from 'vue';
 import headerComponent from './headerComponent.vue';
 import levantamentoARVService from 'src/services/patient/levantamentoARVService';
+import BodyComponent from './bodyComponent.vue';
 
 // Inject patient data
 const patient = inject('selectedPatient');
@@ -89,6 +24,13 @@ const patient = inject('selectedPatient');
 const levantamentoData = ref([]);
 const loading = ref(true); // Loading state
 
+// Track collapsed states for each section
+const collapsedSections = ref([]);
+
+// Toggle collapse state for a section
+function toggleSection(index) {
+  collapsedSections.value[index] = !collapsedSections.value[index];
+}
 // Helper function to format date to dd-MM-yyyy
 function formatDate(dateString) {
   if (!dateString) return null;

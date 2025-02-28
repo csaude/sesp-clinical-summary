@@ -86,7 +86,7 @@ export default {
     // Garantir que formUuids seja sempre um array
     const formUuidArray = Array.isArray(formUuids) ? formUuids : [formUuids];
 
-    const url = `/obs?patient=${patientId}&concept=${concept}&v=custom:(obsDatetime,value,comment,encounter:(uuid,location.name,form:(uuid,display)))`;
+    const url = `/obs?patient=${patientId}&concept=${concept}&v=custom:(obsDatetime,value,comment,encounter:(uuid,location.name,form:(uuid,display)))&limit=12`;
 
     try {
       const response = await api.get(url);
