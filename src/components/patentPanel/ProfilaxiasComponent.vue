@@ -48,7 +48,9 @@
                   <!-- Coluna de Fonte -->
                   <div class="col-5 text-caption text-right">
                     <div class="badge-container text-right">
-                      <q-badge color="blue">{{ item.source.form }}</q-badge>
+                      <q-badge text-color="blue-grey-10" color="white" class="text-bold">
+                        {{ item.source.form }}
+                      </q-badge>
                     </div>
                   </div>
                 </div>
@@ -64,7 +66,9 @@
                 <!-- Coluna de Fonte -->
                 <div class="col-5 text-caption text-right">
                   <div class="badge-container text-right">
-                    <q-badge color="blue">{{ section.source.form }}</q-badge>
+                    <q-badge text-color="blue-grey-10" color="white" class="text-bold">
+                        {{ section.source.form }}
+                      </q-badge>
                   </div>
                 </div>
               </div>
@@ -93,7 +97,9 @@
                   <div class="col text-caption">{{ item.value }}</div>
                   <div class="col-auto text-caption text-right">
                     <div class="badge-container q-mr-sm">
-                      <q-badge color="blue">{{ item.source.form }}</q-badge>
+                      <q-badge text-color="blue-grey-10" color="white" class="text-bold">
+                        {{ item.source.form }}
+                      </q-badge>
                     </div>
                   </div>
                 </div>
@@ -105,10 +111,14 @@
                 <div class="col text-caption">{{ section.value || 'Sem dados no SESP' }}</div>
                 <div class="col-auto text-caption text-right">
                   <div class="badge-container">
-                    <q-badge color="blue">{{ section.source.form }}</q-badge>
+                    <q-badge text-color="blue-grey-10" color="white" class="text-bold">
+                        {{ section.source.form }}
+                      </q-badge>
                   </div>
                   <div v-if="section.source.date" class="badge-container">
-                    <q-badge color="green">{{ section.source.date }}</q-badge>
+                    <q-badge text-color="green-10" color="white" class="text-bold">
+                      {{ section.source.date }}
+                    </q-badge>
                   </div>
                 </div>
 

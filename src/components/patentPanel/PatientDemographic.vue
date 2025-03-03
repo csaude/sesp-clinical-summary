@@ -107,11 +107,9 @@
 
 
   <script setup>
-  import { useRouter } from 'vue-router';
   import { computed, inject } from 'vue';
   import headerComponent from './headerComponent.vue';
   
-  const router = useRouter();
   const patient = inject('selectedPatient');
   
   const formattedBirthdate = computed(() => {
@@ -126,10 +124,7 @@
     });
   });
 
-  
-  function goBack() {
-    router.back();
-  }
+
   </script>
   
   

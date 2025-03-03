@@ -91,7 +91,7 @@ import ProfilaxiasComponent from './steps/ProfilaxiasComponent.vue';
 import RastreioCACUM from './steps/RastreioCACUM.vue';
 import ConfidenteComponent from './steps/ConfidenteComponent.vue';
 
-const slide = ref("1")
+const slide = ref('1')
 
 </script>
 

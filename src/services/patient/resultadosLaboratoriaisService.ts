@@ -86,7 +86,7 @@ export default {
     // Garantir que formUuids seja sempre um array
     const formUuidArray = Array.isArray(formUuids) ? formUuids : [formUuids];
 
-    const url = `/obs?patient=${patientId}&concept=${concept}&v=custom:(obsDatetime,value,comment,encounter:(uuid,location.name,form:(uuid,display)))`;
+    const url = `/obs?patient=${patientId}&concept=${concept}&v=custom:(obsDatetime,value,comment,encounter:(uuid,location.name,form:(uuid,display)))&limit=12`;
 
     try {
       const response = await api.get(url);
@@ -143,7 +143,7 @@ export default {
   async allBaciloscopia(patientId: string) {
     return this.fetchPatientObservations(
       patientId,
-      'b08eb89b-c609-4d15-ab81-53ad7c745332',
+      'e1d1564c-1d5f-11e0-b929-000c29ad1d07',
       '8377e4ff-d0fe-44a5-81c3-74c9040fd5f8'
     );
   },
@@ -151,7 +151,7 @@ export default {
   async allBaciloscopiaFC(patientId: string) {
     return this.fetchPatientObservations(
       patientId,
-      'b08eb89b-c609-4d15-ab81-53ad7c745332',
+      'e1d1564c-1d5f-11e0-b929-000c29ad1d07',
       '3c2d563a-5d37-4735-a125-d3943a3de30a'
     );
   },

@@ -132,7 +132,8 @@ const openPatient = async (uuid, name, nid) => {
 
       // Build patient info
       const currentDate = new Date().toISOString();
-      const userName = sessionStorage.getItem('username') || 'Usuário';
+      const userInfo = sessionStorage.getItem('userInfo');
+      const userName = userInfo ? JSON.parse(userInfo).username || 'Usuário' : 'Usuário';
 
       const facilityData = sessionStorage.getItem('selectedFacility');
       const facility = facilityData ? JSON.parse(facilityData) : null;

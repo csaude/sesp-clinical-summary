@@ -1,7 +1,7 @@
 <template>
   <div>
-    <!-- Header Section -->
-    <div v-if="!showUsageReport && !showSearchComponent && !showSettings">
+    <!-- Header Section: Show only when no component is selected -->
+    <div v-if="currentComponent === 'HomeComponent'">
       <div class="q-mt-md text-center">
         <q-avatar size="70px" font-size="56px" color="primary" text-color="white">
           <q-icon name="person" />
@@ -15,21 +15,21 @@
       <!-- Buttons Section -->
       <div class="q-pa-md">
         <div class="row">
-          <q-card class="col-12 col-sm-6 button-card q-mb-md" @click="handleSumarioClinicoClick">
+          <q-card class="col-12 col-sm-6 button-card q-mb-md" @click="navigateToComponent('SearchComponent')">
             <q-card-section>
               <q-icon name="assignment" size="3em" color="red-6" />
               <div class="q-mt-sm text-bold">Sumário Clínico</div>
             </q-card-section>
           </q-card>
 
-          <q-card class="col-12 col-sm-6 button-card q-mb-md" @click="showUsageReportComponent">
+          <q-card class="col-12 col-sm-6 button-card q-mb-md" @click="navigateToComponent('UsageReport')">
             <q-card-section>
               <q-icon name="bar_chart" size="3em" color="green-6" />
               <div class="q-mt-sm text-bold">Relatório de Uso</div>
             </q-card-section>
           </q-card>
 
-          <q-card class="col-12 col-sm-6 button-card q-mb-md" @click="showSettingsComponent">
+          <q-card class="col-12 col-sm-6 button-card q-mb-md" @click="navigateToComponent('Settings')">
             <q-card-section>
               <q-icon name="settings" size="3em" color="amber-9" />
               <div class="q-mt-sm text-bold">Configurações</div>
@@ -50,37 +50,41 @@
       </div>
     </div>
 
-    <!-- Usage Report Section -->
-    <UsageReport v-if="showUsageReport" @back="hideUsageReportComponent" />
-
-    <!-- Search Component -->
-    <SearchComponent v-if="showSearchComponent" />
-
-    <!-- Settings Component -->
-    <Settings v-if="showSettings" @back="hideSettingsComponent" />
+    <!-- Dynamically Render the Selected Component -->
+    <component :is="currentComponent" v-if="currentComponent !== 'HomeComponent'" @back="goBackToHome" />
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, onMounted, computed } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import userService from 'src/services/user/userService';
 import { version } from '../../package.json';
 import { useSwal } from 'src/composables/shared/dialog/dialog';
+
+// Import components
 import UsageReport from 'src/components/report/UsageReport.vue';
 import SearchComponent from 'components/SearchComponent.vue';
 import Settings from 'src/components/home/Settings.vue';
 
-// State variables
+// Router & state setup
 const router = useRouter();
+const route = useRoute();
 const username = ref('');
 const appVersion = version;
 const { alertWarningAction } = useSwal();
-const showUsageReport = ref(false);
-const showSearchComponent = ref(false);
-const showSettings = ref(false);
 
-// Check for sessionId on mount
+// **Map query parameter to the actual component**
+const componentMap = {
+  SearchComponent,
+  UsageReport,
+  Settings
+};
+
+// Compute the active component from the route query
+const currentComponent = computed(() => componentMap[route.query.component] || 'HomeComponent');
+
+// Load username on mount
 onMounted(() => {
   const sessionId = sessionStorage.getItem('sessionId');
   if (!sessionId) {
@@ -99,30 +103,17 @@ const loadUsername = () => {
   }
 };
 
-// Button action functions
-const handleSumarioClinicoClick = () => {
-  resetStates();
-  showSearchComponent.value = true;
+// Navigate to a specific component
+const navigateToComponent = (componentName) => {
+  router.push({ path: '/home', query: { component: componentName } });
 };
 
-const showUsageReportComponent = () => {
-  resetStates();
-  showUsageReport.value = true;
+// Navigate back to home
+const goBackToHome = () => {
+  router.push({ path: '/home' }); // Reset component query
 };
 
-const hideUsageReportComponent = () => {
-  showUsageReport.value = false;
-};
-
-const showSettingsComponent = () => {
-  resetStates();
-  showSettings.value = true;
-};
-
-const hideSettingsComponent = () => {
-  showSettings.value = false;
-};
-
+// Handle Logout
 const handleLogout = async () => {
   const confirmed = await alertWarningAction(
     'Tem certeza de que deseja terminar a sessão e sair do aplicativo?'
@@ -131,30 +122,15 @@ const handleLogout = async () => {
   if (confirmed) {
     try {
       await userService.logout();
+      router.push('/login');
     } catch (error) {
       console.error('Logout error:', error);
     }
   }
 };
-
-// Reset states for dynamic components
-const resetStates = () => {
-  showUsageReport.value = false;
-  showSearchComponent.value = false;
-  showSettings.value = false;
-};
 </script>
 
 <style scoped>
-/* General Styling */
-.login-page {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  background-color: #f5f5f5;
-}
-
 .button-card {
   text-align: center;
   cursor: pointer;
@@ -164,13 +140,5 @@ const resetStates = () => {
 .button-card:hover {
   transform: scale(1.05);
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.q-icon {
-  margin-bottom: 0.5rem;
-}
-
-.text-bold {
-  font-weight: 700;
 }
 </style>

@@ -305,7 +305,15 @@ const handleLogin = async () => {
 
     // Save updated facilities back to local storage
     localStorage.setItem('facilities', JSON.stringify(updatedFacilities));
-
+    // Check if settings exist before saving
+    if (!localStorage.getItem('settings')) {
+      const defaultSettings = {
+        autoSendUsage: true,
+        rememberUsername: true,
+        autoLogout: 15
+      };
+      localStorage.setItem('settings', JSON.stringify(defaultSettings));
+    }
     // Redirect to main page after successful login
     router.push('/home');
   } catch (error) {

@@ -74,12 +74,13 @@ const inactivityTimer = ref(null);
 
 // Navigation links
 const linksList = [
-  { title: 'Inicio', caption: 'Ecrã Principal', icon: 'home', link: '/home' },
-  { title: 'Sumário Clinico', caption: 'Aceder ao Sumário Clinico', icon: 'description', link: '/summary' },
-  { title: 'Relatório de Uso', caption: 'Aceder ao Relatório de Uso', icon: 'query_stats', link: '/report' },
-  { title: 'Configurações', caption: 'Gerir Configurações', icon: 'settings', link: '/settings' },
+  { title: 'Inicio', caption: 'Ecrã Principal', icon: 'home', link: { path: '/home' } },
+  { title: 'Sumário Clínico', caption: 'Aceder ao Sumário Clínico', icon: 'description', link: { path: '/home', query: { component: 'SearchComponent' } } },
+  { title: 'Relatório de Uso', caption: 'Aceder ao Relatório de Uso', icon: 'query_stats', link: { path: '/home', query: { component: 'UsageReport' } } },
+  { title: 'Configurações', caption: 'Gerir Configurações', icon: 'settings', link: { path: '/home', query: { component: 'Settings' } } },
   { title: 'Sair', caption: 'Terminar Sessão', icon: 'logout', link: 'logout' }
 ];
+
 
 // Load settings and username on component mount
 onMounted(() => {
@@ -192,16 +193,18 @@ function toggleLeftDrawer() {
 
 // Handle navigation
 async function handleNavigation(link) {
+  leftDrawerOpen.value = false;
   if (link === 'logout') {
     const confirmed = await alertWarningAction('Tem certeza de que deseja terminar a sessão e sair do aplicativo?');
     if (confirmed) {
       handleLogout();
     }
   } else {
-    router.push(link);
-    leftDrawerOpen.value = false; // Close the drawer after navigation
+    router.push(link); // This works for both string and object navigation
+    leftDrawerOpen.value = false;
   }
 }
+
 </script>
 
 <style scoped>
