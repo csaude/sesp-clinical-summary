@@ -55,71 +55,106 @@ onMounted(async () => {
   try {
     const patientId = patient.value.uuid;
 
-    const [ARTStartDate, HfARTStart, PregnancyAtARTStart, WHOStagingAtARTStart] =
-      await Promise.all([
-        inicioTarvService.getARTStartDate(patientId),
-        inicioTarvService.getHealthFacilityAtARTStart(patientId),
-        inicioTarvService.getPregnancyStatusAtARTStart(patientId),
-        inicioTarvService.getWHOStagingAtARTStart(patientId),
-      ]);
+    const [
+      ARTStartDate,
+      HfARTStart,
+      PregnancyAtARTStart,
+      WHOStagingAtARTStart,
+    ] = await Promise.all([
+      inicioTarvService.getARTStartDate(patientId),
+      inicioTarvService.getHealthFacilityAtARTStart(patientId),
+      inicioTarvService.getPregnancyStatusAtARTStart(patientId),
+      inicioTarvService.getWHOStagingAtARTStart(patientId),
+    ]);
+
+    console.log(
+      'ARTStartDate=========>',
+      JSON.stringify(ARTStartDate),
+      null,
+      2
+    );
 
     // Populate inicioTARVData
     inicioTARVData.value = [
       {
         title: 'Data de Início TARV',
         isList: true,
-        items: ARTStartDate.length > 0
-          ? ARTStartDate.map((item) => ({
-              value: formatDate(item.value) || 'Sem dados no SESP',
-              source: {
-                form: item.encounter?.form?.display || 'Sem formulário',
-                date: formatDate(item.obsDatetime) || 'Sem data',
-                location: item.encounter?.location?.name || 'Sem localidade',
-              },
-            }))
-          : [{ value: 'Sem dados no SESP', source: { form: 'FICHA RESUMO', date: '', location: '' } }],
+        items:
+          ARTStartDate.length > 0
+            ? ARTStartDate.map((item) => ({
+                value: formatDate(item.value) || 'Sem dados no SESP',
+                source: {
+                  form: item.encounter?.form?.display || 'Sem formulário',
+                  date: formatDate(item.obsDatetime) || 'Sem data',
+                  location: item.encounter?.location?.name || 'Sem localidade',
+                },
+              }))
+            : [
+                {
+                  value: 'Sem dados no SESP',
+                  source: { form: 'FICHA RESUMO', date: '', location: '' },
+                },
+              ],
       },
       {
         title: 'Unidade Sanitária de Início TARV',
         isList: true,
-        items: HfARTStart.length > 0
-          ? HfARTStart.map((item) => ({
-              value: item.value || 'Sem dados no SESP',
-              source: {
-                form: item.encounter?.form?.display || 'Sem formulário',
-                date: formatDate(item.obsDatetime) || 'Sem data',
-                location: item.encounter?.location?.name || 'Sem localidade',
-              },
-            }))
-          : [{ value: 'Sem dados no SESP', source: { form: 'FICHA RESUMO', date: '', location: '' } }],
+        items:
+          HfARTStart.length > 0
+            ? HfARTStart.map((item) => ({
+                value: item.value || 'Sem dados no SESP',
+                source: {
+                  form: item.encounter?.form?.display || 'Sem formulário',
+                  date: formatDate(item.obsDatetime) || 'Sem data',
+                  location: item.encounter?.location?.name || 'Sem localidade',
+                },
+              }))
+            : [
+                {
+                  value: 'Sem dados no SESP',
+                  source: { form: 'FICHA RESUMO', date: '', location: '' },
+                },
+              ],
       },
       {
         title: 'Estado de Gravidez no Início TARV',
         isList: true,
-        items: PregnancyAtARTStart.length > 0
-          ? PregnancyAtARTStart.map((item) => ({
-              value: item.value.display || 'Sem dados no SESP',
-              source: {
-                form: item.source || 'Sem formulário',
-                date: formatDate(item.obsDatetime) || 'Sem data',
-                location: item.encounter?.location?.name || 'Sem localidade',
-              },
-            }))
-          : [{ value: 'Sem dados no SESP', source: { form: 'FICHA RESUMO', date: '', location: '' } }],
+        items:
+          PregnancyAtARTStart.length > 0
+            ? PregnancyAtARTStart.map((item) => ({
+                value: item.value.display || 'Sem dados no SESP',
+                source: {
+                  form: item.source || 'Sem formulário',
+                  date: formatDate(item.obsDatetime) || 'Sem data',
+                  location: item.encounter?.location?.name || 'Sem localidade',
+                },
+              }))
+            : [
+                {
+                  value: 'Sem dados no SESP',
+                  source: { form: 'FICHA RESUMO', date: '', location: '' },
+                },
+              ],
       },
       {
         title: 'Estado de OMS no Início TARV',
         isList: true,
-        items: WHOStagingAtARTStart.length > 0
-          ? WHOStagingAtARTStart.map((item) => ({
-              value: item.value.display || 'Sem dados no SESP',
-              source: {
-                form: item.source || 'Sem formulário',
-                date: formatDate(item.obsDatetime) || 'Sem data',
-                location: item.encounter?.location?.name || 'Sem localidade',
-              },
-            }))
-          : [{ value: 'Sem dados no SESP', source: { form: 'FICHA RESUMO', date: '', location: '' } }],
+        items:
+          WHOStagingAtARTStart.length > 0
+            ? WHOStagingAtARTStart.map((item) => ({
+                value: item.value.display || 'Sem dados no SESP',
+                source: {
+                  form: item.source || 'Sem formulário',
+                  date: formatDate(item.obsDatetime) || 'Sem data',
+                  location: item.encounter?.location?.name || 'Sem localidade',
+                },
+              }))
+            : [
+                {
+                  value: 'Sem dados no SESP',
+                  source: { form: 'FICHA RESUMO', date: '', location: '' },
+                },
+              ],
       },
     ];
   } catch (error) {
@@ -129,7 +164,6 @@ onMounted(async () => {
   }
 });
 </script>
-
 
 <style scoped>
 .q-card {

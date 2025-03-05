@@ -113,47 +113,94 @@ export default {
     return mdsData;
   },
 
-  getPregnancyStatus(patientId: string): Promise<any[]> {
-    const url = `/obs?patient=${patientId}&concept=e1e056a6-1d5f-11e0-b929-000c29ad1d07&v=custom:(obsDatetime,value,encounter:(uuid,location.name,form:(uuid,display)))&limit=5`;
+  async getPregnancyStatus(patientId: string): Promise<any[]> {
+    const url = `/encounter?patient=${patientId}&encounterType=e278f956-1d5f-11e0-b929-000c29ad1d07&v=full&limit=1&order=desc`;
+    const response = await api.get(url);
 
-    return api
-      .get(url)
-      .then((response) => {
-        // Validate and filter response data
-        if (response.data?.results) {
-          const pregnancy = response.data.results.filter(
-            (item: any) =>
-              item?.encounter?.form?.uuid ===
-              '3c2d563a-5d37-4735-a125-d3943a3de30a'
-          );
+    const data = response.data.results[0]?.obs.filter(
+      (item: any) =>
+        item.concept.uuid === 'e1e056a6-1d5f-11e0-b929-000c29ad1d07'
+    );
+    if (data?.length > 0) {
+      const url1 = `/obs?patient=${patientId}&concept=e1e056a6-1d5f-11e0-b929-000c29ad1d07&v=custom:(obsDatetime,value,encounter:(uuid,location.name,form:(uuid,display)))&limit=5`;
 
-          return pregnancy || [];
-        }
+      return api
+        .get(url1)
+        .then((response) => {
+          // Validate and filter response data
+          if (response.data?.results) {
+            const pregnancy = response.data.results.filter(
+              (item: any) =>
+                item?.encounter?.form?.uuid ===
+                '3c2d563a-5d37-4735-a125-d3943a3de30a'
+            );
 
-        // Return empty array if no valid data
-        return [];
-      })
-      .catch((error) => {
-        console.error('Error fetching pregnancy status:', error);
-        return [];
-      });
+            return pregnancy || [];
+          }
+
+          // Return empty array if no valid data
+          return [];
+        })
+        .catch((error) => {
+          console.error('Error fetching pregnancy status:', error);
+          return [];
+        });
+    }
+
+    return data || [];
   },
 
   async getBreastfeedingStatus(patientId: string): Promise<any[]> {
-    const url = `/obs?patient=${patientId}&concept=bc4fe755-fc8f-49b8-9956-baf2477e8313&v=custom:(obsDatetime,value,encounter:(uuid,location.name,form:(uuid,display)))&limit=5`;
-
+    const url = `/encounter?patient=${patientId}&encounterType=e278f956-1d5f-11e0-b929-000c29ad1d07&v=full&limit=1&order=desc`;
     const response = await api.get(url);
 
-    //const data=JSON.parse(response.data);
-
-    const brestFeeding = response.data.results.filter(
+    const data = response.data.results[0]?.obs.filter(
       (item: any) =>
-        item.encounter.form.uuid == '3c2d563a-5d37-4735-a125-d3943a3de30a'
+        item.concept.uuid === 'bc4fe755-fc8f-49b8-9956-baf2477e8313'
     );
+    if (data?.length > 0) {
+      const url1 = `/obs?patient=${patientId}&concept=bc4fe755-fc8f-49b8-9956-baf2477e8313&v=custom:(obsDatetime,value,encounter:(uuid,location.name,form:(uuid,display)))&limit=5`;
 
-    // Return the filtered results
-    return brestFeeding || [];
+      return api
+        .get(url1)
+        .then((response) => {
+          // Validate and filter response data
+          if (response.data?.results) {
+            const pregnancy = response.data.results.filter(
+              (item: any) =>
+                item?.encounter?.form?.uuid ===
+                '3c2d563a-5d37-4735-a125-d3943a3de30a'
+            );
+
+            return pregnancy || [];
+          }
+
+          // Return empty array if no valid data
+          return [];
+        })
+        .catch((error) => {
+          console.error('Error fetching pregnancy status:', error);
+          return [];
+        });
+    }
+    return data || [];
   },
+
+  // async getBreastfeedingStatus(patientId: string): Promise<any[]> {
+  //   const url = `/obs?patient=${patientId}&concept=bc4fe755-fc8f-49b8-9956-baf2477e8313&v=custom:(obsDatetime,value,encounter:(uuid,location.name,form:(uuid,display)))&limit=5`;
+
+  //   const response = await api.get(url);
+
+  //   //const data=JSON.parse(response.data);
+
+  //   const brestFeeding = response.data.results.filter(
+  //     (item: any) =>
+  //       item.encounter.form.uuid == '3c2d563a-5d37-4735-a125-d3943a3de30a'
+  //   );
+
+  // Return the filtered results
+  //   return brestFeeding || [];
+  // },
 
   async getProgramEnrollment(patientId: string): Promise<any> {
     const url = `/programenrollment?patient=${patientId}&v=full`;

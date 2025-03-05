@@ -266,10 +266,12 @@ export default {
       response.data?.results?.filter((item: any) => {
         if (item.encounter && item.encounter.form) {
           const uuid: string = item.encounter.form.uuid?.trim();
-          return [
-            '3c2d563a-5d37-4735-a125-d3943a3de30a',
-            'e1d9facc-1d5f-11e0-b929-000c29ad1d07',
-          ].includes(uuid);
+          return (
+            ['3c2d563a-5d37-4735-a125-d3943a3de30a'].includes(uuid) &&
+            item.value !== null &&
+            item.value.uuid !== undefined &&
+            item.value.uuid == 'e1d9ef28-1d5f-11e0-b929-000c29ad1d07'
+          );
         }
         return false;
       }) || []
@@ -284,10 +286,12 @@ export default {
       response.data?.results?.filter((item: any) => {
         if (item.encounter && item.encounter.form) {
           const uuid: string = item.encounter.form.uuid?.trim();
-          return [
-            '3c2d563a-5d37-4735-a125-d3943a3de30a',
-            'e1d9facc-1d5f-11e0-b929-000c29ad1d07',
-          ].includes(uuid);
+          return (
+            ['3c2d563a-5d37-4735-a125-d3943a3de30a'].includes(uuid) &&
+            item.value !== null &&
+            item.value.uuid !== undefined &&
+            item.value.uuid == 'e1d9facc-1d5f-11e0-b929-000c29ad1d07'
+          );
         }
         return false;
       }) || []
@@ -297,11 +301,8 @@ export default {
   async IPTEndFichaFILT(patientId: string): Promise<any[]> {
     return this.fetchPatientObservations(
       patientId,
-      '2616b3c9-9a99-4b9a-b673-10871f4a4c71',
-      [
-        '3c2d563a-5d37-4735-a125-d3943a3de30a',
-        'e1d9facc-1d5f-11e0-b929-000c29ad1d07',
-      ]
+      'd5c15047-58f3-4eb2-9f98-af82e3531cb5',
+      ['e28b23a6-1d5f-11e0-b929-000c29ad1d07']
     );
   },
 };

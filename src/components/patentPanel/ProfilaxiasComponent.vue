@@ -13,23 +13,34 @@
       <q-spinner-dots color="blue" size="40px" />
     </div>
 
-    
     <div v-else>
       <!-- Cards for TPT/TPI -->
-      <div v-for="(section, index) in profilaxiaData" :key="index" class="q-mb-md">
+      <div
+        v-for="(section, index) in profilaxiaData"
+        :key="index"
+        class="q-mb-md"
+      >
         <q-card flat bordered>
           <!-- Section Header -->
-          <q-card-section 
+          <q-card-section
             class="q-py-sm bg-light-green-1 cursor-pointer"
             @click="toggleSection(index)"
           >
             <div class="row items-center">
-              <div class="col text-weight-bold text-h6">Profilaxia({{ section.title }})</div>
-              <div class="col-auto text-caption text-right text-grey">Fonte</div>
+              <div class="col text-weight-bold text-h6">
+                Profilaxia({{ section.title }})
+              </div>
+              <div class="col-auto text-caption text-right text-grey">
+                Fonte
+              </div>
               <!-- Expand/Collapse Icon -->
-              <q-icon 
-                :name="collapsedSections[index] ? 'keyboard_arrow_down' : 'keyboard_arrow_up'"
-                size="sm" 
+              <q-icon
+                :name="
+                  collapsedSections[index]
+                    ? 'keyboard_arrow_down'
+                    : 'keyboard_arrow_up'
+                "
+                size="sm"
                 color="grey"
               />
             </div>
@@ -39,36 +50,59 @@
           <!-- Section Content -->
           <q-card-section v-show="!collapsedSections[index]">
             <template v-if="section.isList">
-              <div v-for="(item, idx) in section.items" :key="idx" class="q-mb-sm">
+              <div
+                v-for="(item, idx) in section.items"
+                :key="idx"
+                class="q-mb-sm"
+              >
                 <div class="row items-center q-mb-sm">
                   <!-- Coluna de Profilaxia e Data de Início de TPT -->
-                  <div class="col text-caption" v-if="item.value">{{ item.source.profilaxia }} ({{ item.value }})</div>
-                  <div class="col text-caption" v-else>{{ item.source.profilaxia }}</div>
+                  <div class="col text-caption" v-if="item.value">
+                    {{ item.source.profilaxia }} ({{ item.value }})
+                  </div>
+                  <div class="col text-caption" v-else>
+                    {{ item.source.profilaxia }}
+                  </div>
 
                   <!-- Coluna de Fonte -->
                   <div class="col-5 text-caption text-right">
                     <div class="badge-container text-right">
-                      <q-badge text-color="blue-grey-10" color="white" class="text-bold">
+                      <q-badge
+                        text-color="blue-grey-10"
+                        color="white"
+                        class="text-bold"
+                      >
                         {{ item.source.form }}
                       </q-badge>
                     </div>
                   </div>
                 </div>
-                <q-separator v-if="idx < section.items.length - 1" class="q-mb-md" />
+                <q-separator
+                  v-if="idx < section.items.length - 1"
+                  class="q-mb-md"
+                />
               </div>
             </template>
             <template v-else>
               <div class="row items-center">
                 <!-- Coluna de Profilaxia e Data de Início de TPT -->
-                <div class="col text-caption" v-if="item.value">{{ item.source.profilaxia }} ({{ item.value }})</div>
-                <div class="col text-caption" v-else>{{ item.source.profilaxia }}</div>
+                <div class="col text-caption" v-if="item.value">
+                  {{ item.source.profilaxia }} ({{ item.value }})
+                </div>
+                <div class="col text-caption" v-else>
+                  {{ item.source.profilaxia }}
+                </div>
 
                 <!-- Coluna de Fonte -->
                 <div class="col-5 text-caption text-right">
                   <div class="badge-container text-right">
-                    <q-badge text-color="blue-grey-10" color="white" class="text-bold">
-                        {{ section.source.form }}
-                      </q-badge>
+                    <q-badge
+                      text-color="blue-grey-10"
+                      color="white"
+                      class="text-bold"
+                    >
+                      {{ section.source.form }}
+                    </q-badge>
                   </div>
                 </div>
               </div>
@@ -78,13 +112,21 @@
       </div>
 
       <!-- Cards for anything else-->
-      <div v-for="(section, index) in resultadosData" :key="index" class="q-mb-md">
+      <div
+        v-for="(section, index) in resultadosData"
+        :key="index"
+        class="q-mb-md"
+      >
         <q-card flat bordered>
           <!-- Section Header -->
           <q-card-section class="q-py-sm bg-light-green-1">
             <div class="row items-center">
-              <div class="col text-weight-bold text-h6">{{ section.title }}</div>
-              <div class="col-auto text-caption text-right text-grey">Fonte</div>
+              <div class="col text-weight-bold text-h6">
+                {{ section.title }}
+              </div>
+              <div class="col-auto text-caption text-right text-grey">
+                Fonte
+              </div>
             </div>
           </q-card-section>
           <q-separator />
@@ -92,36 +134,56 @@
           <!-- Section Content -->
           <q-card-section>
             <template v-if="section.isList">
-              <div v-for="(item, idx) in section.items" :key="idx" class="q-mb-sm">
+              <div
+                v-for="(item, idx) in section.items"
+                :key="idx"
+                class="q-mb-sm"
+              >
                 <div class="row items-center">
                   <div class="col text-caption">{{ item.value }}</div>
                   <div class="col-auto text-caption text-right">
                     <div class="badge-container q-mr-sm">
-                      <q-badge text-color="blue-grey-10" color="white" class="text-bold">
+                      <q-badge
+                        text-color="blue-grey-10"
+                        color="white"
+                        class="text-bold"
+                      >
                         {{ item.source.form }}
                       </q-badge>
                     </div>
                   </div>
                 </div>
-                <q-separator v-if="idx < section.items.length - 1" class="q-mb-md" />
+                <q-separator
+                  v-if="idx < section.items.length - 1"
+                  class="q-mb-md"
+                />
               </div>
             </template>
             <template v-else>
               <div class="row items-center">
-                <div class="col text-caption">{{ section.value || 'Sem dados no SESP' }}</div>
+                <div class="col text-caption">
+                  {{ section.value || 'Sem dados no SESP' }}
+                </div>
                 <div class="col-auto text-caption text-right">
                   <div class="badge-container">
-                    <q-badge text-color="blue-grey-10" color="white" class="text-bold">
-                        {{ section.source.form }}
-                      </q-badge>
+                    <q-badge
+                      text-color="blue-grey-10"
+                      color="white"
+                      class="text-bold"
+                    >
+                      {{ section.source.form }}
+                    </q-badge>
                   </div>
                   <div v-if="section.source.date" class="badge-container">
-                    <q-badge text-color="green-10" color="white" class="text-bold">
+                    <q-badge
+                      text-color="green-10"
+                      color="white"
+                      class="text-bold"
+                    >
                       {{ section.source.date }}
                     </q-badge>
                   </div>
                 </div>
-
               </div>
             </template>
           </q-card-section>
@@ -132,36 +194,36 @@
 </template>
 
 <script setup>
-  import { inject, ref, onMounted } from 'vue';
-  import headerComponent from './headerComponent.vue';
-  import profilaxiasService from 'src/services/patient/profilaxiasService';
+import { inject, ref, onMounted } from 'vue';
+import headerComponent from './headerComponent.vue';
+import profilaxiasService from 'src/services/patient/profilaxiasService';
 
-  // Inject patient data
-  const patient = inject('selectedPatient');
+// Inject patient data
+const patient = inject('selectedPatient');
 
-  // Reactive data for Resultados Laboratoriais
-  const profilaxiaData = ref([]);
-  const resultadosData = ref([]);
-  const loading = ref(true); // Loading state
-  const collapsedSections = ref([]); // Track collapsed states for each section
+// Reactive data for Resultados Laboratoriais
+const profilaxiaData = ref([]);
+const resultadosData = ref([]);
+const loading = ref(true); // Loading state
+const collapsedSections = ref([]); // Track collapsed states for each section
 
-  // Helper function to format date to dd-MM-yyyy
-  function formatDate(dateString) {
-    if (!dateString) return null;
-    const date = new Date(dateString);
-    return date.toLocaleDateString('pt-PT', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    });
-  }
+// Helper function to format date to dd-MM-yyyy
+function formatDate(dateString) {
+  if (!dateString) return null;
+  const date = new Date(dateString);
+  return date.toLocaleDateString('pt-PT', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  });
+}
 
-  // Toggle collapse state for a section
-  function toggleSection(index) {
-    collapsedSections.value[index] = !collapsedSections.value[index];
-  }
+// Toggle collapse state for a section
+function toggleSection(index) {
+  collapsedSections.value[index] = !collapsedSections.value[index];
+}
 
-  onMounted(async () => {
+onMounted(async () => {
   if (!patient.value) {
     console.error('Patient data is missing.');
     loading.value = false;
@@ -169,13 +231,22 @@
   }
 
   try {
-  
-    const allIPTStart = await profilaxiasService.allIPTStart(patient.value.uuid)
-    const allIPTEnd = await profilaxiasService.allIPTEnd(patient.value.uuid)
-    const CTZStartFichaClinica = await profilaxiasService.CTZStartFichaClinica(patient.value.uuid)
-    const IPTEndFichaFILT = await profilaxiasService.IPTEndFichaFILT(patient.value.uuid)
+    const allIPTStart = await profilaxiasService.allIPTStart(
+      patient.value.uuid
+    );
+    const allIPTEnd = await profilaxiasService.allIPTEnd(patient.value.uuid);
+    const CTZStartFichaClinica = await profilaxiasService.CTZStartFichaClinica(
+      patient.value.uuid
+    );
+    const IPTEndFichaFILT = await profilaxiasService.IPTEndFichaFILT(
+      patient.value.uuid
+    );
 
-    const expectedForms = ['FICHA RESUMO', 'FICHA CLINICA', 'FICHA DE SEGUIMENTO'];
+    const expectedForms = [
+      'FICHA RESUMO',
+      'FICHA CLINICA',
+      'FICHA DE SEGUIMENTO',
+    ];
 
     // Map data for `allIPTStart`
     const startItems = allIPTStart.map((item) => ({
@@ -241,8 +312,12 @@
           : 'Sem dados no SESP',
         source: IPTEndFichaFILT[0]
           ? {
-              form: IPTEndFichaFILT[0]?.encounter?.form?.display || 'Sem formulário',
-              date: formatDate(IPTEndFichaFILT[0]?.obsDatetime) || 'Sem dados no SESP',
+              form:
+                IPTEndFichaFILT[0]?.encounter?.form?.display ||
+                'Sem formulário',
+              date:
+                formatDate(IPTEndFichaFILT[0]?.obsDatetime) ||
+                'Sem dados no SESP',
             }
           : { form: 'FILT', date: '', location: '' },
       },
@@ -253,51 +328,64 @@
           : 'Sem dados no SESP',
         source: IPTEndFichaFILT[0]
           ? {
-              form: IPTEndFichaFILT[0]?.encounter?.form?.display || 'Sem formulário',
-              date: formatDate(IPTEndFichaFILT[0]?.obsDatetime) || 'Sem dados no SESP',
+              form:
+                IPTEndFichaFILT[0]?.encounter?.form?.display ||
+                'Sem formulário',
+              date:
+                formatDate(IPTEndFichaFILT[0]?.obsDatetime) ||
+                'Sem dados no SESP',
             }
           : { form: 'FILT', date: '', location: '' },
       },
       {
         title: 'Data de início de CTZ',
         isList: true,
-        items: CTZStartFichaClinica.length > 0
-          ? CTZStartFichaClinica.map((item) => ({
-              value: item.value.display ? formatDate(item.obsDatetime) : item?.value,
-              source: {
-                form: item.encounter?.form?.display || 'Sem dados no SESP',
-                date: formatDate(item.obsDatetime) || 'Sem dados no SESP',
-              },
-            }))
-          : [{ 
-              value: 'Sem dados no SESP', 
-              source: { form: 'FICHA CLINICA', date: '', location: '' } 
-            }],
+        items:
+          CTZStartFichaClinica.length > 0
+            ? CTZStartFichaClinica.map((item) => ({
+                value: item.value.display
+                  ? formatDate(item.obsDatetime)
+                  : item?.value,
+                source: {
+                  form: item.encounter?.form?.display || 'Sem dados no SESP',
+                  date: formatDate(item.obsDatetime) || 'Sem dados no SESP',
+                },
+              }))
+            : [
+                {
+                  value: 'Sem dados no SESP',
+                  source: { form: 'FICHA CLINICA', date: '', location: '' },
+                },
+              ],
       },
       {
         title: 'Data do Fim de CTZ',
         isList: true,
-        items: IPTEndFichaFILT.length > 0
-          ? IPTEndFichaFILT.map((item) => ({
-              value: item.value.display ? formatDate(item.obsDatetime) : item?.value,
-              source: {
-                form: item.encounter?.form?.display || 'Sem dados no SESP',
-                date: formatDate(item.obsDatetime) || 'Sem dados no SESP',
-              },
-            }))
-          : [{ 
-              value: 'Sem dados no SESP', 
-              source: { form: 'FICHA CLINICA', date: '', location: '' } 
-            }],
+        items:
+          IPTEndFichaFILT.length > 0
+            ? IPTEndFichaFILT.map((item) => ({
+                value: item.value.display
+                  ? formatDate(item.obsDatetime)
+                  : item?.value,
+                source: {
+                  form: item.encounter?.form?.display || 'Sem dados no SESP',
+                  date: formatDate(item.obsDatetime) || 'Sem dados no SESP',
+                },
+              }))
+            : [
+                {
+                  value: 'Sem dados no SESP',
+                  source: { form: 'FICHA CLINICA', date: '', location: '' },
+                },
+              ],
       },
-    ]
-    } catch (error) {
-      console.error('Error fetching Levantamento ARV data:', error);
-    } finally {
-      loading.value = false; // Stop loading spinner
-    }
+    ];
+  } catch (error) {
+    console.error('Error fetching Levantamento ARV data:', error);
+  } finally {
+    loading.value = false; // Stop loading spinner
+  }
 });
-
 </script>
 
 <style scoped>
