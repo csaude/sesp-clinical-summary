@@ -61,16 +61,15 @@ onMounted(async () => {
     // Populate rastreioData
     rastreioData.value = [
       {
-        title: 'VIA: Data do último rastreio',
+        title: 'VIA: Resultado e Data do último rastreio',
         isList: true,
         items:
           rastreioCacumData.length > 0
             ? rastreioCacumData.map((item) => ({
-                value:
-                  formatDate(item.encounterDatetime) || 'Sem dados no SESP',
+                value: item.value.display || 'Sem dados no SESP',
                 source: {
                   form: item.encounter?.form?.display || 'CCU: RASTREIO',
-                  date: formatDate(item.encounterDatetime) || 'Sem data',
+                  date: formatDate(item.obsDatetime) || 'Sem data',
                 },
               }))
             : [

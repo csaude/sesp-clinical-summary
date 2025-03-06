@@ -191,7 +191,7 @@ export default {
   async allALT(patientId: string) {
     return this.fetchPatientObservations(
       patientId,
-      'e1d43a74-1d5f-11e0-b929-000c29ad1d07',
+      'e1d43c36-1d5f-11e0-b929-000c29ad1d07',
       '8377e4ff-d0fe-44a5-81c3-74c9040fd5f8'
     );
   },
@@ -199,7 +199,7 @@ export default {
   async allAMI(patientId: string) {
     return this.fetchPatientObservations(
       patientId,
-      'e1d43a74-1d5f-11e0-b929-000c29ad1d07',
+      'e1da20e2-1d5f-11e0-b929-000c29ad1d07',
       '8377e4ff-d0fe-44a5-81c3-74c9040fd5f8'
     );
   },
@@ -207,17 +207,40 @@ export default {
   async allGLC(patientId: string) {
     return this.fetchPatientObservations(
       patientId,
-      'e1d43a74-1d5f-11e0-b929-000c29ad1d07',
+      'e1d64968-1d5f-11e0-b929-000c29ad1d07',
       '8377e4ff-d0fe-44a5-81c3-74c9040fd5f8'
     );
   },
 
   async allPCR(patientId: string) {
-    return this.fetchPatientObservations(
-      patientId,
-      'e1d43a74-1d5f-11e0-b929-000c29ad1d07',
-      '8377e4ff-d0fe-44a5-81c3-74c9040fd5f8'
-    );
+    const url = `/obs?patient=${patientId}&concept=e1d7f61e-1d5f-11e0-b929-000c29ad1d07&v=custom:(obsDatetime,value,comment,encounter:(uuid,location.name,form:(uuid,display)))&limit=12`;
+    // Garantir que formUuids seja sempre um array
+    const formUuidArray = ['8377e4ff-d0fe-44a5-81c3-74c9040fd5f8'];
+    try {
+      const response = await api.get(url);
+      console.log(
+        'allPCR=========>',
+        JSON.stringify(response.data?.results),
+        null,
+        2
+      );
+
+      return (
+        response.data?.results?.filter((item: any) => {
+          if (item.encounter && item.encounter.form) {
+            const uuid = item.encounter.form.uuid?.trim(); // Remover espaços em branco
+            return formUuidArray.includes(uuid);
+          }
+          return false;
+        }) || []
+      );
+    } catch (error) {
+      console.error(
+        `Erro ao buscar observações para o conceito do paciente ${patientId}:`,
+        error
+      );
+      return [];
+    }
   },
 
   //QUALITATIVE CALLS

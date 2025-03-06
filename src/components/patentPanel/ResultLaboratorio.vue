@@ -105,7 +105,6 @@ onMounted(async () => {
     const allVLs = await resultadosLaboratoriaisService.allVLs(
       patient.value.uuid
     );
-console.log('allCD4CoverageFLG=========>', allCD4CoverageFLG);
 
     // Populate resultadosData
     resultadosData.value = [
@@ -469,7 +468,7 @@ console.log('allCD4CoverageFLG=========>', allCD4CoverageFLG);
         items:
           allPCR.length > 0
             ? allPCR.map((item) => ({
-                value: item.value || 'Sem dados no SESP',
+                value: item.value.display || 'Sem dados no SESP',
                 source: {
                   form:
                     item.encounter?.form?.display ===
