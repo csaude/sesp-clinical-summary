@@ -84,7 +84,10 @@ onMounted(async () => {
             ? ARTStartDate.map((item) => ({
                 value: formatDate(item.value) || 'Sem dados no SESP',
                 source: {
-                  form: item.encounter?.form?.display || 'Sem formulário',
+                  form:
+                    item.encounter?.form?.display === 'ADULTO: SEGUIMENTO'
+                      ? 'FICHA DE SEGUIMENTO'
+                      : item.encounter?.form?.display || 'Sem formulário',
                   date: formatDate(item.obsDatetime) || 'Sem data',
                   location: item.encounter?.location?.name || 'Sem localidade',
                 },

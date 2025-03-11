@@ -242,6 +242,10 @@ onMounted(async () => {
       patient.value.uuid
     );
 
+    const CTZEndFichaClinica = await profilaxiasService.CTZEndFichaClinica(
+      patient.value.uuid
+    );
+
     const expectedForms = [
       'FICHA RESUMO',
       'FICHA CLINICA',
@@ -253,7 +257,10 @@ onMounted(async () => {
       value: item.value.display ? formatDate(item.obsDatetime) : item.value,
       source: {
         profilaxia: item.profilaxia || 'Sem dados no SESP',
-        form: item?.encounter?.form?.display,
+        form:
+          item?.encounter?.form?.display === 'ADULTO: SEGUIMENTO'
+            ? 'FICHA DE SEGUIMENTO'
+            : item?.encounter?.form?.display || 'Sem dados no SESP',
       },
     }));
 
@@ -274,7 +281,10 @@ onMounted(async () => {
       value: item.value.display ? formatDate(item.obsDatetime) : item.value,
       source: {
         profilaxia: item.profilaxia || 'Sem dados no SESP',
-        form: item?.encounter?.form?.display,
+        form:
+          item?.encounter?.form?.display === 'ADULTO: SEGUIMENTO'
+            ? 'FICHA DE SEGUIMENTO'
+            : item?.encounter?.form?.display || 'Sem dados no SESP',
       },
     }));
 
@@ -313,8 +323,11 @@ onMounted(async () => {
         source: IPTEndFichaFILT[0]
           ? {
               form:
-                IPTEndFichaFILT[0]?.encounter?.form?.display ||
-                'Sem formulário',
+                IPTEndFichaFILT[0]?.encounter?.form?.display ===
+                'ADULTO: SEGUIMENTO'
+                  ? 'FICHA DE SEGUIMENTO'
+                  : IPTEndFichaFILT[0]?.encounter?.form?.display ||
+                    'Sem formulário',
               date:
                 formatDate(IPTEndFichaFILT[0]?.obsDatetime) ||
                 'Sem dados no SESP',
@@ -329,8 +342,11 @@ onMounted(async () => {
         source: IPTEndFichaFILT[0]
           ? {
               form:
-                IPTEndFichaFILT[0]?.encounter?.form?.display ||
-                'Sem formulário',
+                IPTEndFichaFILT[0]?.encounter?.form?.display ===
+                'ADULTO: SEGUIMENTO'
+                  ? 'FICHA DE SEGUIMENTO'
+                  : IPTEndFichaFILT[0]?.encounter?.form?.display ||
+                    'Sem formulário',
               date:
                 formatDate(IPTEndFichaFILT[0]?.obsDatetime) ||
                 'Sem dados no SESP',
@@ -347,7 +363,10 @@ onMounted(async () => {
                   ? formatDate(item.obsDatetime)
                   : item?.value,
                 source: {
-                  form: item.encounter?.form?.display || 'Sem dados no SESP',
+                  form:
+                    item.encounter?.form?.display === 'ADULTO: SEGUIMENTO'
+                      ? 'FICHA DE SEGUIMENTO'
+                      : item?.encounter?.form?.display || 'Sem dados no SESP',
                   date: formatDate(item.obsDatetime) || 'Sem dados no SESP',
                 },
               }))
@@ -362,13 +381,16 @@ onMounted(async () => {
         title: 'Data do Fim de CTZ',
         isList: true,
         items:
-          IPTEndFichaFILT.length > 0
-            ? IPTEndFichaFILT.map((item) => ({
+          CTZEndFichaClinica.length > 0
+            ? CTZEndFichaClinica.map((item) => ({
                 value: item.value.display
                   ? formatDate(item.obsDatetime)
                   : item?.value,
                 source: {
-                  form: item.encounter?.form?.display || 'Sem dados no SESP',
+                  form:
+                    item.encounter?.form?.display === 'ADULTO: SEGUIMENTO'
+                      ? 'FICHA DE SEGUIMENTO'
+                      : item.encounter?.form?.display || 'Sem dados no SESP',
                   date: formatDate(item.obsDatetime) || 'Sem dados no SESP',
                 },
               }))
