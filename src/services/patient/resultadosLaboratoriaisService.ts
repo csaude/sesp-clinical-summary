@@ -218,12 +218,6 @@ export default {
     const formUuidArray = ['8377e4ff-d0fe-44a5-81c3-74c9040fd5f8'];
     try {
       const response = await api.get(url);
-      console.log(
-        'allPCR=========>',
-        JSON.stringify(response.data?.results),
-        null,
-        2
-      );
 
       return (
         response.data?.results?.filter((item: any) => {
@@ -291,7 +285,7 @@ export default {
 
   //QUANTITATIVE CALLS
   async allVLCopias(patientId: string) {
-    const url = `/obs?patient=${patientId}&concept=e1da2704-1d5f-11e0-b929-000c29ad1d07&v=custom:(obsDatetime,value,comment,encounter:(uuid,location.name,form:(uuid,display)))&limit=12`;
+    const url = `/obs?patient=${patientId}&concept=e1d6247e-1d5f-11e0-b929-000c29ad1d07&v=custom:(obsDatetime,value,comment,encounter:(uuid,location.name,form:(uuid,display)))&limit=12`;
 
     const response = await api.get(url);
     return (
@@ -306,7 +300,7 @@ export default {
   },
 
   async allVLCopiasFSR(patientId: string) {
-    const url = `/obs?patient=${patientId}&concept=e1da2704-1d5f-11e0-b929-000c29ad1d07&v=custom:(obsDatetime,value,comment,encounter:(uuid,location.name,form:(uuid,display)))&limit=12`;
+    const url = `/obs?patient=${patientId}&concept=e1d6247e-1d5f-11e0-b929-000c29ad1d07&v=custom:(obsDatetime,value,comment,encounter:(uuid,location.name,form:(uuid,display)))&limit=12`;
 
     const response = await api.get(url);
     return (
@@ -321,7 +315,7 @@ export default {
   },
 
   async allVLCopiasFC(patientId: string) {
-    const url = `/obs?patient=${patientId}&concept=e1da2704-1d5f-11e0-b929-000c29ad1d07&v=custom:(obsDatetime,value,comment,encounter:(uuid,location.name,form:(uuid,display)))&limit=12`;
+    const url = `/obs?patient=${patientId}&concept=e1d6247e-1d5f-11e0-b929-000c29ad1d07&v=custom:(obsDatetime,value,comment,encounter:(uuid,location.name,form:(uuid,display)))&limit=12`;
 
     const response = await api.get(url);
     return (

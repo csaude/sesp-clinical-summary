@@ -290,7 +290,7 @@ export default {
             ['3c2d563a-5d37-4735-a125-d3943a3de30a'].includes(uuid) &&
             item.value !== null &&
             item.value.uuid !== undefined &&
-            item.value.uuid == 'e1d9facc-1d5f-11e0-b929-000c29ad1d07'
+            item.value.uuid === 'e1d9facc-1d5f-11e0-b929-000c29ad1d07'
           );
         }
         return false;

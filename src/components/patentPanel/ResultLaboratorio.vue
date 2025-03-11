@@ -106,6 +106,8 @@ onMounted(async () => {
       patient.value.uuid
     );
 
+    allVLs;
+
     // Populate resultadosData
     resultadosData.value = [
       {
@@ -114,9 +116,7 @@ onMounted(async () => {
         items:
           allVLs.length > 0
             ? allVLs.map((item) => ({
-                value: item.value.value.display
-                  ? item.value.value.display
-                  : item.value.value,
+                value: item.value?.display ? item.value?.display : item.value,
                 source: {
                   form:
                     item.encounter?.form?.display ===
@@ -217,7 +217,7 @@ onMounted(async () => {
           allGenexpert.length > 0 || allGenexpertFC.length > 0
             ? [
                 ...allGenexpert.map((item) => ({
-                  value: item.value.display || 'Sem dados no SESP',
+                  value: item.value?.display || 'Sem dados no SESP',
                   source: {
                     form:
                       item.encounter?.form?.display ===
@@ -253,7 +253,7 @@ onMounted(async () => {
           allBaciloscopia.length > 0 || allBaciloscopiaFC.length > 0
             ? [
                 ...allBaciloscopia.map((item) => ({
-                  value: item.value.display || 'Sem dados no SESP',
+                  value: item.value?.display || 'Sem dados no SESP',
                   source: {
                     form:
                       item.encounter?.form?.display ===
@@ -468,7 +468,7 @@ onMounted(async () => {
         items:
           allPCR.length > 0
             ? allPCR.map((item) => ({
-                value: item.value.display || 'Sem dados no SESP',
+                value: item.value?.display || 'Sem dados no SESP',
                 source: {
                   form:
                     item.encounter?.form?.display ===
