@@ -320,7 +320,7 @@ onMounted(async () => {
     // Populate resultadosData
     resultadosData.value = [
       {
-        title: 'Data do último levantamento INH',
+        title: 'Data do último levantamento TPT',
         value: IPTEndFichaFILT[0]?.obsDatetime
           ? formatDate(IPTEndFichaFILT[0]?.obsDatetime)
           : 'Sem dados no SESP',
@@ -339,7 +339,7 @@ onMounted(async () => {
           : { form: 'FILT', date: '', location: '' },
       },
       {
-        title: 'Tipo do último levantamento INH',
+        title: 'Tipo do último levantamento TPT',
         value: IPTEndFichaFILT[0]?.value?.display
           ? IPTEndFichaFILT[0]?.value?.display
           : 'Sem dados no SESP',
