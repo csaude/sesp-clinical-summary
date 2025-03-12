@@ -302,7 +302,7 @@ export default {
     return this.fetchPatientObservations(
       patientId,
       'd5c15047-58f3-4eb2-9f98-af82e3531cb5',
-      ['e28b23a6-1d5f-11e0-b929-000c29ad1d07']
+      ['4ce83895-5c0e-4170-b0cc-d3974b54131f']
     );
   },
 };
