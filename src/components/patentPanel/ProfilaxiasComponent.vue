@@ -253,16 +253,18 @@ onMounted(async () => {
     ];
 
     // Map data for `allIPTStart`
-    const startItems = allIPTStart.map((item) => ({
-      value: item.value.display ? formatDate(item.obsDatetime) : item.value,
-      source: {
-        profilaxia: item.profilaxia || 'Sem dados no SESP',
-        form:
-          item?.encounter?.form?.display === 'ADULTO: SEGUIMENTO'
-            ? 'FICHA DE SEGUIMENTO'
-            : item?.encounter?.form?.display || 'Sem dados no SESP',
-      },
-    }));
+    const startItems = allIPTStart
+      .map((item) => ({
+        value: item.value.display ? formatDate(item.obsDatetime) : item.value,
+        source: {
+          profilaxia: item.profilaxia || 'Sem dados no SESP',
+          form:
+            item?.encounter?.form?.display === 'ADULTO: SEGUIMENTO'
+              ? 'FICHA DE SEGUIMENTO'
+              : item?.encounter?.form?.display || 'Sem dados no SESP',
+        },
+      }))
+      .sort((a, b) => (a.source.form || '').localeCompare(b.source.form || ''));
 
     const missingStartForms = expectedForms.filter(
       (form) => !startItems.some((item) => item.source.form === form)
@@ -277,16 +279,18 @@ onMounted(async () => {
     }));
 
     // Map data for `allIPTEnd`
-    const endItems = allIPTEnd.map((item) => ({
-      value: item.value.display ? formatDate(item.obsDatetime) : item.value,
-      source: {
-        profilaxia: item.profilaxia || 'Sem dados no SESP',
-        form:
-          item?.encounter?.form?.display === 'ADULTO: SEGUIMENTO'
-            ? 'FICHA DE SEGUIMENTO'
-            : item?.encounter?.form?.display || 'Sem dados no SESP',
-      },
-    }));
+    const endItems = allIPTEnd
+      .map((item) => ({
+        value: item.value.display ? formatDate(item.obsDatetime) : item.value,
+        source: {
+          profilaxia: item.profilaxia || 'Sem dados no SESP',
+          form:
+            item?.encounter?.form?.display === 'ADULTO: SEGUIMENTO'
+              ? 'FICHA DE SEGUIMENTO'
+              : item?.encounter?.form?.display || 'Sem dados no SESP',
+        },
+      }))
+      .sort((a, b) => (a.source.form || '').localeCompare(b.source.form || ''));
 
     const missingEndForms = expectedForms.filter(
       (form) => !endItems.some((item) => item.source.form === form)
