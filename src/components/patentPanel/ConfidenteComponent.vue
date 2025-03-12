@@ -89,7 +89,7 @@ onMounted(async () => {
         items:
           confidantContact.length > 0
             ? confidantContact.map((item) => ({
-                value: formatDate(item.value) || 'Sem dados no SESP',
+                value: item.value || 'Sem dados no SESP',
                 source: {
                   form:
                     item.encounter?.form?.display ===
