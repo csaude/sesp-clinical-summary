@@ -116,7 +116,9 @@ onMounted(async () => {
         items:
           allVLs.length > 0
             ? allVLs.map((item) => ({
-                value: item.value?.display ? item.value?.display : item.value,
+                value: `${item.value?.display ? item.value?.display : item.value} ${
+                  item.comment ? `${item.comment}` : ''
+                }`,
                 source: {
                   form:
                     item.encounter?.form?.display ===
@@ -133,6 +135,7 @@ onMounted(async () => {
                 },
               ],
       },
+
       {
         title: 'CD4 Absoluto',
         isList: true,
