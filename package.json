@@ -13,6 +13,7 @@
     "build": "quasar build"
   },
   "dependencies": {
+    "@capacitor-community/privacy-screen": "^5.2.1",
     "@capacitor/android": "^6.2.0",
     "@capacitor/app": "^6.0.2",
     "@capacitor/cli": "^6.2.0",
