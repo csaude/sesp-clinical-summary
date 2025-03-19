@@ -111,7 +111,7 @@ export default {
   async allCD4AbsFSR(patientId: string) {
     return this.fetchPatientObservations(
       patientId,
-      'e1d48fba-1d5f-11e0-b929-000c29ad1d07',
+      'e1dd5ab4-1d5f-11e0-b929-000c29ad1d07',
       '5b7cecc3-4ba3-4710-85ae-fc0c13e83e27'
     );
   },
@@ -119,7 +119,7 @@ export default {
   async allCD4AbsFLG(patientId: string) {
     return this.fetchPatientObservations(
       patientId,
-      'e1d48fba-1d5f-11e0-b929-000c29ad1d07',
+      'e1dd5ab4-1d5f-11e0-b929-000c29ad1d07',
       '8377e4ff-d0fe-44a5-81c3-74c9040fd5f8'
     );
   },

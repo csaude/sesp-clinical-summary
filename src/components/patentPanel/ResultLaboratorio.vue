@@ -66,6 +66,10 @@ onMounted(async () => {
     const allCD4AbsFLG = await resultadosLaboratoriaisService.allCD4AbsFLG(
       patient.value.uuid
     );
+
+    console.log('allCD4AbsFSR: ', allCD4AbsFSR);
+    console.log('allCD4AbsFLG: ', allCD4AbsFLG);
+
     const allGenexpert = await resultadosLaboratoriaisService.allGenexpert(
       patient.value.uuid
     );
@@ -116,9 +120,9 @@ onMounted(async () => {
         items:
           allVLs.length > 0
             ? allVLs.map((item) => ({
-                value: `${item.value?.display ? item.value?.display : item.value} ${
-                  item.comment ? `${item.comment}` : ''
-                }`,
+                value: `${
+                  item.value?.display ? item.value?.display : item.value
+                } ${item.comment ? `${item.comment}` : ''}`,
                 source: {
                   form:
                     item.encounter?.form?.display ===
@@ -140,10 +144,10 @@ onMounted(async () => {
         title: 'CD4 Absoluto',
         isList: true,
         items:
-          allCD4AbsFSR.length > 0 && allCD4AbsFLG.length > 0
+          allCD4AbsFSR.length > 0 || allCD4AbsFLG.length > 0
             ? [
                 ...allCD4AbsFLG.map((item) => ({
-                  value: item.value || 'Sem dados no SESP',
+                  value: item?.value || 'Sem dados no SESP',
                   source: {
                     form:
                       item.encounter?.form?.display ===
