@@ -186,29 +186,13 @@ export default {
     return data || [];
   },
 
-  // async getBreastfeedingStatus(patientId: string): Promise<any[]> {
-  //   const url = `/obs?patient=${patientId}&concept=bc4fe755-fc8f-49b8-9956-baf2477e8313&v=custom:(obsDatetime,value,encounter:(uuid,location.name,form:(uuid,display)))&limit=5`;
-
-  //   const response = await api.get(url);
-
-  //   //const data=JSON.parse(response.data);
-
-  //   const brestFeeding = response.data.results.filter(
-  //     (item: any) =>
-  //       item.encounter.form.uuid == '3c2d563a-5d37-4735-a125-d3943a3de30a'
-  //   );
-
-  // Return the filtered results
-  //   return brestFeeding || [];
-  // },
-
   async getProgramEnrollment(patientId: string): Promise<any> {
     const url = `/programenrollment?patient=${patientId}&v=full`;
     const response = await api.get(url);
-
+  
     const data = response.data.results || [];
     const enrolls: Array<any> = [];
-
+  
     // Map through program enrollments and build required structure
     data.forEach((enrollment: any) => {
       const state = {
@@ -218,26 +202,34 @@ export default {
         states: '',
         stateDate: '',
       };
-
+  
       // Assign program details
       state.program = enrollment.program?.name || 'N/A';
       state.dateEnrolled = enrollment.dateEnrolled || 'N/A';
       state.dateCompleted = enrollment.dateCompleted || 'N/A';
-      state.stateDate = enrollment.dateCompleted
-        ? enrollment.dateCompleted
-        : enrollment.dateEnrolled;
-
-      // Get the latest state if available
-      state.states =
-        enrollment.states?.length > 0
-          ? enrollment.states[enrollment.states.length - 1].state.concept
-              .display
-          : 'N/A';
-
+  
+      // Sort states by startDate in descending order (latest first)
+      if (enrollment.states?.length > 0) {
+        const sortedStates = enrollment.states.sort((a: any, b: any) => 
+          new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+        );
+  
+        // Pick the most recent state
+        const latestState = sortedStates[0];
+        state.states = latestState?.state?.concept?.display || 'N/A';
+  
+        // Set stateDate to the startDate of the most recent state
+        state.stateDate = latestState?.startDate || state.dateEnrolled;
+      } else {
+        state.states = 'N/A';
+        state.stateDate = state.dateEnrolled; // Default to dateEnrolled if no states exist
+      }
+  
       enrolls.push(state);
     });
-
+  
     // Return only the last enrollment if it exists
     return enrolls.length > 0 ? [enrolls[enrolls.length - 1]] : [];
-  },
+  }
+  
 };
