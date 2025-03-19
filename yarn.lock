@@ -36,6 +36,11 @@
     "@babel/helper-string-parser" "^7.25.9"
     "@babel/helper-validator-identifier" "^7.25.9"
 
+"@capacitor-community/privacy-screen@^5.2.1":
+  version "5.2.1"
+  resolved "https://registry.npmjs.org/@capacitor-community/privacy-screen/-/privacy-screen-5.2.1.tgz"
+  integrity sha512-aCC5AiL21yeanzvV4Xi3qcgYipWfCxIrxMVVlwWsH4q4L9POtrxIQ1TuR1f8rPq/z71O5I+c7LNEBOihTtLV9w==
+
 "@capacitor/android@^6.2.0":
   version "6.2.0"
   resolved "https://registry.npmjs.org/@capacitor/android/-/android-6.2.0.tgz"
@@ -360,6 +365,11 @@
   version "2.5.1"
   resolved "https://registry.npmjs.org/@parcel/watcher-linux-x64-glibc/-/watcher-linux-x64-glibc-2.5.1.tgz"
   integrity sha512-GcESn8NZySmfwlTsIur+49yDqSny2IhPeZfXunQi48DMugKeZ7uy1FX83pO0X22sHntJ4Ub+9k34XQCX+oHt2A==
+
+"@parcel/watcher-linux-x64-musl@2.5.1":
+  version "2.5.1"
+  resolved "https://registry.npmjs.org/@parcel/watcher-linux-x64-musl/-/watcher-linux-x64-musl-2.5.1.tgz"
+  integrity sha512-n0E2EQbatQ3bXhcH2D1XIAANAcTZkQICBPVaxMeaCVBtOpBZpWJuf7LwyWPSBDITb7In8mqQgJ7gH8CILCURXg==
 
 "@parcel/watcher@^2.4.1":
   version "2.5.1"

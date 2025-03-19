@@ -116,7 +116,8 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, ref, watch } from 'vue';
+import { defineProps, defineEmits, ref, watch, onMounted, onUnmounted } from 'vue';
+import { PrivacyScreen } from '@capacitor-community/privacy-screen';
 
 const props = defineProps({
   title: {
@@ -150,6 +151,26 @@ watch(
   },
   { deep: true }
 );
+
+// Enable Privacy Screen when the component mounts
+onMounted(async () => {
+  try {
+    await PrivacyScreen.enable();
+    console.log('Privacy screen enabled');
+  } catch (error) {
+    console.error('Error enabling privacy screen:', error);
+  }
+});
+
+// Optionally disable privacy screen when component is destroyed
+onUnmounted(async () => {
+  try {
+    await PrivacyScreen.disable();
+    console.log('Privacy screen disabled');
+  } catch (error) {
+    console.error('Error disabling privacy screen:', error);
+  }
+});
 </script>
 
 <style scoped>
