@@ -235,7 +235,7 @@ onMounted(async () => {
                   },
                 })),
                 ...allGenexpertFC.map((item) => ({
-                  value: item.value || 'Sem dados no SESP',
+                  value: item.value?.display || 'Sem dados no SESP',
                   source: {
                     form: item?.encounter?.form?.display || 'FICHA CLINICA',
                     date: formatDate(item.obsDatetime) || '',
