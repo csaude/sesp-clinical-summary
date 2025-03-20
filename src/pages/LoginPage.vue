@@ -10,10 +10,19 @@
     <div v-if="!isFirstTimeSetup" class="login-form">
       <!-- Header Banner -->
       <div class="q-pa-none q-gutter-sm q-mb-xl">
-        <q-banner inline-actions class="bg-light-green-10 text-white text-center text-weight-medium">
+        <q-banner
+          inline-actions
+          class="bg-light-green-10 text-white text-center text-weight-medium"
+        >
           SESP Sumário Clínico
           <template v-slot:action>
-            <q-btn color="white" outline dense @click="handleReconfigure" icon="sym_o_reset_wrench" />
+            <q-btn
+              color="white"
+              outline
+              dense
+              @click="handleReconfigure"
+              icon="sym_o_reset_wrench"
+            />
           </template>
         </q-banner>
       </div>
@@ -41,10 +50,12 @@
         <!-- Facility Selection -->
         <q-select
           v-model="selectedFacility"
-          :options="facilities.map(facility => ({
-            label: facility.name,
-            value: facility,
-          }))"
+          :options="
+            facilities.map((facility) => ({
+              label: facility.name,
+              value: facility,
+            }))
+          "
           label="Unidade Sanitária"
           outlined
           :disable="isLoading"
@@ -111,7 +122,6 @@
         <label class="col text-center">v{{ appVersion }}</label>
       </div>
     </div>
-          
   </div>
 </template>
 <script setup>
@@ -121,7 +131,7 @@ import userService from 'src/services/user/userService';
 import AddHealthFacility from '../components/login/AddHealthFacility.vue';
 import { useSwal } from 'src/composables/shared/dialog/dialog';
 import EncryptionManager from 'src/utils/EncryptionManager';
-import { version } from '../../package.json'
+import { version } from '../../package.json';
 
 import { App } from '@capacitor/app';
 
@@ -152,7 +162,8 @@ watch(selectedFacility, (newFacility) => {
     const settings = JSON.parse(localStorage.getItem('settings')) || {};
     if (settings.rememberUsername) {
       // Find the selected facility in localStorage
-      const savedFacilities = JSON.parse(localStorage.getItem('facilities')) || [];
+      const savedFacilities =
+        JSON.parse(localStorage.getItem('facilities')) || [];
       const selectedFacilityData = savedFacilities.find(
         (facility) => facility.key === newFacility.value.key
       );
@@ -170,7 +181,6 @@ watch(selectedFacility, (newFacility) => {
     username.value = '';
   }
 });
-
 
 // Check if configuration exists in local storage
 onMounted(() => {
@@ -209,16 +219,16 @@ onMounted(() => {
 });
 
 const handleReconfigure = async () => {
-    const confirmed = await alertWarningAction(
-      'Deseja apagar todas as configurações do aplicativo e reconfigurar?'
-    );
-  
-    if (confirmed) {
-      // Clear localStorage and sessionStorage
-      localStorage.clear();
-      userService.logout();
-    }
-  };
+  const confirmed = await alertWarningAction(
+    'Deseja apagar todas as configurações do aplicativo e reconfigurar?'
+  );
+
+  if (confirmed) {
+    // Clear localStorage and sessionStorage
+    localStorage.clear();
+    userService.logout();
+  }
+};
 
 // Show privacy warning
 const showPrivacyWarning = () => {
@@ -258,7 +268,6 @@ const handleCancelSetup = async () => {
   }
 };
 
-
 const handleLogin = async () => {
   if (!selectedFacility.value) {
     alertError('Selecione uma unidade sanitária antes de entrar.');
@@ -269,11 +278,14 @@ const handleLogin = async () => {
 
   try {
     // Save the selected facility to session storage
-    sessionStorage.setItem('selectedFacility', JSON.stringify(selectedFacility.value));
+    sessionStorage.setItem(
+      'selectedFacility',
+      JSON.stringify(selectedFacility.value)
+    );
 
     // Extract the actual selected facility object
-    const selectedFacilityData = selectedFacility.value.value || selectedFacility.value;
-    console.log('selectedFacilityData======>', selectedFacilityData);
+    const selectedFacilityData =
+      selectedFacility.value.value || selectedFacility.value;
 
     // Encrypt and save credentials to session storage
     EncryptionManager.setEncryptedSessionItem('username', username.value);
@@ -286,7 +298,6 @@ const handleLogin = async () => {
     const facilities = JSON.parse(localStorage.getItem('facilities')) || [];
     const updatedFacilities = facilities.map((facility) => {
       if (facility.key === selectedFacilityData.key) {
-        console.log('facility======>', facility);
         return { ...facility, userName: username.value };
       }
       return facility;
@@ -294,8 +305,15 @@ const handleLogin = async () => {
 
     // Save updated facilities back to local storage
     localStorage.setItem('facilities', JSON.stringify(updatedFacilities));
-    console.log('Updated Facilities:', updatedFacilities);
-
+    // Check if settings exist before saving
+    if (!localStorage.getItem('settings')) {
+      const defaultSettings = {
+        autoSendUsage: true,
+        rememberUsername: true,
+        autoLogout: 15
+      };
+      localStorage.setItem('settings', JSON.stringify(defaultSettings));
+    }
     // Redirect to main page after successful login
     router.push('/home');
   } catch (error) {
@@ -306,12 +324,8 @@ const handleLogin = async () => {
   }
 };
 
-
-
 // Open Add Health Facility dialog
 const openAddHealthFacility = () => {
   isFirstTimeSetup.value = true;
 };
-
 </script>
-

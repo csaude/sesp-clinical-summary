@@ -1,6 +1,6 @@
 {
   "name": "sesp-clinical-summary",
-  "version": "2.0.0",
+  "version": "1.11.0",
   "description": "sesp-clinical-summary",
   "productName": "SESP Sumário Clínico",
   "author": "Joao Nuno Mabjaia <94103183+joaonunomabjaia@users.noreply.github.com>",
@@ -13,6 +13,7 @@
     "build": "quasar build"
   },
   "dependencies": {
+    "@capacitor-community/privacy-screen": "^5.2.1",
     "@capacitor/android": "^6.2.0",
     "@capacitor/app": "^6.0.2",
     "@capacitor/cli": "^6.2.0",

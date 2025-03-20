@@ -26,7 +26,6 @@
   </template>
   
   <script setup>
-  import { ref } from 'vue';
   import SearchResultItem from './SearchResultItem.vue';
   
   const props = defineProps({

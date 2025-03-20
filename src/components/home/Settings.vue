@@ -67,12 +67,6 @@
         <!-- Action Buttons -->
         <div class="q-mt-md">
           <q-btn
-            label="PARTILHAR DADOS DE USO"
-            class="full-width q-mb-md"
-            color="positive"
-            unelevated
-          />
-          <q-btn
             label="RECONFIGURAR"
             class="full-width"
             color="yellow"
@@ -86,19 +80,13 @@
   </template>
   
   <script setup>
-  import { useRouter } from 'vue-router';
   import { ref, onMounted, watch } from 'vue';
   import { useSwal } from 'src/composables/shared/dialog/dialog';
   import userService from 'src/services/user/userService';
   
   const roles = ref([]);
-  const router = useRouter();
   const { alertWarningAction } = useSwal();
   
-  // State variables
-  const autoSendUsage = ref(true);
-  const rememberUsername = ref(true);
-  const autoLogout = ref(15);
 
   const settings = ref({
     autoSendUsage: true,

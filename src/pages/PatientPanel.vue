@@ -114,8 +114,9 @@
   
   // Navigation
   function goBack() {
-    router.back();
+    router.push({ path: '/home', query: { component: 'SearchComponent' } });
   }
+
 
   // Utility function to check roles by UUID
   function hasRole(requiredUUIDs) {
